@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613683440998",
+    "project_id": "fincom-dec4a",
+    "storage_bucket": "fincom-dec4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613683440998:android:1df2987937a0d93a43aca7",
+        "android_client_info": {
+          "package_name": "com.fincom.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZM3m0j6lq9l_TN1YEufVDcRgyMHXaIqw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>577011752920-v9h0jk0vkv80dvnrgkep1gjiget5g234.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.577011752920-v9h0jk0vkv80dvnrgkep1gjiget5g234</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAw3lPrwJ38ePBLrAyoFeNKSxXiigxOmLU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>577011752920</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.aramarketNew.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>aramarket-firebase</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aramarket-firebase.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:577011752920:ios:2d18cbdf840417c1b61cad</string>
+</dict>
+</plist>

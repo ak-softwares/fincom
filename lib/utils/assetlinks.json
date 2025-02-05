@@ -1,0 +1,14 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "com.company.aramarketin",
+      "package_name": "com.company.aramarketin",
+      "sha256_cert_fingerprints": [
+        "87:D2:33:81:A3:5E:93:CF:50:8D:94:DF:C5:87:D5:48:ED:DE:1C:D9:F2:12:DE:80:F6:CE:5C:8A:E4:A6:38:B3",
+        "53:19:F2:1C:B0:80:ED:05:04:50:78:34:5A:22:1A:6B:41:E6:80:F1:65:77:AD:D9:D1:C5:8B:6A:D0:60:57:3F",
+        "8b:d5:c6:b5:be:7b:64:73:a3:6b:c9:cd:a8:3b:d7:42:c7:a0:f4:85:ca:fd:e1:e5:44:17:93:06:55:e8:33:00"
+      ]
+    }
+  }
+]

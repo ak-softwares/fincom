@@ -1,0 +1,25 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/logos/fincom_splash.png
+
+#  color_dark: "#272727"
+#  image_dark: assets/logos/splash_logo_white.png
+
+# this for theme color
+#  color: "#FFC61A"
+#  color_dark: "#272727"
+#  image: assets/logos/splash_logo_black.png
+#  image_dark: assets/logos/splash_logo_yellow.png
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/logos/fincom_splash.png
+
+  #  color_dark: "#272727"
+  #  image_dark: assets/logos/splash_logo_white.png
+
+  web: false
+
+#  dart run flutter_native_splash:create --path=splash.yaml
+#  dart run flutter_native_splash:remove --path=splash.yaml
+#  image Size should be 1155x1155 and logo size within image is 768x768

@@ -1,0 +1,10 @@
+command -
+flutter pub run flutter_native_splash:create --path=splash.yaml
+
+App icon without an icon background, as shown on the left: This 
+should be 1152×1152 pixels, and fit within a circle 768 pixels 
+in diameter.
+
+App icon with an icon background, as shown on the right: 
+This should be 960×960 pixels, and fit within a circle 
+640 pixels in diameter.
