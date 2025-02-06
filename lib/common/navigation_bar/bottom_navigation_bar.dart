@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../../features/account/screen/home/home.dart';
+import '../../features/account/screen/purchase/purchase.dart';
+import '../../features/account/screen/sales/sales.dart';
 import '../../features/personalization/screens/user_menu/user_menu_screen.dart';
 import '../../features/shop/controllers/cart_controller/cart_controller.dart';
-import '../../features/shop/screens/cart/cart.dart';
-import '../../features/shop/screens/category/all_category_screen.dart';
-import '../../features/shop/screens/home/home.dart';
 import '../../services/firebase_analytics/firebase_analytics.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/constants/icons.dart';
@@ -27,10 +27,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
   DateTime? _lastBackPressedTime; // Variable to track the time of the last back button press
   int _currentIndex = 0;
   final screens = [
-    const MyHomePage(),
-    const CategoryScreen(),
-    // const FavouriteScreen(),
-    const CartScreen(),
+    const Home(),
+    const Sales(),
+    const Purchase(),
     const UserMenuScreen(),
   ];
 
@@ -93,7 +92,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             duration: const Duration(milliseconds: 100), // tab animation duration
             gap: 8, // the tab button gap between icon and text
             // color: Colors.grey[800], // unselected icon color
-            activeColor: Colors.black, // selected icon and text color
+            activeColor: TColors.primaryColor, // selected icon and text color
             iconSize: 25, // tab button icon size
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // navigation bar padding
             tabs: [
@@ -102,42 +101,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 text: 'Home',
               ),
               GButton(
-                icon: TIcons.category,
-                text: 'Category',
+                icon: TIcons.sales,
+                text: 'Sale',
               ),
               // GButton(
               //   icon: LineIcons.heart,
               //   text: 'Likes',
               // ),
               GButton(
-                icon: TIcons.bottomNavigationCart,
-                text: 'Cart',
-                leading: Obx(() => Badge(
-                  backgroundColor: Colors.transparent,
-                  textColor: TColors.secondaryColor,
-                  textStyle: Theme.of(context).textTheme.labelSmall!.apply(
-                      color: TColors.secondaryColor,
-                      fontSizeFactor: 0.9,
-                      fontWeightDelta: 2
-                  ),
-                  isLabelVisible: cartController.noOfCartItems.value > 0,
-                  label: Container(
-                      width: 16,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        // boxShadow: const [BoxShadow(
-                        //   color: Color(0xFFAB7C00),
-                        //   blurRadius: 1, // Adjust as needed
-                        //   // spreadRadius: 5, // Adjust as needed
-                        //   offset: Offset(0, 0), // Adjust as needed
-                        // )],
-                          color: TColors.primaryColor,
-                          borderRadius: BorderRadius.circular(100)
-                      ),
-                      child: Obx(() => Center(child: Text(cartController.noOfCartItems.value.toString())))
-                  ),
-                  child: Icon(TIcons.bottomNavigationCart, size: 25),
-                ))
+                icon: TIcons.purchase,
+                text: 'Purchase',
               ),
               GButton(
                 icon: TIcons.user,

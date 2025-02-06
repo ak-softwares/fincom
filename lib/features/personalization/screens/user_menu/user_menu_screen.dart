@@ -46,25 +46,10 @@ class UserMenuScreen extends StatelessWidget {
                       //User profile
                       CustomerProfileCard(userController: userController, showHeading: true),
 
-                      //Cart and wishlist
-                      const SizedBox(height: Sizes.spaceBtwInputFields),
-                      const FavouriteWithCart(),
-
                       //Menu
                       const SizedBox(height: Sizes.spaceBtwInputFields),
                       const Menu(),
 
-                      //Contact
-                      const SizedBox(height: Sizes.spaceBtwInputFields),
-                      const SupportWidget(showHeading: true),
-
-                      //Policy
-                      const SizedBox(height: Sizes.spaceBtwInputFields),
-                      const PolicyWidget(),
-
-                      //Follow us
-                      const SizedBox(height: Sizes.spaceBtwInputFields),
-                      const FollowUs(),
                     ],
                   ),
                 ),

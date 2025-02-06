@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../../common/navigation_bar/appbar.dart';
+import '../../../../common/navigation_bar/appbar2.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Payments extends StatelessWidget {
+  const Payments({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TAppBar(),
+      appBar: TAppBar2(titleText: 'Purchase',),
       body: SingleChildScrollView(
-        child: Text('Home'),
+        child: Text('Payments'),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:share_plus/share_plus.dart';
 
 import '../../features/settings/app_settings.dart';
-import '../firebase_analytics/firebase_analytics.dart';
 
 class AppShare {
 
@@ -9,7 +8,6 @@ class AppShare {
     final ShareResult shareResult = await Share.share('${AppSettings.appName} - $text',subject: 'subject');
     if (shareResult.status == ShareResultStatus.success) {
       String appName = _extractAppName(shareResult.raw);
-      FBAnalytics.logShare(contentType: contentType, method: appName, itemName: itemName, itemId: itemId);
     }
   }
 
@@ -17,7 +15,6 @@ class AppShare {
     final ShareResult shareResult = await Share.shareUri(Uri.parse(url));
     if (shareResult.status == ShareResultStatus.success) {
       String appName = _extractAppName(shareResult.raw);
-      FBAnalytics.logShare(contentType: contentType, method: appName, itemName: itemName, itemId: itemId);
     }
   }
 

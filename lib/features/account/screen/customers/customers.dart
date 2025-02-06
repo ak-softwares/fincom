@@ -4,15 +4,15 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../../../common/navigation_bar/appbar2.dart';
 import '../../../../utils/constants/colors.dart';
-import 'purchase_entry.dart';
+import '../purchase/purchase_entry.dart';
 
-class Purchase extends StatelessWidget {
-  const Purchase({super.key});
+class Customers extends StatelessWidget {
+  const Customers({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TAppBar2(titleText: 'Purchase',),
+      appBar: TAppBar2(titleText: 'Customers',),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         backgroundColor: TColors.primaryColor,
@@ -21,7 +21,7 @@ class Purchase extends StatelessWidget {
         child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
       ),
       body: SingleChildScrollView(
-        child: Text('purchase'),
+        child: Text('Customers'),
       ),
     );
   }

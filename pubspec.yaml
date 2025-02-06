@@ -35,6 +35,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+
+  # Accounting
+  mongo_dart: ^0.10.4
+
   # Utility Package
   intl: ^0.20.0
   logger: ^2.0.1

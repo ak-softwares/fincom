@@ -7,6 +7,11 @@ import '../../../../../common/text/section_heading.dart';
 import '../../../../../utils/constants/api_constants.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/icons.dart';
+import '../../../../account/screen/banking/payments.dart';
+import '../../../../account/screen/customers/customers.dart';
+import '../../../../account/screen/products/products.dart';
+import '../../../../account/screen/purchase/purchase.dart';
+import '../../../../account/screen/sales/sales.dart';
 import '../../../../settings/app_settings.dart';
 import '../../../../shop/controllers/product/product_controller.dart';
 import '../../../../shop/screens/all_products/all_products.dart';
@@ -41,40 +46,34 @@ class Menu extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
             ListTile(
-              onTap: () => Get.to(() => MyStoreScreen()),
-              leading: Icon(TIcons.store, size: 20),
-              title: Text('My Store', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('Experience shopping like never before.', style: Theme.of(context).textTheme.bodySmall),
+              onTap: () => Get.to(() => Products2()),
+              leading: Icon(TIcons.products, size: 25),
+              title: Text('Products', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('List of products', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => Get.to(() => const OrderScreen()),
-              leading: Icon(TIcons.order, size: 20),
-              title: Text('My Orders', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('Track and repeat orders', style: Theme.of(context).textTheme.bodySmall),
+              onTap: () => Get.to(() => const Customers()),
+              leading: Icon(TIcons.customers, size: 25),
+              title: Text('Customers', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('List of customers', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => Get.to(() => const UserAddressScreen()),
-              leading: Icon(TIcons.location, size: 20),
-              title: Text('My Addresses', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('Set shopping delivery address.', style: Theme.of(context).textTheme.bodySmall),
+              onTap: () => Get.to(() => const Sales()),
+              leading: Icon(TIcons.sales, size: 20),
+              title: Text('Sales', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('List of sales', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => Get.to(() => const CouponScreen()),
-              leading: Icon(TIcons.coupons, size: 20),
-              title: Text('My Coupons', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('List of all the discounted coupons.', style: Theme.of(context).textTheme.bodySmall),
+              onTap: () => Get.to(() => const Purchase()),
+              leading: Icon(TIcons.purchase, size: 20),
+              title: Text('Purchase', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('List of purchase', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => launchUrlString(AppSettings.playStore),
-              leading: Icon(TIcons.rateUs, size: 20),
-              title: Text('Rate us', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('Rate us on play store', style: Theme.of(context).textTheme.bodySmall),
-            ),
-            ListTile(
-              onTap: () => Get.to(() => const RecentlyViewed()),
-              leading: Icon(TIcons.recentlyView,size: 20),
-              title: Text('Recently Viewed', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
-              subtitle: Text('All your recently viewed products.', style: Theme.of(context).textTheme.bodySmall),
+              onTap: () => Get.to(() => const Payments()),
+              leading: Icon(Icons.money,size: 20),
+              title: Text('Payments', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('All Payments list', style: Theme.of(context).textTheme.bodySmall),
             ),
           ],
         )

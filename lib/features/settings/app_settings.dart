@@ -17,11 +17,18 @@ class AppSettings {
 
   // App Basic Colors
   static const Color primaryColor = Color(0xFF2b317f);
+  static const Color primaryBackground = Color(0xFFFFFFFF);
+
   // static const Color secondaryColor = Color(0xFF092143);
-  static const Color secondaryColor = Color(0xFF2d2d2d); //Zomato
-  static const Color accent = Color(0xFFB0C7FF);
-  static const Color primaryBackground = Color(0xFFFFFFFF); //Zomato
+  static const Color secondaryColor = Color(0xFF2d2d2d);
   static const Color secondaryBackground = Color(0xFFf4f4f2); //Zomato
+
+  // Buttons
+  static const Color buttonText = Color(0xFFffffff);
+  static const Color buttonBorder = Color(0xFF2d2d2d);
+  static const Color buttonBackground = Color(0xFF03ccac); //Zomato
+
+  static const Color accent = Color(0xFFB0C7FF);
 
   // Support
   static const String supportWhatsApp   =  '+919368994493';

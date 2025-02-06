@@ -8,6 +8,14 @@ import 'colors.dart';
 class TIcons {
   TIcons._();
 
+  // Accounts
+  static IconData sales = LineIcons.shoppingBag;
+  static IconData purchase = LineIcons.shoppingCart;
+  static IconData products = LineIcons.box;
+  static IconData customers = LineIcons.userFriends;
+  static IconData banking = LineIcons.piggyBank;
+
+
   //Main Icons
   static IconData home = LineIcons.home;
   static IconData store = FontAwesomeIcons.store;

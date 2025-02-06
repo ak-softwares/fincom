@@ -13,6 +13,15 @@ class TColors{
   static const Color primaryBackground = Color(0xFFFFFFFF); //Zomato
   static const Color secondaryBackground = Color(0xFFf4f4f2); //Zomato
 
+  // Buttons Colors
+  static const Color buttonText = AppSettings.buttonText;
+  static const Color buttonBorder = AppSettings.buttonBorder;
+  static const Color buttonBackground = AppSettings.buttonBackground; //Zomato
+
+  static const Color buttonPrimary = AppSettings.primaryColor;
+  static const Color buttonSecondary = AppSettings.secondaryColor;
+  static const Color buttonDisabled = Color(0xFFC4C4C4);
+
   static const Color newColor = Color(0xFF2E6D7F);
   static const Color whatsAppColor = Color(0xFF25D366);
 
@@ -34,12 +43,6 @@ class TColors{
   //Background Container Colors
   static const Color lightContainer = Color(0xFFF6F6F6);
   static const Color darkContainer = Colors.white;
-
-  //Background Colors
-  static const Color buttonPrimary = AppSettings.primaryColor;
-  static const Color buttonSecondary = AppSettings.secondaryColor;
-  static const Color buttonDisabled = Color(0xFFC4C4C4);
-  static const Color buttonBorder = AppSettings.primaryColor;
 
   //Border Colors
   static const Color borderPrimary = Color(0xFFD9D9D9);
