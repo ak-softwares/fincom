@@ -16,7 +16,7 @@ import '../quantity_add_buttons/quantity_add_buttons.dart';
 class ProductCardForCart extends StatelessWidget {
   const ProductCardForCart({super.key, required this.cartItem, this.showBottomBar = false});
 
-  final CartItemModel cartItem;
+  final CartModel cartItem;
   final bool showBottomBar;
   @override
   Widget build(BuildContext context) {

@@ -20,6 +20,7 @@ class AppSettingsFieldName{
 class ProductFieldName {
   static const String id = 'id';
   static const String name = 'name';
+  static const String mainImage = 'main_image';
   static const String permalink = 'permalink';
   static const String slug = 'slug';
   static const String dateCreated = 'date_created';
@@ -31,8 +32,8 @@ class ProductFieldName {
   static const String description = 'description';
   static const String shortDescription = 'short_description';
   static const String sku = 'sku';
-  static const String price = 'regular_price';
-  static const String salePrice = 'price';
+  static const String price = 'price';
+  static const String salePrice = 'sale_price';
   static const String regularPrice = 'regular_price';
   static const String brands = 'brands';
   static const String dateOnSaleFrom = 'date_on_sale_from';
@@ -95,6 +96,7 @@ class ProductBrandFieldName {
   static const String display     = 'display';
   static const String menuOrder   = 'menu_order';
   static const String count       = 'count';
+  static const String permalink       = 'permalink';
 }
 
 class ReviewFieldName {

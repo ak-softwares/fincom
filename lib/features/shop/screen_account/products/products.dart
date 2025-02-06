@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../../common/navigation_bar/appbar2.dart';
 import '../../../../data/database/mongodb/mongodb.dart';
-import '../../controller/products/products_controller.dart';
-import '../../model/products/product_model.dart';
+import '../../controllers/product/product_controller.dart';
+import '../../models/product_model.dart';
 
 class Products1 extends StatelessWidget {
   const Products1({super.key});

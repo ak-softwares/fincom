@@ -36,7 +36,7 @@ class OrderModel {
   final String? datePaid;
   final String? number;
   final List<OrderMedaDataModel>? metaData;
-  final List<CartItemModel>? lineItems;
+  final List<CartModel>? lineItems;
   // final List<CartItemModel>? shippingLines;
   final List<CouponModel>? couponLines;
   final String? paymentUrl;
@@ -116,7 +116,7 @@ class OrderModel {
       dateCompleted: json[OrderFieldName.dateCompleted] ?? '',
       datePaid: json[OrderFieldName.datePaid] ?? '',
       number: json[OrderFieldName.number] ?? '',
-      lineItems: List<CartItemModel>.from(json[OrderFieldName.lineItems].map((item) => CartItemModel.fromJson(item))),
+      lineItems: List<CartModel>.from(json[OrderFieldName.lineItems].map((item) => CartModel.fromJson(item))),
       paymentUrl: json[OrderFieldName.paymentUrl] ?? '',
       currencySymbol: json[OrderFieldName.currencySymbol] ?? '',
     );
@@ -213,7 +213,7 @@ class OrderModel {
       dateCompleted:  data[OrderFieldName.dateCompleted] ?? '',
       datePaid:       data[OrderFieldName.datePaid] ?? '',
       number:         data[OrderFieldName.number] ?? '',
-      lineItems:      (data[OrderFieldName.lineItems] as List<dynamic>).map((itemData) => CartItemModel.fromJson(itemData as Map<String, dynamic>)).toList(),
+      lineItems:      (data[OrderFieldName.lineItems] as List<dynamic>).map((itemData) => CartModel.fromJson(itemData as Map<String, dynamic>)).toList(),
       paymentUrl:     data[OrderFieldName.paymentUrl] ?? '',
       currencySymbol: data[OrderFieldName.currencySymbol] ?? '',
     );

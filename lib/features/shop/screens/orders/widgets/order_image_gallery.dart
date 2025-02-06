@@ -17,7 +17,7 @@ class OrderImageGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<CartItemModel> cartItems = order.lineItems ?? [];
+    final List<CartModel> cartItems = order.lineItems ?? [];
     return SizedBox(
       height: galleryImageHeight,
       child: Stack(

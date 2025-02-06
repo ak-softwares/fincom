@@ -259,7 +259,59 @@ class ProductModel {
     return images?.map<String>((image) => image['src']).toList() ?? [];
   }
 
-// json format
+  // Use toMap for direct use of DataBase like mongoDB
+  Map<String, dynamic> toMap() {
+    return {
+      ProductFieldName.id: id,
+      ProductFieldName.name: name,
+      ProductFieldName.mainImage: mainImage,
+      ProductFieldName.permalink: permalink,
+      ProductFieldName.slug: slug,
+      ProductFieldName.dateCreated: dateCreated,
+      ProductFieldName.type: type,
+      ProductFieldName.status: status,
+      ProductFieldName.featured: featured,
+      ProductFieldName.catalogVisibility: catalogVisibility,
+      ProductFieldName.description: description,
+      ProductFieldName.shortDescription: shortDescription,
+      ProductFieldName.sku: sku,
+      ProductFieldName.price: price,
+      ProductFieldName.regularPrice: regularPrice,
+      ProductFieldName.salePrice: salePrice,
+      ProductFieldName.dateOnSaleFrom: dateOnSaleFrom,
+      ProductFieldName.dateOnSaleTo: dateOnSaleTo,
+      ProductFieldName.onSale: onSale,
+      ProductFieldName.purchasable: purchasable,
+      ProductFieldName.totalSales: totalSales,
+      ProductFieldName.virtual: virtual,
+      ProductFieldName.downloadable: downloadable,
+      ProductFieldName.taxStatus: taxStatus,
+      ProductFieldName.taxClass: taxClass,
+      ProductFieldName.manageStock: manageStock,
+      ProductFieldName.stockQuantity: stockQuantity,
+      ProductFieldName.weight: weight,
+      ProductFieldName.dimensions: dimensions, // Already a map
+
+      // Handling nested objects (Ensure the respective models have `toMap()`)
+      ProductFieldName.brands: brands?.map((b) => b.toMap()).toList(),
+      ProductFieldName.categories: categories?.map((c) => c.toMap()).toList(),
+      ProductFieldName.tags: tags,
+      ProductFieldName.images: images,
+      ProductFieldName.image: image,
+      ProductFieldName.attributes: attributes?.map((a) => a.toMap()).toList(),
+      ProductFieldName.defaultAttributes: defaultAttributes?.map((a) => a.toMap()).toList(),
+
+      ProductFieldName.variations: variations,
+      ProductFieldName.groupedProducts: groupedProducts,
+      ProductFieldName.menuOrder: menuOrder,
+      ProductFieldName.relatedIds: relatedIds,
+      ProductFieldName.stockStatus: stockStatus,
+      ProductFieldName.isCODBlocked: isCODBlocked,
+    };
+  }
+
+
+  // Use toJson for direct use of API
   toJson(){
     return{
       // ProductFieldName.sku: sku,

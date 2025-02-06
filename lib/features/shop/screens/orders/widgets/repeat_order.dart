@@ -11,7 +11,7 @@ class RepeatOrderWidget extends StatelessWidget {
     super.key, required this.cartItems,
   });
 
-  final List<CartItemModel> cartItems;
+  final List<CartModel> cartItems;
   @override
   Widget build(BuildContext context) {
     final cartController = Get.put(CartController());

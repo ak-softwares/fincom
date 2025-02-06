@@ -34,6 +34,16 @@ class CategoryModel {
     };
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      CategoryFieldName.id: id,
+      CategoryFieldName.name: name,
+      CategoryFieldName.slug: slug,
+      CategoryFieldName.image: image,
+      CategoryFieldName.parentId: parentId,
+    };
+  }
+
   //map json oriented document snapshot form firebase to userModel
   factory CategoryModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
    if(document.data() != null) {

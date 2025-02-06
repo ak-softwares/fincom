@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../../features/account/screen/home/home.dart';
-import '../../features/account/screen/purchase/purchase.dart';
-import '../../features/account/screen/sales/sales.dart';
 import '../../features/personalization/screens/user_menu/user_menu_screen.dart';
 import '../../features/shop/controllers/cart_controller/cart_controller.dart';
+import '../../features/shop/screen_account/home/home.dart';
+import '../../features/shop/screen_account/purchase/purchase.dart';
+import '../../features/shop/screen_account/sales/sales.dart';
 import '../../services/firebase_analytics/firebase_analytics.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/constants/icons.dart';

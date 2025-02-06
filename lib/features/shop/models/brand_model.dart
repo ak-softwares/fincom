@@ -46,6 +46,20 @@ class BrandModel {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      ProductBrandFieldName.id: id,
+      ProductBrandFieldName.name: name,
+      ProductBrandFieldName.slug: slug,
+      ProductBrandFieldName.parent: parent,
+      ProductBrandFieldName.description: description,
+      ProductBrandFieldName.display: display,
+      ProductBrandFieldName.image: image != null ? {'src': image} : null, // Ensuring proper JSON format
+      ProductBrandFieldName.menuOrder: menuOrder,
+      ProductBrandFieldName.count: count,
+      ProductBrandFieldName.permalink: permalink, // Keeping permalink as it was dynamically generated
+    };
+  }
 
   // Method to convert Brand object back to JSON map
   Map<String, dynamic> toJson() {

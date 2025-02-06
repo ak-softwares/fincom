@@ -45,6 +45,20 @@ class ProductAttributeModel {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      ProductAttributeFieldName.id: id,
+      ProductAttributeFieldName.name: name,
+      ProductAttributeFieldName.slug: slug,
+      ProductAttributeFieldName.position: position,
+      ProductAttributeFieldName.visible: visible,
+      ProductAttributeFieldName.variation: variation,
+      ProductAttributeFieldName.option: option != null ? Uri.encodeFull(option!) : null, // Ensuring safe encoding
+      ProductAttributeFieldName.options: options ?? [],
+    };
+  }
+
+
   // Convert object to JSON
   Map<String, dynamic> toJson() {
     return {
