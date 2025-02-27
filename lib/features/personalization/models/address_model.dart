@@ -90,6 +90,26 @@ class AddressModel {
       AddressFieldName.selectedAddress: selectedAddress,
     };
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      AddressFieldName.id: id,
+      AddressFieldName.firstName: firstName,
+      AddressFieldName.lastName: lastName,
+      AddressFieldName.phone: phone,
+      AddressFieldName.email: email,
+      AddressFieldName.address1: address1,
+      AddressFieldName.address2: address2,
+      AddressFieldName.city: city,
+      AddressFieldName.state: state,
+      AddressFieldName.pincode: pincode,
+      AddressFieldName.country: country,
+      AddressFieldName.dateCreated: dateCreated,
+      AddressFieldName.dateModified: dateModified,
+      AddressFieldName.selectedAddress: selectedAddress,
+    };
+  }
+
   Map<String, dynamic> toJsonForWoo() {
     return {
       AddressFieldName.firstName: firstName ?? '',

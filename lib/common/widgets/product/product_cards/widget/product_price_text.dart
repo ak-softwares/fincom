@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/settings/app_settings.dart';
-import '../../../utils/constants/text_strings.dart';
+import '../../../../../features/settings/app_settings.dart';
+import '../../../../../utils/constants/text_strings.dart';
 
 class TProductPriceText extends StatelessWidget {
   const TProductPriceText({

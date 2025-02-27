@@ -53,7 +53,7 @@ class Sizes {
 
   // Product Item Dimensions
   static const double productImageRadius = 3;
-  static const double defaultSpaceBWTCard = 10;
+  static const double defaultSpaceBWTCard = 5;
 
   static const double productImageSizeVertical = 120.0;
   static const double productCardVerticalHeight = 240;
@@ -88,6 +88,27 @@ class Sizes {
   static const double orderTileRadius = 10.0;
   static const double orderImageHeight = 50.0;
   static const double orderImageWidth = 100.0;
+
+  // Order Tile
+  static const double purchaseItemTileHeight = 72;
+  static const double purchaseItemTileWidth = 100.0;
+  static const double purchaseItemTileRadius = 5.0;
+  static const double purchaseItemImageHeight = 50.0;
+  static const double purchaseItemImageWidth = 50.0;
+
+  // Product Voucher Card
+  static const double productVoucherTileHeight = 72;
+  static const double productVoucherTileWidth = 100.0;
+  static const double productVoucherTileRadius = 10.0;
+  static const double productVoucherImageHeight = 60.0;
+  static const double productVoucherImageWidth = 60.0;
+
+  // Customer Voucher Card
+  static const double customerVoucherTileHeight = 60;
+  static const double customerVoucherTileWidth = 100.0;
+  static const double customerVoucherTileRadius = 30.0;
+  static const double customerVoucherImageHeight = 30.0;
+  static const double customerVoucherImageWidth = 30.0;
 
   // Input Field
   static const double inputFieldRadius = 5;

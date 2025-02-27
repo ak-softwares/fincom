@@ -14,7 +14,7 @@ import '../../../utils/constants/sizes.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../models/user_model.dart';
 import '../screens/user_profile/user_profile.dart';
-import '/features/personalization/controllers/user_controller.dart';
+import '/features/personalization/controllers/customers_controller.dart';
 import '../../../data/repositories/user/user_repository.dart';
 
 class ChangeProfileController extends GetxController {
@@ -34,7 +34,7 @@ class ChangeProfileController extends GetxController {
   GlobalKey<FormState> updatePhoneFormKey = GlobalKey<FormState>();
 
   final localStorage = GetStorage();
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
   final userRepository = Get.put(UserRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
 

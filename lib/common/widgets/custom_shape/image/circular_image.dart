@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
+import '../../../../features/shop/controllers/product/image_controller.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../shimmers/shimmer_effect.dart';
@@ -16,6 +19,7 @@ class TRoundedImage extends StatelessWidget {
     this.fit = BoxFit.contain,
     this.padding = Sizes.sm,
     this.isNetworkImage = false,
+    this.isTapToEnlarge = false,
     this.borderRadius = 100,
     this.onTap,
     this.border,
@@ -24,6 +28,7 @@ class TRoundedImage extends StatelessWidget {
   final BoxFit? fit;
   final String image;
   final bool isNetworkImage;
+  final bool isTapToEnlarge;
   final Color? overlayColor;
   final Color? backgroundColor;
   final double width, height, padding, borderRadius;
@@ -32,8 +37,10 @@ class TRoundedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imagesController = Get.put(ImagesController());
+
     return InkWell(
-      onTap: onTap,
+      onTap: isTapToEnlarge ? () => imagesController.showEnlargedImage(image) : onTap,
       child: Container(
         width: width,
         height: height,

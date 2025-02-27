@@ -21,12 +21,13 @@ import '../../authentication/screens/email_login/email_login.dart';
 import '../../authentication/screens/email_login/re_auth_user_login.dart';
 import '../models/user_model.dart';
 
-class UserController extends GetxController {
-  static UserController get instance => Get.find();
+class CustomersController extends GetxController {
+  static CustomersController get instance => Get.find();
 
   RxBool isLoading = false.obs;
   final localStorage = GetStorage();
   Rx<CustomerModel> customer = CustomerModel.empty().obs;
+  Rx<UserModel> user = UserModel.empty().obs;
 
   final hidePassword = true.obs; //Observable for hiding/showing password
   final imageUploading = false.obs;
@@ -37,6 +38,30 @@ class UserController extends GetxController {
   final userRepository = Get.put(UserRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
   final authenticationRepository = Get.put(AuthenticationRepository());
+
+  // Get All Customers Counts
+  Future<int> getTotalCustomerCount() async {
+    try {
+      // Fetch the total customer count
+      final int totalCustomers = await wooCustomersRepository.fetchCustomerCount();
+      return totalCustomers;
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error in Customer Count Fetching', message: e.toString());
+      return 0; // Return 0 in case of an error
+    }
+  }
+
+  // Get All Customers
+  Future<List<CustomerModel>> getAllCustomers(String page) async {
+    try{
+      //fetch products
+      final customers = await wooCustomersRepository.fetchAllCustomers(page: page);
+      return customers;
+    } catch (e){
+      TLoaders.errorSnackBar(title: 'Error in Customers Fetching', message: e.toString());
+      return [];
+    }
+  }
 
   //Fetch user record
   Future<void> fetchCustomerData() async {

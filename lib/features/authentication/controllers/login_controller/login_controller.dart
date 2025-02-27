@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../data/repositories/woocommerce_repositories/authentication/woo_authentication.dart';
 import '../../../../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
@@ -27,6 +28,7 @@ class LoginController extends GetxController {
 
   final wooCustomersRepository = Get.put(WooCustomersRepository());
   final wooAuthenticationRepository = Get.put(WooAuthenticationRepository());
+  final mongoAuthenticationRepository = Get.put(MongoAuthenticationRepository());
   final authenticationRepository = Get.put(AuthenticationRepository());
 
   //Init method fetch user's saved password and email from local storage
@@ -43,6 +45,33 @@ class LoginController extends GetxController {
       password.text = rememberedPassword;
     }
     super.onInit();
+  }
+
+  Future<void> mongoLogin() async {
+    try {
+      //Start Loading
+      TFullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
+      //check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) return;
+
+      // Form Validation
+      if (!loginFormKey.currentState!.validate()) return;
+
+      final UserModel user = await mongoAuthenticationRepository.loginWithEmailAndPass(email: email.text.trim(), password: password.text);
+
+      //save to local storage
+      if (rememberMe.value) {
+        localStorage.write(LocalStorage.rememberMeEmail, email.text.trim());
+        localStorage.write(LocalStorage.rememberMePassword, password.text);
+      }
+      authenticationRepository.login(user: user);
+    } catch (error) {
+      //remove Loader
+      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
+    } finally {
+      TFullScreenLoader.stopLoading();
+    }
   }
 
   //Login with email and password form woocommerce
@@ -74,7 +103,7 @@ class LoginController extends GetxController {
       }
       //remove Loader
       TFullScreenLoader.stopLoading();
-      authenticationRepository.login(customer: customer, loginMethod: 'Email');
+      // authenticationRepository.login(user: customer);
     } catch (error) {
       //remove Loader
       TFullScreenLoader.stopLoading();

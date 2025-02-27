@@ -17,7 +17,7 @@ import '../../shop/controllers/checkout_controller/checkout_controller.dart';
 import '../models/address_model.dart';
 import '../models/user_model.dart';
 import '../screens/user_address/address_widgets/single_address.dart';
-import 'user_controller.dart';
+import 'customers_controller.dart';
 
 class AddressController extends GetxController{
   static AddressController get instance => Get.find();
@@ -36,7 +36,7 @@ class AddressController extends GetxController{
 
   RxBool refreshData = true.obs;
   final Rx<AddressModel> selectedAddress = AddressModel.empty().obs;
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
   final addressRepository = Get.put(AddressRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
   final checkoutController = Get.put(CheckoutController());
@@ -72,7 +72,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(UserController()).customer.value.id.toString();
+        final userId = Get.put(CustomersController()).customer.value.id.toString();
         final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateShippingField);
         userController.customer(customer);
       } else {
@@ -89,7 +89,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(UserController()).customer.value.id.toString();
+        final userId = Get.put(CustomersController()).customer.value.id.toString();
         final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateBillingField);
         userController.customer(customer);
         checkoutController.updateCheckout();

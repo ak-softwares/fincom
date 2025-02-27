@@ -10,12 +10,51 @@ import '../../../../utils/constants/api_constants.dart';
 class WooProductRepository extends GetxController {
   static WooProductRepository get instance => Get.find();
 
+  // Fetch Product Count
+  Future<int> fetchProductCount() async {
+    try {
+      final Map<String, String> queryParams = {
+        'per_page': '1',
+        'page': '1',
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooProductsApiPath,
+        queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        // Extract total product count from response headers
+        String? totalProducts = response.headers['x-wp-total'];
+        return totalProducts != null ? int.parse(totalProducts) : 0;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch product count';
+      }
+    } catch (error) {
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
+
   // Fetch All Products
   Future<List<ProductModel>> fetchAllProducts({required String page}) async {
     try{
       final Map<String, String> queryParams = {
-        'orderby': 'popularity', //date, id, include, title, slug, price, popularity and rating. Default is date.
-        'per_page': '10',
+        // 'orderby': 'date', //date, id, include, title, slug, price, popularity and rating. Default is date.
+        'per_page': APIConstant.itemsPerPage,
         'page': page,
       };
 
@@ -78,7 +117,7 @@ class WooProductRepository extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> productsJson = json.decode(response.body);
         final List<ProductModel> productsByCategory =
-            productsJson.map((json) => ProductModel.fromJson(json)).toList();
+        productsJson.map((json) => ProductModel.fromJson(json)).toList();
         return productsByCategory;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);
@@ -160,7 +199,7 @@ class WooProductRepository extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> productsJson = json.decode(response.body);
         final List<ProductModel> productsByCategory =
-            productsJson.map((json) => ProductModel.fromJson(json)).toList();
+        productsJson.map((json) => ProductModel.fromJson(json)).toList();
         return productsByCategory;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);
@@ -275,7 +314,7 @@ class WooProductRepository extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> childrenJson = json.decode(response.body) as List<dynamic>;
         final List<ProductModel> childrenByParentID =
-              childrenJson.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
+        childrenJson.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
         return childrenByParentID;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);

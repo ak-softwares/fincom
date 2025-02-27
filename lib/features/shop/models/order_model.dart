@@ -81,6 +81,12 @@ class OrderModel {
   String get formattedOrderDate => TFormatter.formatStringDate(dateCreated!);
   String get formattedOrderCompleted => TFormatter.formatStringDate(dateCompleted!);
 
+  int get getDaysDelayed {
+    final now = DateTime.now();
+    return now.difference(parsedCreatedDate).inDays;
+  }
+
+
   // Method to calculate the sum of total prices
   int calculateTotalSum() {
     return lineItems?.fold<int>(0,
@@ -92,7 +98,7 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       id: json[OrderFieldName.id],
-      status: json[OrderFieldName.status],
+      status: json[OrderFieldName.status] ?? '',
       currency: json[OrderFieldName.currency] ?? '',
       pricesIncludeTax: json[OrderFieldName.pricesIncludeTax] ?? false,
       dateCreated: json[OrderFieldName.dateCreated] ?? '',
@@ -102,9 +108,9 @@ class OrderModel {
       shippingTotal: json[OrderFieldName.shippingTotal] ?? '',
       shippingTax: json[OrderFieldName.shippingTax] ?? '',
       cartTax: json[OrderFieldName.cartTax] ?? '',
-      total: json[OrderFieldName.total],
+      total: json[OrderFieldName.total] ?? '',
       totalTax: json[OrderFieldName.totalTax] ?? '',
-      customerId: json[OrderFieldName.customerId] ?? 0,
+      customerId: int.tryParse(json[OrderFieldName.customerId]?.toString() ?? '') ?? 0,
       billing: AddressModel.fromJson(json[OrderFieldName.billing]),
       shipping: AddressModel.fromJson(json[OrderFieldName.shipping]),
       paymentMethod: json[OrderFieldName.paymentMethod] ?? '',
@@ -122,29 +128,70 @@ class OrderModel {
     );
   }
 
-
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toMap() {
     return {
-      OrderFieldName.status:        status ?? '',
-      OrderFieldName.discountTotal: discountTotal ?? '',
-      OrderFieldName.discountTax:   discountTax ?? '',
-      OrderFieldName.shippingTotal: shippingTotal ?? '',
-      OrderFieldName.shippingTax:   shippingTax ?? '',
-      OrderFieldName.cartTax:       cartTax ?? '',
-      OrderFieldName.total:         total ?? '',
-      OrderFieldName.totalTax:      totalTax ?? '',
-      OrderFieldName.customerId:    customerId.toString(),
-      OrderFieldName.billing:       billing?.toJsonForWoo(),
-      OrderFieldName.shipping:      shipping?.toJsonForWoo(),
-      OrderFieldName.paymentMethod: paymentMethod ?? '',
-      OrderFieldName.paymentMethodTitle: paymentMethodTitle ?? '',
-      OrderFieldName.transactionId: transactionId ?? '',
-      OrderFieldName.customerIpAddress: customerIpAddress ?? '',
-      OrderFieldName.customerUserAgent: customerUserAgent ?? '',
-      OrderFieldName.customerNote:  customerNote ?? '',
-      OrderFieldName.datePaid:      datePaid ?? '',
-      OrderFieldName.lineItems:     lineItems?.map((item) => item.toJsonForWoo()).toList(),
-      OrderFieldName.setPaid:     setPaid ?? false,
+      OrderFieldName.id: id,
+      OrderFieldName.status: status,
+      OrderFieldName.currency: currency,
+      OrderFieldName.pricesIncludeTax: pricesIncludeTax,
+      OrderFieldName.dateCreated: dateCreated,
+      OrderFieldName.dateModified: dateModified,
+      OrderFieldName.discountTotal: discountTotal,
+      OrderFieldName.discountTax: discountTax,
+      OrderFieldName.shippingTotal: shippingTotal,
+      OrderFieldName.shippingTax: shippingTax,
+      OrderFieldName.cartTax: cartTax,
+      OrderFieldName.total: total,
+      OrderFieldName.totalTax: totalTax,
+      OrderFieldName.customerId: customerId,
+      OrderFieldName.billing: billing?.toMap(),
+      OrderFieldName.shipping: shipping?.toMap(),
+      OrderFieldName.paymentMethod: paymentMethod,
+      OrderFieldName.paymentMethodTitle: paymentMethodTitle,
+      OrderFieldName.transactionId: transactionId,
+      OrderFieldName.customerIpAddress: customerIpAddress,
+      OrderFieldName.customerUserAgent: customerUserAgent,
+      OrderFieldName.customerNote: customerNote,
+      OrderFieldName.dateCompleted: dateCompleted,
+      OrderFieldName.datePaid: datePaid,
+      OrderFieldName.number: number,
+      OrderFieldName.lineItems: lineItems?.map((item) => item.toMap()).toList(),
+      OrderFieldName.paymentUrl: paymentUrl,
+      OrderFieldName.currencySymbol: currencySymbol,
+    };
+  }
+
+  /// Convert OrderModel back to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      OrderFieldName.id: id,
+      OrderFieldName.status: status,
+      OrderFieldName.currency: currency,
+      OrderFieldName.pricesIncludeTax: pricesIncludeTax,
+      OrderFieldName.dateCreated: dateCreated,
+      OrderFieldName.dateModified: dateModified,
+      OrderFieldName.discountTotal: discountTotal,
+      OrderFieldName.discountTax: discountTax,
+      OrderFieldName.shippingTotal: shippingTotal,
+      OrderFieldName.shippingTax: shippingTax,
+      OrderFieldName.cartTax: cartTax,
+      OrderFieldName.total: total,
+      OrderFieldName.totalTax: totalTax,
+      OrderFieldName.customerId: customerId,
+      OrderFieldName.billing: billing?.toJson(),
+      OrderFieldName.shipping: shipping?.toJson(),
+      OrderFieldName.paymentMethod: paymentMethod,
+      OrderFieldName.paymentMethodTitle: paymentMethodTitle,
+      OrderFieldName.transactionId: transactionId,
+      OrderFieldName.customerIpAddress: customerIpAddress,
+      OrderFieldName.customerUserAgent: customerUserAgent,
+      OrderFieldName.customerNote: customerNote,
+      OrderFieldName.dateCompleted: dateCompleted,
+      OrderFieldName.datePaid: datePaid,
+      OrderFieldName.number: number,
+      OrderFieldName.lineItems: lineItems?.map((item) => item.toJson()).toList(),
+      OrderFieldName.paymentUrl: paymentUrl,
+      OrderFieldName.currencySymbol: currencySymbol,
     };
   }
 

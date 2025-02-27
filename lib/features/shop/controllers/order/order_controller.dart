@@ -3,7 +3,7 @@ import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../data/repositories/firebase/orders/order_repository.dart';
 import '../../../../data/repositories/woocommerce_repositories/orders/woo_orders_repository.dart';
 import '../../../personalization/controllers/address_controller.dart';
-import '../../../personalization/controllers/user_controller.dart';
+import '../../../personalization/controllers/customers_controller.dart';
 import '../../../settings/app_settings.dart';
 import '../../models/order_model.dart';
 import '../cart_controller/cart_controller.dart';
@@ -24,8 +24,42 @@ class OrderController extends GetxController {
   final checkoutController = Get.put(CheckoutController());
   final wooOrdersRepository = Get.put(WooOrdersRepository());
   final orderRepository = Get.put(OrderRepository());
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
   final paymentController = Get.put(PaymentController());
+
+  // Get All Products count
+  Future<int> getTotalOrdersCount() async {
+    try {
+      // Fetch the total product count
+      final int totalProducts = await wooOrdersRepository.fetchOrdersCount();
+      return totalProducts;
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error in Product Count Fetching', message: e.toString());
+      return 0; // Return 0 in case of an error
+    }
+  }
+
+  // Get All products
+  Future<List<OrderModel>> getAllOrders(String page) async {
+    try{
+      //fetch products
+      final orders = await wooOrdersRepository.fetchAllOrders(page: page);
+      return orders;
+    } catch (e){
+      rethrow;
+    }
+  }
+
+  // Get All products
+  Future<List<OrderModel>> getOrdersByStatus({required List<String> status, required String page}) async {
+    try {
+      // fetch products
+      final orders = await wooOrdersRepository.fetchOrdersByStatus(status: status, page: page);
+      return orders;
+    } catch (e){
+      rethrow;
+    }
+  }
 
   //Fetch orders
   Future<void> fetchOrders() async {

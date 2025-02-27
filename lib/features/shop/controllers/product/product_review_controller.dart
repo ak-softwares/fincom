@@ -7,7 +7,7 @@ import '../../../../data/repositories/woocommerce_repositories/product_review/pr
 import '../../../../utils/constants/db_constants.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
-import '../../../personalization/controllers/user_controller.dart';
+import '../../../personalization/controllers/customers_controller.dart';
 import '../../models/product_review_model.dart';
 
 class ProductReviewController extends GetxController {
@@ -30,7 +30,7 @@ class ProductReviewController extends GetxController {
   GlobalKey<FormState> editReviewFormKey = GlobalKey<FormState>();
 
   final wooReviewRepository = Get.put(WooReviewRepository());
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
 
   //Get review by product id
   Future<void> getReviewsByProductId(String productId) async {

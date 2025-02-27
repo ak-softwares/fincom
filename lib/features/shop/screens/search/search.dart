@@ -1,3 +1,4 @@
+import 'package:fincom/features/shop/screen_account/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -59,10 +60,11 @@ class TSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     // FBAnalytics.logViewSearchResults(searchTerm: query, resultsCount: '');
     _saveSearchQuery(query);
-    return SearchProductScreen(
+    return SearchScreen(
         title: 'Search result for ${query.isEmpty ? '' : '"$query"'}',
         searchQuery: query,
         orientation: OrientationType.vertical,
+        searchType: SearchType.products,
     );
   }
 
@@ -75,10 +77,11 @@ class TSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     if (query.isNotEmpty && query.length >= 3) {
       FBAnalytics.logSearch(searchTerm: query); // Log search only when query length is >= 3
-      return SearchProductScreen(
+      return SearchScreen(
         title: 'Search result for ${query.isEmpty ? '' : '"$query"'}',
         searchQuery: query,
         orientation: OrientationType.horizontal,
+        searchType: SearchType.products,
       );
     }
     return SingleChildScrollView(

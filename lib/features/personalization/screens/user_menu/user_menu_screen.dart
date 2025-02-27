@@ -12,8 +12,10 @@ import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../../utils/constants/text_strings.dart';
 import '../../../authentication/screens/check_login_screen/check_login_screen.dart';
-import '../../controllers/user_controller.dart';
+import '../../../authentication/screens/create_account/signup.dart';
+import '../../controllers/customers_controller.dart';
 import '../user_profile/user_profile.dart';
 import 'widgets/contact_widget.dart';
 import 'widgets/follow_us.dart';
@@ -28,7 +30,7 @@ class UserMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FBAnalytics.logPageView('user_menu_screen');
 
-    final userController = Get.put(UserController());
+    final userController = Get.put(CustomersController());
     userController.refreshCustomer();
 
     return  Obx(() => Scaffold(
@@ -49,7 +51,17 @@ class UserMenuScreen extends StatelessWidget {
                       //Menu
                       const SizedBox(height: Sizes.spaceBtwInputFields),
                       const Menu(),
-
+                      // Not a Member? register
+                      const SizedBox(height: Sizes.spaceBtwItems),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Not a member?', style: Theme.of(context).textTheme.labelLarge),
+                            TextButton(
+                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
+                                child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor )))
+                          ]
+                      )
                     ],
                   ),
                 ),
@@ -66,7 +78,7 @@ class CustomerProfileCard extends StatelessWidget {
   });
 
   final bool showHeading;
-  final UserController userController;
+  final CustomersController userController;
 
   @override
   Widget build(BuildContext context) {

@@ -1,15 +1,93 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../features/personalization/controllers/user_controller.dart';
+import '../../../../features/personalization/controllers/customers_controller.dart';
 import '../../../../features/personalization/models/user_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 
 
 class WooCustomersRepository extends GetxController {
   static WooCustomersRepository get instance => Get.find();
+
+  // Fetch Customers Count
+  Future<int> fetchCustomerCount() async {
+    try {
+      final Map<String, String> queryParams = {
+        'per_page': '1',
+        'page': '1',
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooCustomersApiPath,
+        queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        // Extract total customer count from response headers
+        String? totalCustomers = response.headers['x-wp-total'];
+        return totalCustomers != null ? int.parse(totalCustomers) : 0;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch customer count';
+      }
+    } catch (error) {
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  //Fetch customer by id it gives single user
+  Future<List<CustomerModel>> fetchAllCustomers({required String page}) async {
+    try {
+      final Map<String, String> queryParams = {
+        'per_page': APIConstant.itemsPerPage,
+        'page': page,
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooCustomersApiPath,
+        queryParams,
+      );
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      );
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+        final List<dynamic> customersJson = json.decode(response.body);
+        final List<CustomerModel> customers = customersJson.map((json) => CustomerModel.fromJson(json)).toList();
+        return customers;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch Customers';
+      }
+    } catch (error) {
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
 
   //Fetch customer by id it gives single user
   Future<CustomerModel> fetchCustomerById(String customerId) async {

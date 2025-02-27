@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../data/repositories/authentication/authentication_repository.dart';
 import '../../features/settings/app_settings.dart';
+import '../../features/shop/screen_account/search/search.dart';
 import '../../features/shop/screens/search/search.dart';
 import '../../services/share/share.dart';
 import '../../utils/constants/colors.dart';
@@ -23,6 +24,7 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
     this.showSearchIcon = false,
     this.seeLogoutButton = false,
     this.sharePageLink = "",
+    this.searchType, // If null, search icon won't be shown
   });
 
   final String titleText;
@@ -31,6 +33,7 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
   final bool showSearchIcon;
   final bool seeLogoutButton;
   final String sharePageLink;
+  final SearchType? searchType; // Nullable search type
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
       backgroundColor: backgroundColor,
       title: Text(titleText, style: Theme.of(context).textTheme.titleSmall!.copyWith(color: color, fontWeight: FontWeight.w600)),
       actions: [
-            showSearchIcon ? IconButton( icon: Icon(TIcons.search), color: color, onPressed: () => showSearch(context: context, delegate: TSearchDelegate())) : const SizedBox.shrink(),
+            searchType != null ? IconButton( icon: Icon(TIcons.search), color: color, onPressed: () => showSearch(context: context, delegate: SearchVoucher(searchType: searchType ?? SearchType.products))) : const SizedBox.shrink(),
             sharePageLink.isNotEmpty
                 ? IconButton(
                     icon: Icon(TIcons.share),

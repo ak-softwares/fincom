@@ -24,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.fincom.app"
+    namespace "com.accounts.ara"
     compileSdkVersion 34
     ndkVersion "28.0.12674087-rc2"
 
@@ -42,12 +42,25 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.fincom.app"
+        applicationId "com.accounts.ara"
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
         minSdkVersion 26
         targetSdkVersion 34
+    }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }
 

@@ -13,13 +13,13 @@ class Purchase extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TAppBar2(titleText: 'Purchase',),
-      floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        backgroundColor: TColors.primaryColor,
-        onPressed: () => Get.to(PurchaseEntry()),
-        tooltip: 'Send WhatsApp Message',
-        child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   shape: CircleBorder(),
+      //   backgroundColor: TColors.primaryColor,
+      //   onPressed: () => Get.to(PurchaseEntry()),
+      //   tooltip: 'Send WhatsApp Message',
+      //   child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
+      // ),
       body: SingleChildScrollView(
         child: Text('purchase'),
       ),

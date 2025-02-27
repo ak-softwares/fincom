@@ -28,7 +28,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 0;
   final screens = [
     const Home(),
-    const Sales(),
+    const SalesVoucher(),
     const Purchase(),
     const UserMenuScreen(),
   ];

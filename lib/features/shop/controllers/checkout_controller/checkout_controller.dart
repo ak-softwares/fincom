@@ -10,7 +10,7 @@ import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/helpers/navigation_helper.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../personalization/controllers/address_controller.dart';
-import '../../../personalization/controllers/user_controller.dart';
+import '../../../personalization/controllers/customers_controller.dart';
 import '../../../settings/app_settings.dart';
 import '../../../settings/controllers/settings_controller.dart';
 import '../../models/coupon_model.dart';
@@ -40,7 +40,7 @@ class CheckoutController extends GetxController {
 
   final networkManager = Get.put(NetworkManager());
   final cartController = Get.put(CartController());
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
   final settingsController = Get.put(SettingsController());
 
   @override

@@ -6,10 +6,11 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../common/navigation_bar/bottom_navigation_bar.dart';
 import '../../../common/widgets/loaders/loader.dart';
 import '../../../features/onboarding/controllers/is_first_run/is_first_run.dart';
 import '../../../features/personalization/controllers/change_profile_controller.dart';
-import '../../../features/personalization/controllers/user_controller.dart';
+import '../../../features/personalization/controllers/customers_controller.dart';
 import '../../../features/personalization/models/user_model.dart';
 import '../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../services/notification/firebase_notification.dart';
@@ -45,22 +46,12 @@ class AuthenticationRepository extends GetxController {
   }
 
   // this function run after successfully login
-  Future<void> login({required CustomerModel customer, required String loginMethod}) async {
-    loginMethod == 'signup'
-            ? FBAnalytics.logSignup(loginMethod)
-            : FBAnalytics.logLogin(loginMethod);
-    Get.put(UserController()).customer(customer); //update user value
+  Future<void> login({required UserModel user}) async {
+    Get.put(CustomersController()).user(user); //update user value
     isUserLogin.value = true; //make user login
-    localStorage.write(LocalStorage.authUserID, customer.id.toString()); // store token in local storage for stay login
-    // if(IsFirstRunController.isFirstRun()){
-    //   IsFirstRunController.activation(customer);
-    // }
-    // update fcm token to user meta in wordpress
-    final fCMToken = FirebaseNotification.fCMToken;
-    if(fCMToken != customer.fCMToken) {
-      await Get.put(ChangeProfileController()).wooUpdateUserMeta(userId: customer.id.toString(), key: CustomerMetaDataName.fCMToken, value: fCMToken);
-    }
+    localStorage.write(LocalStorage.authUserID, user.email.toString()); // store token in local storage for stay login
     TLoaders.customToast(message: 'Login successfully!'); //show massage for successful login
+    await Future.delayed(Duration(milliseconds: 300)); // Add delay
     NavigationHelper.navigateToBottomNavigation(); //navigate to other screen
   }
 
@@ -71,7 +62,7 @@ class AuthenticationRepository extends GetxController {
       await _auth.signOut();
       localStorage.remove(LocalStorage.authUserID);
       isUserLogin.value = false;
-      UserController.instance.customer = CustomerModel.empty() as Rx<CustomerModel>;
+      CustomersController.instance.user.value = UserModel.empty();
       NavigationHelper.navigateToLoginScreen();
     }
     on FirebaseAuthException catch (error) {
@@ -84,7 +75,7 @@ class AuthenticationRepository extends GetxController {
       throw TFirebaseAuthException(error.code).message;
     }
     catch (error) {
-      throw 'Something went wrong. Please try again';
+      throw 'Something went wrong. Please try again $error';
     }
   }
 

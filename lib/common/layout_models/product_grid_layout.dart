@@ -7,7 +7,9 @@ import '../../utils/constants/sizes.dart';
 import '../../utils/helpers/navigation_helper.dart';
 import '../widgets/loaders/animation_loader.dart';
 import '../widgets/product/product_cards/product_card.dart';
+import '../widgets/product/product_voucher/product_voucher_card.dart';
 import '../widgets/shimmers/product_shimmer.dart';
+import '../widgets/shimmers/product_voucher_shimmer.dart';
 
 class ProductGridLayout extends StatelessWidget {
   const ProductGridLayout({
@@ -27,11 +29,7 @@ class ProductGridLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value) {
-        return ProductShimmer(
-          itemCount: orientation == OrientationType.vertical ? 4 : 2,
-          crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-          orientation: orientation,
-        );
+        return  ProductVoucherShimmer(itemCount: 2, orientation: orientation);
       } else if(controller.products.isEmpty) {
         return emptyWidget;
       } else {
@@ -39,16 +37,12 @@ class ProductGridLayout extends StatelessWidget {
         return GridLayout(
           itemCount: controller.isLoadingMore.value ? products.length + 2 : products.length,
           crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-          mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : Sizes.productCardHorizontalHeight,
+          mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : Sizes.productVoucherTileHeight,
           itemBuilder: (context, index) {
             if (index < products.length) {
-              return ProductCard(product: products[index], orientation: orientation, pageSource: sourcePage);
+              return ProductVoucherCard(product: products[index], orientation: orientation, pageSource: sourcePage);
             } else {
-              return ProductShimmer(
-                itemCount: 1,
-                crossAxisCount: 1,
-                orientation: orientation,
-              );
+              return ProductVoucherShimmer(orientation: orientation);
             }
           }
         );
@@ -66,11 +60,15 @@ class GridLayout extends StatelessWidget {
     this.mainAxisSpacing = Sizes.defaultSpaceBWTCard,
     required this.mainAxisExtent,
     required this.itemBuilder,
+    this.onDelete,
+    this.onEdit,
   });
 
   final int itemCount, crossAxisCount;
   final double mainAxisExtent, crossAxisSpacing, mainAxisSpacing;
-  final Widget? Function(BuildContext, int) itemBuilder;
+  final Widget Function(BuildContext, int) itemBuilder;
+  final void Function(int)? onDelete;
+  final void Function(int)? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +82,39 @@ class GridLayout extends StatelessWidget {
           mainAxisSpacing: mainAxisSpacing,
           mainAxisExtent: mainAxisExtent
       ),
+      cacheExtent: 50, // Keeps items in memory
       itemCount: itemCount,
-      itemBuilder: itemBuilder,
+      itemBuilder: (context, index) {
+        return itemBuilder(context, index);
+      },
+    );
+  }
+
+  void _showOptions(BuildContext context, int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.edit, color: Colors.blue),
+              title: Text("Edit"),
+              onTap: () {
+                Navigator.pop(context);
+                if (onEdit != null) onEdit!(index);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.delete, color: Colors.red),
+              title: Text("Delete"),
+              onTap: () {
+                Navigator.pop(context);
+                if (onDelete != null) onDelete!(index);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

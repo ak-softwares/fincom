@@ -7,7 +7,7 @@ import '../../../../data/repositories/authentication/authentication_repository.d
 import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../authentication/screens/check_login_screen/check_login_screen.dart';
-import '../../controllers/user_controller.dart';
+import '../../controllers/customers_controller.dart';
 import '../../models/address_model.dart';
 import 'update_user_address.dart';
 import 'address_widgets/single_address.dart';
@@ -19,7 +19,7 @@ class UserAddressScreen extends StatelessWidget {
 Widget build(BuildContext context) {
   FBAnalytics.logPageView('user_address_screen');
 
-  final userController = Get.put(UserController());
+  final userController = Get.put(CustomersController());
   final authenticationRepository = Get.put(AuthenticationRepository());
 
   return Scaffold(

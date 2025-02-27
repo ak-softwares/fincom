@@ -56,7 +56,9 @@ class CartModel {
       CartFieldName.total: total,
       CartFieldName.sku: sku,
       CartFieldName.price: price,
-      CartFieldName.image: image,
+      CartFieldName.image: (image ?? '').isNotEmpty
+          ? {CartFieldName.src: image}
+          : null, // Keep the structure same as the input JSON
       CartFieldName.parentName: parentName,
       CartFieldName.isCODBlocked: isCODBlocked,
       CartFieldName.pageSource: pageSource,
@@ -77,16 +79,15 @@ class CartModel {
     return CartModel(
       id: json[CartFieldName.id] ?? 0,
       name: json[CartFieldName.name] ?? '',
-      productId: json[CartFieldName.productId] ?? 0, // Changed to product_id
-      variationId: json[CartFieldName.variationId] ?? 0, // Changed to variation_id
-      quantity: json[CartFieldName.quantity] ?? 0,
+      productId: int.tryParse(json[CartFieldName.productId]?.toString() ?? '') ?? 0,
+      variationId: int.tryParse(json[CartFieldName.variationId]?.toString() ?? '') ?? 0,
+      quantity: int.tryParse(json[CartFieldName.quantity]?.toString() ?? '') ?? 0,
       category: json[CartFieldName.category] ?? '',
       subtotal: json[CartFieldName.subtotal] ?? '',
       subtotalTax: json[CartFieldName.subtotalTax] ?? '',
       totalTax: json[CartFieldName.totalTax] ?? '',
       total: json[CartFieldName.total] ?? '',
       sku: json[CartFieldName.sku] ?? '',
-      // price: json[CartFieldName.price].truncate() ?? 0,
       price: ((int.tryParse(json[CartFieldName.subtotal]))! / (json[CartFieldName.quantity])).truncate(),
       image: json[CartFieldName.image] != null && json[CartFieldName.image] is Map
           ? json[CartFieldName.image][CartFieldName.src]
@@ -120,9 +121,23 @@ class CartModel {
 
   Map<String, dynamic> toMap() {
     return {
-      CartFieldName.id: productId,
+      CartFieldName.id: id,
+      CartFieldName.name: name,
+      CartFieldName.productId: productId,
+      CartFieldName.variationId: variationId,
       CartFieldName.quantity: quantity,
+      CartFieldName.category: category,
+      CartFieldName.subtotal: subtotal,
+      CartFieldName.subtotalTax: subtotalTax,
+      CartFieldName.totalTax: totalTax,
+      CartFieldName.total: total,
+      CartFieldName.sku: sku,
+      CartFieldName.price: price,
+      CartFieldName.image: image != null && image!.isNotEmpty ? {CartFieldName.src: image} : '',
+      CartFieldName.parentName: parentName,
+      CartFieldName.isCODBlocked: isCODBlocked,
     };
   }
+
 
 }

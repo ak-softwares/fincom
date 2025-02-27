@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'bindings/general_bindings.dart';
 import 'common/navigation_bar/bottom_navigation_bar.dart';
+import 'data/database/mongodb/mongodb.dart';
 import 'data/repositories/authentication/authentication_repository.dart';
+import 'features/authentication/screens/phone_otp_login/mobile_login_screen.dart';
 import 'features/settings/app_settings.dart';
 import 'features/shop/screens/cart/cart.dart';
 import 'features/shop/screens/orders/order.dart';
@@ -45,6 +48,7 @@ void main() async {
   // GetX Local Storage
   await GetStorage.init();
 
+  await MongoDatabase.connect();
   //await splash until other item load
   // FlutterNativeSplash.remove();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -77,6 +81,7 @@ void main() async {
     //   // AppRoutes.pageRouteHandle(routeName: response.payload.toString());
     // }
   );
+
   runApp(const MyApp());
 }
 
@@ -136,14 +141,20 @@ class MyApp extends StatelessWidget {
     // });
 
     // FBAnalytics.logPageView('main_function_screen');
+    AuthenticationRepository.instance.checkIsUserLogin();
+    final bool isUserLogin = AuthenticationRepository.instance.isUserLogin.value;
     return GetMaterialApp(  //add .router when use go_router
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       navigatorObservers: [FBAnalytics.observer],
       title: AppSettings.appName,
-      theme: TAppTheme.lightTheme,
+      // theme: TAppTheme.lightTheme,
+      // The Mandy red, light theme.
+      theme: FlexThemeData.light(scheme: FlexScheme.blueM3),
+      // The Mandy red, dark theme.
+      darkTheme: FlexThemeData.dark(scheme: FlexScheme.blueM3),
       initialBinding: GeneralBindings(),
-      home: const BottomNavigation(),
+      home: isUserLogin ? const BottomNavigation() : const MobileLoginScreen(),
       // initialRoute: '/',
       // getPages: [
       //   GetPage(name: '/', page: () => const BottomNavigation()),

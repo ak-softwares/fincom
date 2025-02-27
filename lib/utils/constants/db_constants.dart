@@ -6,7 +6,9 @@ class DbCollections{
   static const String categories  = 'Categories';
   static const String banners     = 'Banners';
   static const String addresses   = 'Addresses';
-  static const String meta        = 'Meta';
+  static const String meta        = 'meta_data';
+  static const int metaId         = 123;
+  static const String purchaseList = 'purchase_list';
 }
 
 class AppSettingsFieldName{
@@ -17,6 +19,12 @@ class AppSettingsFieldName{
   static const String homeBanners = 'home_banners';
 }
 
+class PurchaseListConstants {
+  static const String expandedSections = 'expandedSections';
+  static const String purchaseOrders = 'purchaseOrders';
+  static const String purchasedProductIds = 'purchasedProductIds';
+  static const String notAvailableProductIds = 'notAvailableProductIds';
+}
 class ProductFieldName {
   static const String id = 'id';
   static const String name = 'name';
@@ -164,6 +172,7 @@ class CustomerFieldName {
   static const String id = 'id';
   static const String email = 'email';
   static const String password = 'password';
+  static const String fullName = 'full_name';
   static const String firstName = 'first_name';
   static const String lastName = 'last_name';
   static const String role = 'role';
@@ -239,6 +248,7 @@ class OrderStatusName {
   static const String completed = 'completed';
   static const String returnInTransit = 'returnintransit';
   static const String returnPending = 'returnpending';
+  static const String unknown = 'unknown';
 }
 
 class OrderStatusPritiName {
@@ -324,4 +334,18 @@ class PaymentFieldName {
   static const String image = 'image'; // corrected
   static const String key = 'key'; // corrected
   static const String secret = 'secret'; // corrected
+}
+
+class PaymentMethodName {
+  static const String cod = 'cod';
+  static const String prepaid = 'prepaid';
+  static const String paytm = 'paytm';
+  static const String razorpay = 'razorpay';
+}
+
+class PaymentMethodTitle {
+  static const String cod = 'Cash on Delivery';
+  static const String prepaid = 'Prepaid';
+  static const String paytm = 'Paytm Wallet';
+  static const String razorpay = 'Razorpay';
 }

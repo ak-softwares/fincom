@@ -194,7 +194,6 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                       padding: Sizes.sm / 2,
                       isNetworkImage: true,
                       onTap: () => _carouselController.animateToPage(index),
-                      // onTap: () => _selectedProductImage.value = images[index],
                       image: images[index],
                     );
                   })

@@ -104,8 +104,7 @@ class EmailLoginScreen extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               child: const Text(TTexts.login),
-                              // onPressed: () => controller.loginWithEmailAndPassword(),
-                              onPressed: () => controller.wooLoginWithEmailAndPassword(),
+                              onPressed: () => controller.mongoLogin(),
                             ),
                           ),
                         ]
@@ -137,18 +136,6 @@ class EmailLoginScreen extends StatelessWidget {
                 //Social Login
                 const SizedBox(height: Sizes.spaceBtwSection),
                 const TSocialButtons(),
-
-                // Not a Member? register
-                const SizedBox(height: Sizes.spaceBtwItems),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Not a member?', style: Theme.of(context).textTheme.labelLarge),
-                      TextButton(
-                          onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
-                          child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor)))
-                    ]
-                )
               ],
             ),
         ),

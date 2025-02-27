@@ -38,24 +38,10 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                       children: [
                         //Name
-                        Row(
-                          children: [
-                            Expanded(
-                                child: TextFormField(
-                                  controller: controller.firstName,
-                                  validator: (value) => TValidator.validateEmptyText(TTexts.firstName, value),
-                                  decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: TTexts.firstName),
-                                )
-                            ),
-                            const SizedBox(width: Sizes.spaceBtwInputFields),
-                            //Pincode
-                            Expanded(
-                                child: TextFormField(
-                                    controller: controller.lastName,
-                                    decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user4), labelText: TTexts.lastName)
-                                )
-                            ),
-                          ],
+                        TextFormField(
+                          controller: controller.fullName,
+                          validator: (value) => TValidator.validateEmptyText(TTexts.firstName, value),
+                          decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: TTexts.firstName),
                         ),
                         const SizedBox(height: Sizes.spaceBtwInputFields),
                         //Email
@@ -83,7 +69,7 @@ class SignUpScreen extends StatelessWidget {
                                   )
                               )
                         )),
-                        //phone
+                        // phone
                         const SizedBox(height: Sizes.spaceBtwInputFields),
                         TextFormField(
                             controller: controller.phone,

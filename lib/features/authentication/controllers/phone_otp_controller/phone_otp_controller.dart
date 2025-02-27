@@ -10,6 +10,7 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../data/repositories/authentication/phone_auth_repository.dart';
 import '../../../../data/repositories/authentication/fast2sms.dart';
+import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
@@ -33,6 +34,7 @@ class OTPController extends GetxController {
   final phoneAuthRepository = Get.put(PhoneAuthRepository());
   final fast2SmsRepository = Get.put(Fast2SmsRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
+  final mongoAuthenticationRepository = Get.put(MongoAuthenticationRepository());
   final authenticationRepository = AuthenticationRepository.instance;
 
 
@@ -58,7 +60,7 @@ class OTPController extends GetxController {
   //   }
   // }
 
-  //only for india
+  // only for india
   Future<void> fast2SmsSendOpt({required String phone}) async {
     try {
       isLoading(true);
@@ -120,29 +122,21 @@ class OTPController extends GetxController {
         return;
       }
 
-      final userId = await wooCustomersRepository.fetchCustomerByPhone(formattedPhone);
-      final CustomerModel customer = await wooCustomersRepository.fetchCustomerById(userId);
+      final UserModel user = await mongoAuthenticationRepository.fetchCustomerByPhone(phone: formattedPhone);
 
       isPhoneVerified.value = true;
       TFullScreenLoader.stopLoading();
-      authenticationRepository.login(customer: customer, loginMethod: 'PhoneOTP');
+      authenticationRepository.login(user: user);
     } catch (error) {
       // Remove Loader
       TFullScreenLoader.stopLoading();
-      await GoogleSignIn().signOut();
-      await FirebaseAuth.instance.signOut();
-      if (error.toString().contains('Customer not found')) {
-        Get.put(SignupController()).phone.text = TValidator.getFormattedTenDigitNumber(googlePhone) ?? ''; // Now 'googleEmail' is accessible here
-        Get.to(() => SignUpScreen());
-      } else {
-        TLoaders.errorSnackBar(title: 'Error', message: error.toString());
-      }
+      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
     }
   }
 
 
 
-  //these function for firebase
+  // these function for firebase
   Future<void> phoneAuthentication(String countryCode, String phone) async {
     try {
       //check internet connectivity
@@ -190,7 +184,7 @@ class OTPController extends GetxController {
       final CustomerModel customer = await wooCustomersRepository.fetchCustomerById(userId);
 
       TFullScreenLoader.stopLoading();
-      authenticationRepository.login(customer: customer, loginMethod: 'PhoneOTP');
+      // authenticationRepository.login(customer: customer, loginMethod: 'PhoneOTP');
     } catch (error) {
       // Remove Loader
       TFullScreenLoader.stopLoading();

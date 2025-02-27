@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../data/repositories/firebase/products/product_repository.dart';
+import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/woocommerce_repositories/category/woo_category_repository.dart';
 import '../../../../data/repositories/woocommerce_repositories/products/woo_product_repositories.dart';
 import '../../models/category_model.dart';
@@ -16,20 +17,54 @@ class ProductController extends GetxController {
   RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
 
   final productRepository = Get.put(ProductRepository());
+  final mongoProductRepo = Get.put(MongoProductRepo());
   final wooProductRepository = Get.put(WooProductRepository());
   final wooCategoryRepository = Get.put(WooCategoryRepository());
   final recentlyViewedController = Get.put(RecentlyViewedController());
 
+  Future<List<ProductModel>> fetchAllProducts() async {
+    List<ProductModel> allProducts = [];
+    int currentPage = 1; // Start from page 1
+
+    while (true) {
+      try {
+        List<ProductModel> products = await wooProductRepository.fetchAllProducts(page: currentPage.toString());
+
+        if (products.isEmpty) break; // Stop if no more products are returned
+
+        allProducts.addAll(products);
+        currentPage++; // Move to next page
+
+        await Future.delayed(Duration(milliseconds: 500)); // Small delay to avoid rate limits
+      } catch (e) {
+        TLoaders.errorSnackBar(title: 'Error in Products Fetching', message: e.toString());
+        break; // Stop fetching if an error occurs
+      }
+    }
+
+    return allProducts;
+  }
+
+  // Get All Products count
+  Future<int> getTotalProductCount() async {
+    try {
+      // Fetch the total product count
+      final int totalProducts = await wooProductRepository.fetchProductCount();
+      return totalProducts;
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error in Product Count Fetching', message: e.toString());
+      return 0; // Return 0 in case of an error
+    }
+  }
 
   // Get All products
   Future<List<ProductModel>> getAllProducts(String page) async {
     try{
-      //fetch products
-      final products = await wooProductRepository.fetchAllProducts(page: page);
-      return products;
+        //fetch products
+        final products = await wooProductRepository.fetchAllProducts(page: page);
+        return products;
     } catch (e){
-      TLoaders.errorSnackBar(title: 'Error in Products Fetching', message: e.toString());
-      return [];
+        rethrow;
     }
   }
 

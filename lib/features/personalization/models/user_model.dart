@@ -13,6 +13,8 @@ class CustomerModel {
   String? lastName;
   String? role;
   String? username;
+  String? company;
+  String? gstNumber;
   AddressModel? billing;
   AddressModel? shipping;
   bool? isPayingCustomer;
@@ -30,6 +32,7 @@ class CustomerModel {
     this.lastName,
     this.role,
     this.username,
+    this.gstNumber,
     this.billing,
     this.shipping,
     this.isPayingCustomer,
@@ -61,6 +64,36 @@ class CustomerModel {
       fCMToken: (json[CustomerFieldName.metaData] as List?)?.firstWhere((meta) => meta['key'] == CustomerMetaDataName.fCMToken, orElse: () => {'value': ''},)['value'] ?? '',
       isCODBlocked: (json[CustomerFieldName.metaData] as List?)?.any((meta) => meta['key'] == CustomerFieldName.isCODBlocked && meta['value'] == "1") ?? false,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      CustomerFieldName.id: id,
+      CustomerFieldName.email: email,
+      CustomerFieldName.firstName: firstName,
+      CustomerFieldName.lastName: lastName,
+      CustomerFieldName.role: role,
+      CustomerFieldName.username: username,
+      CustomerFieldName.billing: billing?.toMap(),
+      CustomerFieldName.shipping: shipping?.toMap(),
+      CustomerFieldName.isPayingCustomer: isPayingCustomer,
+      CustomerFieldName.avatarUrl: avatarUrl,
+      CustomerFieldName.dateCreated: dateCreated,
+      CustomerFieldName.metaData: [
+        {
+          'key': CustomerMetaDataName.verifyPhone,
+          'value': isPhoneVerified,
+        },
+        {
+          'key': CustomerMetaDataName.fCMToken,
+          'value': fCMToken,
+        },
+        {
+          'key': CustomerFieldName.isCODBlocked,
+          'value': isCODBlocked ?? false ? "1" : "0",
+        }
+      ],
+    };
   }
 
   Map<String, dynamic> toJsonForWooSingUp(){
@@ -97,6 +130,7 @@ class CustomerMetaDataModel{
 
 class UserModel {
 
+  String? id;
   String? activeTime;
   String? avatarUrl;
   DateTime? dateCreated;
@@ -177,6 +211,24 @@ class UserModel {
       UserFieldName.metaData: metaData,
     };
   }
+  Map<String, dynamic> toMap() {
+    return {
+      UserFieldName.name: name,
+      UserFieldName.email: email,
+      UserFieldName.password: password,
+      UserFieldName.phone: phone,
+    };
+  }
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      name: json[UserFieldName.name] ?? '',
+      email: json[UserFieldName.email] ?? '',
+      password: json[UserFieldName.password] ?? '',
+      phone: json[UserFieldName.phone] ?? '',
+    );
+  }
+
   // Factory method to create a UserModel from a Firebase document snapshot.
   factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data();

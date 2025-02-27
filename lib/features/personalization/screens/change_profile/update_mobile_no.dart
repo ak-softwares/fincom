@@ -7,7 +7,7 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/validators/validation.dart';
 import '../../controllers/change_profile_controller.dart';
-import '../../controllers/user_controller.dart';
+import '../../controllers/customers_controller.dart';
 
 class UpdateMobileNo extends StatelessWidget {
   const UpdateMobileNo({super.key});
@@ -18,7 +18,7 @@ class UpdateMobileNo extends StatelessWidget {
 
     final authenticationRepository = Get.put(AuthenticationRepository());
     final changeProfileController = Get.put(ChangeProfileController());
-    final userController = Get.put(UserController());
+    final userController = Get.put(CustomersController());
     userController.refreshCustomer();
     bool isShowPhoneField = true;
 

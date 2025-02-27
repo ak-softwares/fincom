@@ -40,8 +40,6 @@ class ForgetPasswordController extends GetxController{
       // Register user in the Firebase Authentication & save user data in the Firebase
       await wooAuthenticationRepository.resetPasswordWithEmail(email);
 
-      FBAnalytics.logLogin('forgot_password');
-
       //remove Loader
       TFullScreenLoader.stopLoading();
       TLoaders.customToast(message: 'Reset password email send');

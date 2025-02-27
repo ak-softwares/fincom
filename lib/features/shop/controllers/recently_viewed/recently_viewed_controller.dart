@@ -4,7 +4,6 @@ import 'package:get_storage/get_storage.dart';
 
 import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../data/repositories/user/user_repository.dart';
-import '../../../../data/repositories/woocommerce_repositories/products/woo_product_repositories.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../../utils/constants/local_storage_constants.dart';
 import '../../models/product_model.dart';

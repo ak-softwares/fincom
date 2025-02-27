@@ -10,10 +10,12 @@ import '../../../../../utils/constants/icons.dart';
 import '../../../../settings/app_settings.dart';
 import '../../../../shop/controllers/product/product_controller.dart';
 import '../../../../shop/screen_account/banking/payments.dart';
-import '../../../../shop/screen_account/customers/customers.dart';
-import '../../../../shop/screen_account/products/products.dart';
+import '../../../../shop/screen_account/customers/customers_voucher.dart';
+import '../../../../shop/screen_account/products/products_voucher.dart';
 import '../../../../shop/screen_account/purchase/purchase.dart';
+import '../../../../shop/screen_account/purchase_list/purchase_list.dart';
 import '../../../../shop/screen_account/sales/sales.dart';
+import '../../../../shop/screen_account/vendor/vendor_voucher.dart';
 import '../../../../shop/screens/all_products/all_products.dart';
 import '../../../../shop/screens/coupon/coupon_screen.dart';
 import '../../../../shop/screens/orders/order.dart';
@@ -46,19 +48,19 @@ class Menu extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
             ListTile(
-              onTap: () => Get.to(() => Products2()),
+              onTap: () => Get.to(() => ProductsVoucher()),
               leading: Icon(TIcons.products, size: 25),
               title: Text('Products', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
               subtitle: Text('List of products', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => Get.to(() => const Customers()),
+              onTap: () => Get.to(() => const CustomersVoucher()),
               leading: Icon(TIcons.customers, size: 25),
               title: Text('Customers', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
               subtitle: Text('List of customers', style: Theme.of(context).textTheme.bodySmall),
             ),
             ListTile(
-              onTap: () => Get.to(() => const Sales()),
+              onTap: () => Get.to(() => const SalesVoucher()),
               leading: Icon(TIcons.sales, size: 20),
               title: Text('Sales', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
               subtitle: Text('List of sales', style: Theme.of(context).textTheme.bodySmall),
@@ -74,6 +76,18 @@ class Menu extends StatelessWidget {
               leading: Icon(Icons.money,size: 20),
               title: Text('Payments', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
               subtitle: Text('All Payments list', style: Theme.of(context).textTheme.bodySmall),
+            ),
+            ListTile(
+              onTap: () => Get.to(() => const VendorVoucher()),
+              leading: Icon(TIcons.customers,size: 20),
+              title: Text('Vendors', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('All Vendors list', style: Theme.of(context).textTheme.bodySmall),
+            ),
+            ListTile(
+              onTap: () => Get.to(() => const PurchaseList()),
+              leading: Icon(TIcons.products, size: 20),
+              title: Text('Purchase Item List', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+              subtitle: Text('Purchase Item List', style: Theme.of(context).textTheme.bodySmall),
             ),
           ],
         )

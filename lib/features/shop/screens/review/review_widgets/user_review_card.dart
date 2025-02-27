@@ -10,7 +10,7 @@ import '../../../../../utils/constants/image_strings.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/formatters/formatters.dart';
 import '../../../../../utils/validators/validation.dart';
-import '../../../../personalization/controllers/user_controller.dart';
+import '../../../../personalization/controllers/customers_controller.dart';
 import '../../../controllers/product/image_controller.dart';
 import '../../../controllers/product/product_review_controller.dart';
 import '../../../models/product_review_model.dart';
@@ -23,7 +23,7 @@ class TUserReviewCard extends StatelessWidget {
   ReviewModel review;
   @override
   Widget build(BuildContext context) {
-    final userController = Get.put(UserController());
+    final userController = Get.put(CustomersController());
     final productReviewController = Get.put(ProductReviewController());
     final imagesController = Get.put(ImagesController());
 

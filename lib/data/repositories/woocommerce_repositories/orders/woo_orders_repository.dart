@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
@@ -5,10 +6,131 @@ import 'package:http/http.dart' as http;
 
 import '../../../../features/shop/models/order_model.dart';
 import '../../../../utils/constants/api_constants.dart';
+import '../../../../utils/constants/enums.dart';
 
 
 class WooOrdersRepository extends GetxController {
   static WooOrdersRepository get instance => Get.find();
+
+  // Fetch Product Count
+  Future<int> fetchOrdersCount() async {
+    try {
+      final Map<String, String> queryParams = {
+        'per_page': '1',
+        'page': '1',
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooOrdersApiPath,
+        queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        // Extract total product count from response headers
+        String? orderTotal = response.headers['x-wp-total'];
+        return orderTotal != null ? int.parse(orderTotal) : 0;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch orders count';
+      }
+    } catch (error) {
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  // fetchShippedOrders
+  Future<List<OrderModel>> fetchOrdersByStatus({required List<String> status, required String page}) async {
+    try{
+      final Map<String, String> queryParams = {
+        'status': status.join(','), // Joins list elements into a single string
+        'orderby': 'date', //date, id, include, title, slug, price, popularity and rating. Default is date.
+        'per_page': APIConstant.itemsPerPageSync,
+        'page': page,
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooOrdersApiPath,
+        queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> ordersJson = json.decode(response.body);
+        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJson(json)).toList();
+        return orders;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch Orders';
+      }
+    } catch(error){
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  // Fetch All Products
+  Future<List<OrderModel>> fetchAllOrders({required String page}) async {
+    try{
+      final Map<String, String> queryParams = {
+        'orderby': 'date', //date, id, include, title, slug, price, popularity and rating. Default is date.
+        'per_page': APIConstant.itemsPerPage,
+        'page': page,
+      };
+
+      final Uri uri = Uri.https(
+        APIConstant.wooBaseUrl,
+        APIConstant.wooOrdersApiPath,
+        queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': APIConstant.authorization,
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> ordersJson = json.decode(response.body);
+        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJson(json)).toList();
+        return orders;
+      } else {
+        final Map<String, dynamic> errorJson = json.decode(response.body);
+        final errorMessage = errorJson['message'];
+        throw errorMessage ?? 'Failed to fetch Orders';
+      }
+    } catch(error){
+      if (error is TimeoutException) {
+        throw 'Connection timed out. Please check your internet connection and try again.';
+      } else {
+        rethrow;
+      }
+    }
+  }
 
   //Fetch orders by customer's id
   Future<List<OrderModel>> fetchOrdersByCustomerId({required String customerId, required String page}) async {

@@ -16,7 +16,7 @@ class AppSettings {
   static const String darkAppLogo  = 'assets/logos/aramarket_new.png';
 
   // App Basic Colors
-  static const Color primaryColor = Color(0xFF2b317f);
+  static const Color primaryColor = Colors.blue;
   static const Color primaryBackground = Color(0xFFFFFFFF);
 
   // static const Color secondaryColor = Color(0xFF092143);
@@ -25,8 +25,8 @@ class AppSettings {
 
   // Buttons
   static const Color buttonText = Color(0xFFffffff);
-  static const Color buttonBorder = Color(0xFF2d2d2d);
-  static const Color buttonBackground = Color(0xFF03ccac); //Zomato
+  static const Color buttonBorder = Colors.blue;
+  static const Color buttonBackground = Colors.blue; //Zomato
 
   static const Color accent = Color(0xFFB0C7FF);
 

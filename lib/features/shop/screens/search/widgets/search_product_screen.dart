@@ -1,63 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../common/layout_models/customers_grid_layout.dart';
+import '../../../../../common/layout_models/orders_grid_layout.dart';
 import '../../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../../common/styles/spacing_style.dart';
 import '../../../../../common/text/section_heading.dart';
 import '../../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../../utils/constants/colors.dart';
+import '../../../controller_account/search_controller/search_controller.dart';
 import '../../../controllers/search_controller/search_controller.dart';
+import '../../../screen_account/search/search.dart';
 import '../../products/scrolling_products.dart';
 
-class SearchProductScreen extends StatelessWidget {
-  const SearchProductScreen({super.key, required this.title, required this.searchQuery, this.orientation = OrientationType.vertical});
+class SearchScreen extends StatelessWidget {
+  const SearchScreen({
+    super.key,
+    required this.title,
+    required this.searchQuery,
+    this.orientation = OrientationType.horizontal,
+    required this.searchType,
+  });
 
   final OrientationType orientation;
   final String title;
   final String searchQuery;
+  final SearchType searchType;
 
   @override
   Widget build(BuildContext context) {
     FBAnalytics.logPageView('search_screen');
 
     final ScrollController scrollController = ScrollController();
-    final searchController = Get.put(SearchQueryController());
-    // searchController.searchQuery.value = searchQuery;
+    final searchVoucherController = Get.put(SearchVoucherController());
 
     // Schedule the search refresh to occur after the current frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!searchController.isLoading.value) {
-        searchController.refreshSearch(searchQuery);
+      if (!searchVoucherController.isLoading.value) {
+        searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType);
       }
     });
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
-        if(!searchController.isLoadingMore.value){
+        if(!searchVoucherController.isLoadingMore.value){
           // User has scrolled to 80% of the content's height
           const int itemsPerPage = 10; // Number of items per page
-          if (searchController.products.length % itemsPerPage != 0) {
+          if (searchVoucherController.products.length % itemsPerPage != 0) {
             // If the length of orders is not a multiple of itemsPerPage, it means all items have been fetched
             return; // Stop fetching
           }
-          searchController.isLoadingMore(true);
-          searchController.currentPage++; // Increment current page
-          await searchController.getProductsBySearchQuery(searchQuery);
-          searchController.isLoadingMore(false);
+          searchVoucherController.isLoadingMore(true);
+          searchVoucherController.currentPage++; // Increment current page
+          await searchVoucherController.getItemsBySearchQuery(query: searchQuery, searchType: searchType, page: searchVoucherController.currentPage.value);
+          searchVoucherController.isLoadingMore(false);
         }
       }
     });
 
     return RefreshIndicator(
       color: TColors.refreshIndicator,
-      onRefresh: () async => searchController.refreshSearch(searchQuery),
+      onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
       child: ListView(
         controller: scrollController,
         padding: TSpacingStyle.defaultPagePadding,
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
           TSectionHeading(title: title),
-          ProductGridLayout(controller: searchController, orientation: orientation, sourcePage: 'Search',),
+          switch (searchType) {
+            SearchType.products => ProductGridLayout(
+              controller: searchVoucherController,
+              orientation: orientation,
+              sourcePage: 'Search',
+            ),
+            SearchType.customers => CustomersGridLayout(
+              controller: searchVoucherController,
+              sourcePage: 'Search',
+            ),
+            SearchType.orders => OrdersGridLayout(
+              controller: searchVoucherController,
+              sourcePage: 'Search',
+            ),
+          }
         ],
       ),
     );

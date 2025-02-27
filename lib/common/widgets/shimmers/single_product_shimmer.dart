@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../features/shop/screens/products/scrolling_products.dart';
 import '../../../utils/constants/sizes.dart';
 import 'shimmer_effect.dart';
 class SingleProductShimmer extends StatelessWidget {
-  const SingleProductShimmer({super.key});
+  const SingleProductShimmer({
+    super.key,
+    this.orientation = OrientationType.vertical
+  });
+
+  final OrientationType orientation;
 
   @override
   Widget build(BuildContext context) {

@@ -210,7 +210,6 @@ class CartController extends GetxController {
         final Map<String, dynamic> itemJson = itemString as Map<String, dynamic>;
         cartItemModels.add(CartModel.fromJsonLocalStorage(itemJson));
       }
-
       cartItems.assignAll(cartItemModels);
       updateCartTotal();
     }

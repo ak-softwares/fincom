@@ -7,12 +7,33 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:613683440998:android:1df2987937a0d93a43aca7",
+        "mobilesdk_app_id": "1:613683440998:android:ea6c20c6f0f2d64443aca7",
         "android_client_info": {
-          "package_name": "com.fincom.app"
+          "package_name": "com.accounts.ara"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "613683440998-n6ctlkdlpldg2cg4sol3eqnihgbmp1og.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.accounts.ara",
+            "certificate_hash": "0a6d64ee83636628c744f101589b0a75a74e31e9"
+          }
+        },
+        {
+          "client_id": "613683440998-s4dncvalefjta49liglom902mo9t6i9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.accounts.ara",
+            "certificate_hash": "7af4aabad235508ecfb61f07eb285ec29cad6056"
+          }
+        },
+        {
+          "client_id": "613683440998-7087jgc2a3grc8nsbl75qm8njt7kanjt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDZM3m0j6lq9l_TN1YEufVDcRgyMHXaIqw"
@@ -20,7 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613683440998-7087jgc2a3grc8nsbl75qm8njt7kanjt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

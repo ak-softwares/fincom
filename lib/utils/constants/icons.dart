@@ -49,6 +49,7 @@ class TIcons {
   static IconData whatsapp = FontAwesomeIcons.whatsapp;
   static IconData email = FontAwesomeIcons.paperPlane;
   static IconData phone = FontAwesomeIcons.headset;
+  static IconData call = FontAwesomeIcons.phone;
   static Icon password = const Icon(LineIcons.searchLocation);
   static Icon address1 = const Icon(LineIcons.searchLocation);
   static Icon address2 = const Icon(LineIcons.searchLocation);

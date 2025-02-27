@@ -52,7 +52,7 @@ class TOrderHelper {
           radius: 10,
           backgroundColor: color,
           padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
-          child: Text(status, style: const TextStyle(fontSize: 14, color: Colors.white))
+          child: Text(status, style: const TextStyle(fontSize: 12, color: Colors.white))
       );
   }
 

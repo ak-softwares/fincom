@@ -5,7 +5,7 @@ import '../data/repositories/user/user_repository.dart';
 import '../data/repositories/woocommerce_repositories/authentication/woo_authentication.dart';
 import '../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
 import '../features/personalization/controllers/address_controller.dart';
-import '../features/personalization/controllers/user_controller.dart';
+import '../features/personalization/controllers/customers_controller.dart';
 import '../features/settings/controllers/settings_controller.dart';
 import '../features/shop/controllers/cart_controller/cart_controller.dart';
 import '../features/shop/controllers/checkout_controller/checkout_controller.dart';
@@ -19,7 +19,7 @@ class GeneralBindings extends Bindings {
     Get.lazyPut(() => NetworkManager());
     Get.lazyPut(() => SettingsController());
     Get.lazyPut(() => UserRepository());
-    Get.lazyPut(() => UserController());
+    Get.lazyPut(() => CustomersController());
     Get.lazyPut(() => AddressController());
     Get.lazyPut(() => FavoriteController());
     Get.lazyPut(() => CheckoutController());

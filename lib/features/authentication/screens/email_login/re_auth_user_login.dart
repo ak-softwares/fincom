@@ -7,7 +7,7 @@ import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/validators/validation.dart';
-import '../../../personalization/controllers/user_controller.dart';
+import '../../../personalization/controllers/customers_controller.dart';
 
 class ReAuthLoginForm extends StatelessWidget {
   const ReAuthLoginForm({super.key});
@@ -15,7 +15,7 @@ class ReAuthLoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FBAnalytics.logPageView('re_auth_login_screen');
-    final controller = Get.put(UserController());
+    final controller = Get.put(CustomersController());
     return Scaffold(
       appBar: const TAppBar2(titleText: "Re-Authentication User", showBackArrow: true),
       body: SingleChildScrollView(
