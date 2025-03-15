@@ -1,5 +1,6 @@
 import 'package:fincom/common/layout_models/product_grid_layout.dart';
 import 'package:fincom/features/shop/models/purchase_item_model.dart';
+import 'package:fincom/utils/formatters/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,13 +52,17 @@ class PurchaseList extends StatelessWidget {
           )),
         ],
       ),
-      bottomSheet: Obx(() => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text('Total - ${controller.products.length}', style: TextStyle(fontSize: 13, color: Colors.grey),),
-            Text('Purchased - ${controller.purchasedProductIds.length}', style: TextStyle(fontSize: 13, color: Colors.grey)),
-          ],
-        ),
+      bottomSheet: Obx(() => Container(
+        color:  Theme.of(context).colorScheme.background,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('Last Sync - ${TFormatter.formatStringDate(controller.lastSyncDate.value.toString())}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),),
+              Text('Total - ${controller.products.length}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),),
+              Text('Purchased - ${controller.purchasedProductIds.length}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            ],
+          ),
+      ),
       ),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,

@@ -63,7 +63,7 @@ class CheckoutScreen extends StatelessWidget {
                     itemCount: cartController.cartItems.length,
                     itemBuilder: (_, index) => Stack(
                         children:[
-                          ProductCardForCart(cartItem: cartController.cartItems[index]),
+                          CartTile(cartItem: cartController.cartItems[index]),
                         ]
                     ),
                   ),

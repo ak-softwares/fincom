@@ -13,16 +13,20 @@ import '../../custom_shape/containers/rounded_container.dart';
 import '../../custom_shape/image/circular_image.dart';
 import '../quantity_add_buttons/quantity_add_buttons.dart';
 
-class ProductCardForCart extends StatelessWidget {
-  const ProductCardForCart({super.key, required this.cartItem, this.showBottomBar = false});
+class CartTile extends StatelessWidget {
+  const CartTile({super.key, required this.cartItem, this.showBottomBar = false});
 
   final CartModel cartItem;
   final bool showBottomBar;
   @override
   Widget build(BuildContext context) {
 
-    const double imageHeight = 80;
-    const double cardRadius = Sizes.productImageRadius;
+    const double cartTileHeight = Sizes.cartTileHeight;
+    const double cartTileWidth = Sizes.cartTileWidth;
+    const double cartTileRadius = Sizes.cartTileRadius;
+    const double cartImageHeight = Sizes.cartImageHeight;
+    const double cartImageWidth = Sizes.cartImageWidth;
+
     final cartController = CartController.instance;
 
     return InkWell(
@@ -30,26 +34,23 @@ class ProductCardForCart extends StatelessWidget {
       child: Stack(
         children: [
           Container(
+            padding: EdgeInsets.only(left: Sizes.xs),
             decoration: BoxDecoration(
-              boxShadow: [TShadowStyle.verticalProductShadow],
               borderRadius: BorderRadius.circular(Sizes.productImageRadius),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: Column(
               children: [
                 Row(
                   children: [
-                    //Main Image
-                    Padding(
-                      padding: const EdgeInsets.only(left: 0),
-                      child: TRoundedImage(
-                          image: cartItem.image ?? '',
-                          height: imageHeight,
-                          width: imageHeight,
-                          borderRadius: cardRadius,
-                          isNetworkImage: true,
-                          padding: Sizes.sm
-                      ),
+                    // Main Image
+                    TRoundedImage(
+                        image: cartItem.image ?? '',
+                        height: cartImageHeight,
+                        width: cartImageWidth,
+                        borderRadius: cartTileRadius,
+                        isNetworkImage: true,
+                        padding: Sizes.sm
                     ),
 
                     //Title, Rating and price
@@ -79,7 +80,7 @@ class ProductCardForCart extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyMedium
                                     ),
                                     // Text('Subtotal ', style: Theme.of(context).textTheme.labelLarge),
-                                    Text(AppSettings.appCurrencySymbol + cartItem.subtotal!, style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600)),
+                                    Text(AppSettings.appCurrencySymbol + cartItem.total!, style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600)),
                                     if (showBottomBar)
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

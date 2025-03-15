@@ -32,9 +32,8 @@ class ProductVoucherShimmer extends StatelessWidget {
             width: productVoucherTileWidth,
             padding: const EdgeInsets.all(Sizes.xs),
             decoration: BoxDecoration(
-              boxShadow: [TShadowStyle.verticalProductShadow],
               borderRadius: BorderRadius.circular(productVoucherTileRadius),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: Row(
               children: [

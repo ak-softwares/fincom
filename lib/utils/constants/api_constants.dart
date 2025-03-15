@@ -43,8 +43,14 @@ class APIConstant {
   static const String wooFBT                = '/wp-json/flutter-app/v1/products-sold-together/';
   static const String wooProductsReviewImage= '/wp-json/flutter-app/v1/product-reviews/';
 
-  //fast2sms url
+  // fast2sms url
   static final String fast2smsUrl           = dotenv.get('FAST2SMS_API_URL', fallback: '');
   static final String fast2smsToken         = dotenv.get('FAST2SMS_API_TOKEN', fallback: '');
+
+  // Image kit
+  static final String imageKitUploadUrl     = 'https://upload.imagekit.io/api/v1/files/upload';
+  static final String imageKitDeleteUrl     = 'https://api.imagekit.io/v1/files';
+  static final String imageKitPrivateKey    = dotenv.get('IMAGE_KIT_PRIVATE_KEY', fallback: '');
+  static final String imageKitPublicKey    = dotenv.get('IMAGE_KIT_PUBLIC_KEY', fallback: '');
 
 }

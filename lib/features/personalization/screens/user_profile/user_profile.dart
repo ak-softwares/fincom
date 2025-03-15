@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fincom/common/widgets/custom_shape/image/circular_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -34,30 +35,11 @@ class UserProfileScreen extends StatelessWidget {
               const SizedBox(height: Sizes.spaceBtwSection),
               Stack(
                 children: [
-                  SizedBox(
-                    width: 100, height: 100,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Obx((){
-                          final networkImage = controller.customer.value.avatarUrl;
-                          final image = networkImage != null && networkImage.isNotEmpty ? networkImage : Images.tProfileImage; // Checking null safety
-                          if (controller.imageUploading.value) {
-                            return const ShimmerEffect(width: 55, height: 55);
-                          } else {
-                            if (networkImage != null && networkImage.isNotEmpty) { // Checking null safety
-                              return CachedNetworkImage(
-                                // fit: BoxFit.cover,
-                                // color: Colors.grey,
-                                imageUrl: image,
-                                progressIndicatorBuilder: (context, url, downloadProgress) => const ShimmerEffect(width: 55, height: 55),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                              );
-                            } else {
-                              return Image(image: AssetImage(image)); // Using safe null access
-                            }
-                          }
-                        })
-                    ),
+                  TRoundedImage(
+                      height: 100,
+                      width: 100,
+                      isNetworkImage: controller.user.value.avatarUrl != null ? true : false,
+                      image: controller.user.value.avatarUrl ?? Images.tProfileImage
                   ),
                   Positioned(
                     bottom: 0,
@@ -89,27 +71,28 @@ class UserProfileScreen extends StatelessWidget {
                     children: [
                       TProfileMenu(
                           title: 'Name',
-                          value: controller.customer.value.name,
+                          value: controller.user.value.name ?? 'Name',
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}
                       ),
                       Divider(color: Colors.grey[200]),
                       TProfileMenu(
                           title: 'Email',
-                          value: controller.customer.value.email ?? "Email",
+                          value: controller.user.value.email ?? "Email",
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}),
                       Divider(color: Colors.grey[200]),
                       TProfileMenu(
                           title: 'Phone',
-                          value: controller.customer.value.phone,
+                          value: controller.user.value.phone ?? 'Phone',
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}),
                       const Divider(),
                       Center(
                         child: TextButton(
                             child: const Text('Delete Account', style: TextStyle(color: Colors.red),),
-                            onPressed: () => DialogMessage().showDialog(
+                            onPressed: () => DialogHelper.showDialog(
+                              context: context,
                               title: 'Delete Account',
                               message: 'Are you sure you want to delete your account permanently? This Action is not reversible and all of your data will be removed permanently',
-                              toastMassage: 'Your Account Deleted successfully!',
+                              toastMessage: 'Your Account Deleted successfully!',
                               function: () async {
                                 await controller.wooDeleteAccount();
                               },

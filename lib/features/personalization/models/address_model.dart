@@ -137,7 +137,7 @@ class AddressModel {
       city: data[AddressFieldName.city] ?? '',
       pincode: data[AddressFieldName.pincode] ?? '',
       state: StateData.getStateFromISOCode(data[AddressFieldName.state] ?? ''),
-      country: CountryData.getCountryFromISOCode(data[AddressFieldName.country].isEmpty ? 'IN' : data[AddressFieldName.country]),
+      country: CountryData.getCountryFromISOCode(data[AddressFieldName.country] ?? 'IN'),
     );
   }
 

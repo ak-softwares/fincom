@@ -15,12 +15,10 @@ class TAppBar extends StatelessWidget implements PreferredSizeWidget{
 
     return AppBar(
       centerTitle: true,
-      backgroundColor: TColors.primaryBackground,
       title: const Image(image: AssetImage(AppSettings.lightAppLogo), height: 25),
       actions: [
         IconButton(
           icon: const Icon(Icons.search),
-          color: TColors.secondaryColor,
           onPressed: () {
             showSearch(
                 context: context,

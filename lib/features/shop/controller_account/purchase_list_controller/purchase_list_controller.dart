@@ -21,6 +21,7 @@ class PurchaseListController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingMore = false.obs;
   RxBool isFetching = false.obs;
+  RxString lastSyncDate = ''.obs;
   RxList<OrderModel> orders = <OrderModel>[].obs;
   RxList<PurchaseItemModel> products = <PurchaseItemModel>[].obs;
   RxList<OrderStatus> selectedOrderStatus = <OrderStatus>[].obs;
@@ -93,54 +94,29 @@ class PurchaseListController extends GetxController {
   }
 
   Future<void> saveProductsToStorage() async {
-    // storage.write(PurchaseListConstants.purchasedProductIds, jsonEncode(purchasedProductIds.toList()));
-    // storage.write(PurchaseListConstants.notAvailableProductIds, jsonEncode(notAvailableProductIds.toList()));
     await mongoPurchaseListRepo.pushMetaData(metadataName: PurchaseListConstants.purchasedProductIds, value: purchasedProductIds.toList());
     await mongoPurchaseListRepo.pushMetaData(metadataName: PurchaseListConstants.notAvailableProductIds, value: notAvailableProductIds.toList());
   }
 
   Future<void> loadStoredProducts() async {
-    // final List<dynamic>? ordersJsonList = storage.read(PurchaseListConstants.purchaseOrders);
-    // if (ordersJsonList != null) {
-    //   List<OrderModel> orderModels = [];
-    //   for (final order in ordersJsonList) {
-    //     final Map<String, dynamic> orderJson = order as Map<String, dynamic>;
-    //     orderModels.add(OrderModel.fromJson(orderJson));
-    //   }
-    //   orders.assignAll(orderModels);
-    //   getAggregatedProducts();
-    // }
-    // Load purchasedProductIds from storage
-    // final String? deletedIdsJson = storage.read(PurchaseListConstants.purchasedProductIds);
-    // if (deletedIdsJson != null) {
-    //   purchasedProductIds.assignAll(List<int>.from(jsonDecode(deletedIdsJson) as List));
-    // }
-    //
-    // // Load purchasedProductIds from storage
-    // final String? outOfStockIdsJson = storage.read('notAvailableProductIds');
-    // if (outOfStockIdsJson != null) {
-    //   notAvailableProductIds.assignAll(List<int>.from(jsonDecode(outOfStockIdsJson) as List));
-    // }
     await refreshOrders();
     final fetchedPurchasedProductIds = await mongoPurchaseListRepo.fetchMetaData(metadataName: PurchaseListConstants.purchasedProductIds);
     // Convert comma-separated string to a List<int>
-    purchasedProductIds.assignAll(fetchedPurchasedProductIds.isNotEmpty
-        ? fetchedPurchasedProductIds.split(',').map((e) => int.tryParse(e) ?? 0).toList()
-        : []
+    purchasedProductIds.assignAll(
+        fetchedPurchasedProductIds.map<int>((e) => int.tryParse(e.toString()) ?? 0).toSet()
     );
 
     final fetchedNotAvailableProductIds = await mongoPurchaseListRepo.fetchMetaData(metadataName: PurchaseListConstants.notAvailableProductIds);
     // Convert comma-separated string to a List<int>
-    notAvailableProductIds.assignAll(fetchedNotAvailableProductIds.isNotEmpty
-        ? fetchedNotAvailableProductIds.split(',').map((e) => int.tryParse(e) ?? 0).toList()
-        : []
+    notAvailableProductIds.assignAll(
+        fetchedNotAvailableProductIds.map<int>((e) => int.tryParse(e.toString()) ?? 0).toSet()
     );
+
+    final fetchedLastSyncDate = await mongoPurchaseListRepo.fetchMetaData(metadataName: PurchaseListConstants.lastSyncDate);
+    lastSyncDate.value = fetchedLastSyncDate.toString();
   }
 
   Future<void> clearStoredProducts() async {
-    // storage.remove(PurchaseListConstants.purchaseOrders);
-    // storage.remove(PurchaseListConstants.purchasedProductIds);
-    // storage.remove(PurchaseListConstants.notAvailableProductIds);
     await deleteAllOrders();
     await mongoPurchaseListRepo.deleteMetaData(metadataName: PurchaseListConstants.purchasedProductIds);
     await mongoPurchaseListRepo.deleteMetaData(metadataName: PurchaseListConstants.notAvailableProductIds);
@@ -254,7 +230,6 @@ class PurchaseListController extends GetxController {
       orders.addAll(newOrders); // Add only new orders
       getAggregatedProducts();
       await pushAllOrders();
-      // storage.write(PurchaseListConstants.purchaseOrders, orders.map((item) => item.toJson()).toList());
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
     } finally {
@@ -269,6 +244,7 @@ class PurchaseListController extends GetxController {
       orders.clear(); // Clear existing orders
       products.clear(); // Clear existing orders
       await getAllOrdersByStatus(orderStatus: orderStatus);
+      await mongoPurchaseListRepo.pushMetaData(metadataName: PurchaseListConstants.lastSyncDate, value: DateTime.timestamp());
     } catch (error) {
       TLoaders.warningSnackBar(title: 'Errors', message: error.toString());
     } finally {
@@ -312,6 +288,7 @@ class PurchaseListController extends GetxController {
       ),
     );
   }
+
   void toggleSelection(OrderStatus orderStatus) {
     if (selectedOrderStatus.contains(orderStatus)) {
       selectedOrderStatus.remove(orderStatus);

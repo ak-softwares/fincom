@@ -23,7 +23,7 @@ class TIcons {
   // static IconData favorite = LineIcons.heart;
   static IconData favorite = FontAwesomeIcons.star; //heart
   static IconData user = LineIcons.user;
-  static IconData search = LineIcons.search;
+  static IconData search = Icons.search;
 
   // cart
   static IconData bottomNavigationCart = LineIcons.shoppingBag;

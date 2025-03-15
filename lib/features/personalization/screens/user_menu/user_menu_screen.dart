@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fincom/common/widgets/custom_shape/image/circular_image.dart';
+import 'package:fincom/features/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,7 +36,6 @@ class UserMenuScreen extends StatelessWidget {
     userController.refreshCustomer();
 
     return  Obx(() => Scaffold(
-        backgroundColor: TColors.secondaryBackground,
         appBar: const TAppBar2(titleText: 'Profile Setting', seeLogoutButton: true,),
         body: !AuthenticationRepository.instance.isUserLogin.value
             ? const CheckLoginScreen()
@@ -42,26 +43,48 @@ class UserMenuScreen extends StatelessWidget {
                 color: TColors.refreshIndicator,
                 onRefresh: () async => userController.refreshCustomer(),
                 child: SingleChildScrollView(
-                  padding: TSpacingStyle.defaultPagePadding,
+                  padding: TSpacingStyle.defaultPageVertical,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //User profile
+                      Heading(title: 'Your profile', paddingLeft: Sizes.defaultSpace),
                       CustomerProfileCard(userController: userController, showHeading: true),
 
                       //Menu
-                      const SizedBox(height: Sizes.spaceBtwInputFields),
+                      Heading(title: 'Menu', paddingLeft: Sizes.defaultSpace),
                       const Menu(),
+
                       // Not a Member? register
-                      const SizedBox(height: Sizes.spaceBtwItems),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Not a member?', style: Theme.of(context).textTheme.labelLarge),
+                            Text('Not a member?'),
                             TextButton(
                                 onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
                                 child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor )))
                           ]
-                      )
+                      ),
+
+                      // Version
+                      Center(
+                        child: Stack(
+                          alignment: Alignment.bottomCenter, // Align text closer to the image
+                          children: [
+                            TRoundedImage(
+                              backgroundColor: Colors.transparent,
+                                width: 130,
+                                padding: 0,
+                                image: AppSettings.lightAppLogo
+                            ),
+                            Positioned(
+                                bottom: 0, // Adjust this to bring text closer
+                                child: Obx(() => Text('v${userController.appVersion.value}', style: TextStyle(fontSize: 12),))
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: Sizes.md),
                     ],
                   ),
                 ),
@@ -82,60 +105,32 @@ class CustomerProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: TColors.primaryBackground,
-      width: double.infinity,
-      padding: TSpacingStyle.defaultPagePadding,
-      child: Column(
-        children: [
-          showHeading
-            ? Column(
-                children: [
-                  TSectionHeading(title: 'Your profile', verticalPadding: false, seeActionButton: true, buttonTitle: '', onPressed: () => Get.to(() => const UserProfileScreen()),),
-                  const Divider(color: TColors.primaryColor, thickness: 2,),
-                ],
-              )
-            : const SizedBox.shrink(),
-          Obx(() {
-            if(userController.isLoading.value){
-              return const UserTileShimmer();
-            } else {
-               return ListTile(
-                  contentPadding: const EdgeInsets.all(0),
-                  leading: SizedBox(
-                    width: 50, height: 50,
-                    child:  ClipRRect(
-                      borderRadius: BorderRadius.circular(200),
-                      child: Obx((){
-                        final networkImage = userController.customer.value.avatarUrl;
-                        final image = networkImage?.isNotEmpty == true ? networkImage! : Images.tProfileImage; // Using safe null access
-                        if (userController.imageUploading.value) {
-                          return const ShimmerEffect(width: 50, height: 50);
-                        } else {
-                          if (networkImage?.isNotEmpty == true) { // Checking null safety
-                            return CachedNetworkImage(
-                              // fit: BoxFit.cover,
-                              // color: Colors.grey,
-                              imageUrl: image,
-                              progressIndicatorBuilder: (context, url, downloadProgress) => const ShimmerEffect(width: 55, height: 55),
-                              errorWidget: (context, url, error) => const Icon(Icons.error),
-                            );
-                          } else {
-                            return Image(image: AssetImage(image)); // Using safe null access
-                          }
-                        }
-                    })
+    return Column(
+      children: [
+        Obx(() {
+          if(userController.isLoading.value) {
+            return const UserTileShimmer();
+          } else {
+             return ListTile(
+               onTap: () => Get.to(() => const UserProfileScreen()),
+                leading: TRoundedImage(
+                  padding: 0,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 100,
+                  isNetworkImage: userController.user.value.avatarUrl != null ? true : false,
+                  image: userController.user.value.avatarUrl ?? Images.tProfileImage
                 ),
-                  ),
-                  title: Text(userController.customer.value.name.isEmpty ? "User" : userController.customer.value.name, style: Theme.of(context).textTheme.titleSmall),
-                  subtitle: Text(userController.customer.value.email?.isNotEmpty ?? false ? userController.customer.value.email! : '', style: Theme.of(context).textTheme.bodyMedium),
-               );
-            }
-          }),
-        ],
-      ),
+                title: Text((userController.user.value.name?.isNotEmpty ?? false) ? userController.user.value.name! : "User",),
+                subtitle: Text(userController.user.value.email?.isNotEmpty ?? false ? userController.user.value.email! : 'Email',),
+                trailing: Icon(Icons.arrow_forward_ios, size: 20,),
+             );
+          }
+        }),
+      ],
     );
   }
+
 }
 
 

@@ -50,18 +50,17 @@ class MongoPurchaseListRepo extends GetxController {
   }
 
   // Fetch All Orders from MongoDB
-  Future<String> fetchMetaData({required String metadataName}) async {
+  Future<dynamic> fetchMetaData({required String metadataName}) async {
     try {
       // Fetch orders from MongoDB with pagination
-      final String jsonData = await _mongoDatabase.fetchMetaDocuments(collectionName:collectionNameMetaData, metaDataName: metadataName);
-
+      final jsonData = await _mongoDatabase.fetchMetaDocuments(collectionName: collectionNameMetaData, metaDataName: metadataName);
       return jsonData;
     } catch (e) {
       throw 'Failed to fetch Meta data: $e';
     }
   }
 
-  Future<void> pushMetaData({required String metadataName, required List<dynamic> value}) async {
+  Future<void> pushMetaData({required String metadataName, required dynamic value}) async {
     try {
       await _mongoDatabase.pushMetaDataValue(
         collectionName: collectionNameMetaData,

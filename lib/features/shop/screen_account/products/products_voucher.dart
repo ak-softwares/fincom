@@ -6,7 +6,7 @@ import '../../../../common/styles/spacing_style.dart';
 import '../../../../common/widgets/loaders/animation_loader.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../controller_account/product_voucher/product_voucher_controller.dart';
+import '../../controller_account/product/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

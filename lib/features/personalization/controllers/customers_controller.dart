@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../common/widgets/loaders/loader.dart';
 import '../../../common/widgets/network_manager/network_manager.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../data/repositories/user/user_repository.dart';
 import '../../../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
 import '../../../services/firebase_analytics/firebase_analytics.dart';
@@ -19,6 +20,7 @@ import '../../../utils/permissions/permissions.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../authentication/screens/email_login/email_login.dart';
 import '../../authentication/screens/email_login/re_auth_user_login.dart';
+import '../../settings/app_settings.dart';
 import '../models/user_model.dart';
 
 class CustomersController extends GetxController {
@@ -29,6 +31,8 @@ class CustomersController extends GetxController {
   Rx<CustomerModel> customer = CustomerModel.empty().obs;
   Rx<UserModel> user = UserModel.empty().obs;
 
+  final RxString appVersion = ''.obs;
+
   final hidePassword = true.obs; //Observable for hiding/showing password
   final imageUploading = false.obs;
   final verifyEmail = TextEditingController();
@@ -37,7 +41,22 @@ class CustomersController extends GetxController {
 
   final userRepository = Get.put(UserRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
+  final mongoAuthenticationRepository = Get.put(MongoAuthenticationRepository());
   final authenticationRepository = Get.put(AuthenticationRepository());
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      appVersion.value = await AppSettings.getAppVersion();
+    } catch (e) {
+      appVersion.value = '';
+    }
+  }
 
   // Get All Customers Counts
   Future<int> getTotalCustomerCount() async {
@@ -66,11 +85,11 @@ class CustomersController extends GetxController {
   //Fetch user record
   Future<void> fetchCustomerData() async {
     try {
-      dynamic localAuthUserId = localStorage.read(LocalStorage.authUserID);
-      String userId = (localAuthUserId != null) ? localAuthUserId.toString() : '';
-      if(userId.isNotEmpty) {
-        final customerData = await wooCustomersRepository.fetchCustomerById(userId);
-        customer(customerData);
+      dynamic localAuthUserEmail = localStorage.read(LocalStorage.authUserID);
+      String userEmail = (localAuthUserEmail != null) ? localAuthUserEmail.toString() : '';
+      if(userEmail.isNotEmpty) {
+        final userData = await mongoAuthenticationRepository.fetchCustomerByEmail(email: userEmail);
+        user(userData);
       } else{
         throw 'customer not found';
       }
@@ -84,6 +103,7 @@ class CustomersController extends GetxController {
     try {
       isLoading(true);
       customer(CustomerModel.empty());
+      user(UserModel());
       await fetchCustomerData();
     } catch (error) {
       // TLoaders.warningSnackBar(title: 'Error', message: error.toString());

@@ -22,10 +22,9 @@ class ChangeUserProfile extends StatelessWidget {
 
     final changeProfileController = Get.put(ChangeProfileController());
     final userController = Get.put(CustomersController());
-    changeProfileController.firstName.text = userController.customer.value.firstName ?? '';
-    changeProfileController.lastName.text = userController.customer.value.lastName ?? '';
-    changeProfileController.email.text = userController.customer.value.email ?? '';
-    changeProfileController.phone.text = TValidator.getFormattedTenDigitNumber(userController.customer.value.phone) ?? '';
+    changeProfileController.fullName.text = userController.user.value.name ?? '';
+    changeProfileController.email.text = userController.user.value.email ?? '';
+    changeProfileController.phone.text = TValidator.getFormattedTenDigitNumber(userController.user.value.phone ?? '') ?? '';
 
     return Scaffold(
       appBar: const TAppBar2(titleText: "Update Profile", showBackArrow: true),
@@ -45,24 +44,10 @@ class ChangeUserProfile extends StatelessWidget {
                         children: [
                           const SizedBox(height: Sizes.spaceBtwSection),
                           //Name
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: TextFormField(
-                                    controller: changeProfileController.firstName,
-                                    validator: (value) => TValidator.validateEmptyText('First Name', value),
-                                    decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: 'First Name*'),
-                                  )
-                              ),
-                              const SizedBox(width: Sizes.spaceBtwInputFields),
-                              //Pincode
-                              Expanded(
-                                  child: TextFormField(
-                                      controller: changeProfileController.lastName,
-                                      decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user4), labelText: 'Last name')
-                                  )
-                              ),
-                            ],
+                          TextFormField(
+                            controller: changeProfileController.fullName,
+                            validator: (value) => TValidator.validateEmptyText('Full Name', value),
+                            decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: 'First Name*'),
                           ),
                           const SizedBox(height: Sizes.spaceBtwInputFields),
                           //email
@@ -90,7 +75,7 @@ class ChangeUserProfile extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               child: const Text('Update'),
-                              onPressed: () => changeProfileController.wooChangeProfileDetails(),
+                              onPressed: () => changeProfileController.mongoChangeProfileDetails(),
                             ),
                           ),
                         ]

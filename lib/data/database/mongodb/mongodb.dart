@@ -1,6 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../../../utils/constants/db_constants.dart';
+
 class MongoDatabase {
   static Db? _db;
   static final String _host = dotenv.env['MONGODB_CONNECTION_STRING']!;
@@ -21,9 +23,79 @@ class MongoDatabase {
     try {
       var collection = _db?.collection(collectionName);
       await collection?.insert(data);
-      print('Document inserted successfully');
     } catch (e) {
-      print('Error inserting document: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateDocumentById({
+    required String collectionName,
+    required String id,
+    required Map<String, dynamic> updatedData,
+  }) async {
+    try {
+      var collection = _db?.collection(collectionName);
+      // Parse the string ID into ObjectId
+      var objectId = ObjectId.fromHexString(id);
+
+      await collection?.updateOne(
+        {'_id': objectId},  // Correct filter key
+        {'\$set': updatedData},
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchDocumentById({
+    required String collectionName,
+    required String id, // This should be the string representation of ObjectId
+  }) async {
+    try {
+      // Ensure _db is not null
+      if (_db == null) {
+        throw Exception('Database connection is not established.');
+      }
+
+      // Get the collection
+      var collection = _db!.collection(collectionName);
+
+      // Parse the string ID into ObjectId
+      var objectId = ObjectId.fromHexString(id);
+
+      // Fetch the document
+      var document = await collection.findOne(
+        {'_id': objectId}, // Use the parsed ObjectId
+      );
+
+      return document; // Return the fetched document (or null if not found)
+    } catch (e) {
+      rethrow; // Rethrow the error if you want the caller to handle it
+    }
+  }
+
+  Future<void> deleteDocumentById({
+    required String collectionName,
+    required String id, // This should be the string representation of ObjectId
+  }) async {
+    try {
+      // Ensure _db is not null
+      if (_db == null) {
+        throw Exception('Database connection is not established.');
+      }
+
+      // Get the collection
+      var collection = _db!.collection(collectionName);
+
+      // Parse the string ID into ObjectId
+      var objectId = ObjectId.fromHexString(id);
+
+      // Delete the document
+      await collection.deleteOne(
+        {'_id': objectId}, // Use the parsed ObjectId
+      );
+    } catch (e) {
+      rethrow; // Rethrow the error if you want the caller to handle it
     }
   }
 
@@ -37,8 +109,29 @@ class MongoDatabase {
     }
   }
 
+  // Update a document in a collection
+  Future<void> updateDocument(String collectionName, Map<String, dynamic> filter, Map<String, dynamic> updatedData) async {
+    try {
+      var collection = _db?.collection(collectionName);
+      await collection?.update(filter, {'\$set': updatedData});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // Fetch documents with search, pagination, and field selection
   Future<List<Map<String, dynamic>>> fetchDocumentsBySearchQuery({required String collectionName, required String query, int page = 1, int itemsPerPage = 10,}) async {
+
+    String selectIndex() {
+      switch (collectionName) {
+        case 'orders':
+          return 'orders';
+        case 'vendors':
+          return 'vendor';
+        default:
+          return 'default';
+      }
+    }
 
     var collection = _db!.collection(collectionName);
     // Calculate the number of documents to skip
@@ -48,7 +141,7 @@ class MongoDatabase {
     final List<Map<String, Object>> pipeline = [
       {
         "\$search": {
-          "index": collectionName != "orders" ? "default" : "orders",
+          "index": selectIndex(),
           "text": {
             "query": query,
             "path": {
@@ -69,17 +162,36 @@ class MongoDatabase {
     }
   }
 
+  Future<int> getNextId({required String collectionName, required String fieldName}) async {
+    var collection = _db!.collection(collectionName);
+
+    try {
+      // Fetch the last document sorted by 'id' in descending order
+      var lastDocument = await collection
+          .find(where.sortBy(fieldName, descending: true).limit(1)) // Get the last document
+          .toList();
+
+      if (lastDocument.isEmpty) {
+        // If no documents exist, start with ID 1
+        return 1;
+      } else {
+        // Increment the last ID by 1
+        return lastDocument[0][fieldName] + 1;
+      }
+    } catch (e) {
+      throw Exception('Error fetching the next ID: $e');
+    }
+  }
+
   // Fetch documents from a collection
   Future<List<Map<String, dynamic>>> fetchDocuments({required String collectionName, int page = 1, int itemsPerPage = 10}) async {
     var collection = _db!.collection(collectionName);
     // Calculate the number of documents to skip
     int skip = (page - 1) * itemsPerPage;
-
     try {
       var documents = await collection
-          .find(where.skip(skip).limit(itemsPerPage)) // Apply pagination correctly
+          .find(where.sortBy('_id', descending: true).skip(skip).limit(itemsPerPage)) // Sort in descending order
           .toList(); // Convert to List<Map<String, dynamic>>
-
       return documents;
     } catch (e) {
       throw Exception('Error fetching documents: $e');
@@ -99,6 +211,46 @@ class MongoDatabase {
       return documents;
     } catch (e) {
       throw Exception('Error fetching documents by IDs: $e');
+    }
+  }
+
+  Future<void> updateProductQuantitiesWithPairs({
+    required String collectionName,
+    required List<Map<String, dynamic>> productQuantityPairs,
+    required bool isAddition, // true for addition, false for subtraction
+  }) async {
+    if (_db == null) {
+      throw Exception('Database connection is not initialized');
+    }
+
+    try {
+      var collection = _db!.collection(collectionName);
+
+      // Create a list of update operations
+      List<Future<void>> updateOperations = [];
+
+      for (var pair in productQuantityPairs) {
+        int productId = pair['productId'];
+        int quantityChange = pair['quantity'];
+
+        // Determine the update operation based on isAddition
+        var updateModifier = isAddition
+            ? modify.inc('quantity', quantityChange) // Add quantity
+            : modify.inc('quantity', -quantityChange); // Subtract quantity
+
+        // Add update operation to the list
+        updateOperations.add(
+          collection.update(
+            where.eq('id', productId),
+            updateModifier,
+          ),
+        );
+      }
+
+      // Execute all update operations concurrently
+      await Future.wait(updateOperations);
+    } catch (e) {
+      throw Exception('Failed to update product quantities: $e');
     }
   }
 
@@ -154,7 +306,7 @@ class MongoDatabase {
   }
 
   // Fetch documents from a collection
-  Future<String> fetchMetaDocuments({required String collectionName, required String metaDataName}) async {
+  Future<dynamic> fetchMetaDocuments({required String collectionName, required String metaDataName}) async {
     if (_db == null) {
       throw Exception('Database connection is not initialized.');
     }
@@ -163,8 +315,8 @@ class MongoDatabase {
     try {
       var document = await collection.findOne({'id': 123}); // Fetch the document with ID 123
 
-      if (document != null && document.containsKey(metaDataName) && document[metaDataName] is String) {
-        return document[metaDataName] as String; // Return the stored string
+      if (document != null && document.containsKey(metaDataName)) {
+        return document[metaDataName]; // Return the stored string
       }
 
       return ''; // Return an empty string if metadata doesn't exist
@@ -175,17 +327,16 @@ class MongoDatabase {
   }
 
   // Push a new value to the metadata list
-  Future<void> pushMetaDataValue({required String collectionName, required String metaDataName, required List<dynamic> value,}) async {
+  Future<void> pushMetaDataValue({required String collectionName, required String metaDataName, required dynamic value,}) async {
     if (_db == null) {
       throw Exception('Database connection is not initialized.');
     }
 
     var collection = _db!.collection(collectionName);
-
     try {
       await collection.updateOne(
         {'id': 123}, // Find the document by ID
-        {'\$set': {metaDataName: value.join(',')}}, // Store as a comma-separated string
+        {'\$set': {metaDataName: value}}, // Store as a comma-separated string
         upsert: true, // Create the document if it doesn't exist
       );
     } catch (e) {
@@ -229,7 +380,6 @@ class MongoDatabase {
   // Close the connection
   void close() {
     _db?.close();
-    print('MongoDB connection closed.');
   }
 
 }

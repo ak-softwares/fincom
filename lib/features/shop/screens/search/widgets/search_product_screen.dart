@@ -8,8 +8,10 @@ import '../../../../../common/styles/spacing_style.dart';
 import '../../../../../common/text/section_heading.dart';
 import '../../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../../utils/constants/colors.dart';
+import '../../../../../utils/constants/sizes.dart';
 import '../../../controller_account/search_controller/search_controller.dart';
 import '../../../controllers/search_controller/search_controller.dart';
+import '../../../models/product_model.dart';
 import '../../../screen_account/search/search.dart';
 import '../../products/scrolling_products.dart';
 
@@ -20,19 +22,21 @@ class SearchScreen extends StatelessWidget {
     required this.searchQuery,
     this.orientation = OrientationType.horizontal,
     required this.searchType,
+    this.onProductTap,
   });
 
   final OrientationType orientation;
   final String title;
   final String searchQuery;
   final SearchType searchType;
+  final ValueChanged<ProductModel>? onProductTap;
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('search_screen');
 
     final ScrollController scrollController = ScrollController();
     final searchVoucherController = Get.put(SearchVoucherController());
+    final Set<ProductModel> selectedProducts = {}; // Track selected products
 
     // Schedule the search refresh to occur after the current frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,31 +62,38 @@ class SearchScreen extends StatelessWidget {
       }
     });
 
-    return RefreshIndicator(
-      color: TColors.refreshIndicator,
-      onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
-      child: ListView(
-        controller: scrollController,
-        padding: TSpacingStyle.defaultPagePadding,
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          TSectionHeading(title: title),
-          switch (searchType) {
-            SearchType.products => ProductGridLayout(
-              controller: searchVoucherController,
-              orientation: orientation,
-              sourcePage: 'Search',
-            ),
-            SearchType.customers => CustomersGridLayout(
-              controller: searchVoucherController,
-              sourcePage: 'Search',
-            ),
-            SearchType.orders => OrdersGridLayout(
-              controller: searchVoucherController,
-              sourcePage: 'Search',
-            ),
-          }
-        ],
+    return Scaffold(
+
+      body: RefreshIndicator(
+        color: TColors.refreshIndicator,
+        onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
+        child: ListView(
+          controller: scrollController,
+          padding: TSpacingStyle.defaultPagePadding,
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            TSectionHeading(title: title),
+            switch (searchType) {
+              SearchType.products => ProductGridLayout(
+                controller: searchVoucherController,
+                orientation: orientation,
+                sourcePage: 'Search',
+              ),
+              SearchType.customers => CustomersGridLayout(
+                controller: searchVoucherController,
+                sourcePage: 'Search',
+              ),
+              SearchType.orders => OrdersGridLayout(
+                controller: searchVoucherController,
+                sourcePage: 'Search',
+              ),
+              // TODO: Handle this case.
+              SearchType.vendor => throw UnimplementedError(),
+              // TODO: Handle this case.
+              SearchType.paymentMethod => throw UnimplementedError(),
+            }
+          ],
+        ),
       ),
     );
   }

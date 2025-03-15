@@ -88,7 +88,7 @@ class CartModel {
       totalTax: json[CartFieldName.totalTax] ?? '',
       total: json[CartFieldName.total] ?? '',
       sku: json[CartFieldName.sku] ?? '',
-      price: ((int.tryParse(json[CartFieldName.subtotal]))! / (json[CartFieldName.quantity])).truncate(),
+      price: json[CartFieldName.price].toInt() ?? 0,
       image: json[CartFieldName.image] != null && json[CartFieldName.image] is Map
           ? json[CartFieldName.image][CartFieldName.src]
           : '',
@@ -112,7 +112,10 @@ class CartModel {
       total: json[CartFieldName.total] ?? '',
       sku: json[CartFieldName.sku] ?? '',
       price: json[CartFieldName.price] ?? 0,
-      image: json[CartFieldName.image],
+      image: json[CartFieldName.image] != null && json[CartFieldName.image] is Map
+          ? json[CartFieldName.image][CartFieldName.src]
+          : '',
+      // image: json[CartFieldName.image],
       parentName: json[CartFieldName.parentName] ?? '',
       isCODBlocked: json[CartFieldName.isCODBlocked] ?? false,
       pageSource: json[CartFieldName.pageSource] ?? '',

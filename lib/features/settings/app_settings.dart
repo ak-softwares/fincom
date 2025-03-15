@@ -19,6 +19,18 @@ class AppSettings {
   static const Color primaryColor = Colors.blue;
   static const Color primaryBackground = Color(0xFFFFFFFF);
 
+  static const Color lightText = Color(0xFF0B1014);    // Text Color
+  static const Color lightTextSofter = Color(0xFF8A929D); // Text Color Softer
+  static const Color lightBackground = Color(0xFFFFFFFF); // background
+  static const Color lightTileBackground = Color(0xFFF4F5F7); // Background for cards, dialogs, etc.
+
+  // FF0B1014 whatsapp // FF0C0F14 Instagram // Chrome Background FF15202F // Tile Background FF313C4C // input field FF1B2636
+  static const Color darkText = Color(0xFF0B1014);    // Text Color
+  static const Color darkTextSofter = Color(0xFFA3AAB4); // Text Color Softer
+  static const Color darkBackground = Color(0xFF0B1014); // background
+  static const Color darkTileBackground = Color(0xFF25282D); // Background for cards, dialogs, etc.
+  // static const Color darkInputFieldBackground = Color(0xFF25282D);
+
   // static const Color secondaryColor = Color(0xFF092143);
   static const Color secondaryColor = Color(0xFF2d2d2d);
   static const Color secondaryBackground = Color(0xFFf4f4f2); //Zomato

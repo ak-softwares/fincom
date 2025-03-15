@@ -25,6 +25,7 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
     this.seeLogoutButton = false,
     this.sharePageLink = "",
     this.searchType, // If null, search icon won't be shown
+    this.widget, // If null, search icon won't be shown
   });
 
   final String titleText;
@@ -34,6 +35,7 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
   final bool seeLogoutButton;
   final String sharePageLink;
   final SearchType? searchType; // Nullable search type
+  final Widget? widget; // Nullable search type
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +43,9 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
     const Color backgroundColor = TColors.primaryBackground;
     return AppBar(
       centerTitle: false,
-      backgroundColor: backgroundColor,
-      title: Text(titleText, style: Theme.of(context).textTheme.titleSmall!.copyWith(color: color, fontWeight: FontWeight.w600)),
+      title: Text(titleText, style: TextStyle(fontSize: 18)),
       actions: [
-            searchType != null ? IconButton( icon: Icon(TIcons.search), color: color, onPressed: () => showSearch(context: context, delegate: SearchVoucher(searchType: searchType ?? SearchType.products))) : const SizedBox.shrink(),
+            searchType != null ? IconButton( icon: Icon(TIcons.search), onPressed: () => showSearch(context: context, delegate: SearchVoucher(searchType: searchType ?? SearchType.products))) : const SizedBox.shrink(),
             sharePageLink.isNotEmpty
                 ? IconButton(
                     icon: Icon(TIcons.share),
@@ -70,10 +71,12 @@ class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
                       ],
                     )
                   )
-                : const SizedBox.shrink(),
-            ),
+                : const SizedBox.shrink()),
+            widget != null
+              ? widget!
+              : SizedBox.shrink()
         ],
-      leading: showBackArrow ? IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Iconsax.arrow_left, color: color)) :  null,
+      leading: showBackArrow ? IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Iconsax.arrow_left)) :  null,
     );
   }
   @override

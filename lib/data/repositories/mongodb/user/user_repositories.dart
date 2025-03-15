@@ -108,4 +108,22 @@ class MongoAuthenticationRepository extends GetxController {
     }
   }
 
+  // Update a user document in a collection
+  Future<void> updateUserByEmail({required String email, required UserModel user}) async {
+    try {
+      // Check if a user with the provided email exists
+      final existingUser = await _mongoDatabase.findOne(collectionName, {'email': email});
+
+      if (existingUser == null) {
+        throw 'Invalid user found for this email'; // User not found
+      }
+
+      // Update user data in the database
+      await _mongoDatabase.updateDocument(collectionName, {'email': email}, user.toMap());
+    } catch (e) {
+      throw 'Failed to update user: $e';
+    }
+  }
+
+
 }

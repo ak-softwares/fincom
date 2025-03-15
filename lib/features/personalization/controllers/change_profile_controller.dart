@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import '../../../common/text/section_heading.dart';
 import '../../../common/widgets/loaders/loader.dart';
 import '../../../common/widgets/network_manager/network_manager.dart';
+import '../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/constants/image_strings.dart';
@@ -21,8 +22,7 @@ class ChangeProfileController extends GetxController {
   static ChangeProfileController get instance => Get.find();
 
   ///variables
-  final firstName = TextEditingController();
-  final lastName = TextEditingController();
+  final fullName = TextEditingController();
   final email = TextEditingController();
   final phone = TextEditingController();
 
@@ -37,6 +37,51 @@ class ChangeProfileController extends GetxController {
   final userController = Get.put(CustomersController());
   final userRepository = Get.put(UserRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
+  final mongoAuthenticationRepository = Get.put(MongoAuthenticationRepository());
+
+  //Woocommerce update profile details
+  Future<void> mongoChangeProfileDetails() async {
+    try {
+      //Start Loading
+      TFullScreenLoader.openLoadingDialog('We are updating your information..', Images.docerAnimation);
+      //check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+      // Form Validation
+      if (!changeProfileFormKey.currentState!.validate()) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      //update single field user
+      final updatedUser = UserModel(
+          name: fullName.text.trim(),
+          email: email.text.trim(),
+          phone: phone.text.trim(),
+      );
+      await mongoAuthenticationRepository.updateUserByEmail(email: email.text.trim(), user: updatedUser);
+
+      //update the Rx user value
+      userController.user(updatedUser);
+
+      // update email to local storage too
+      localStorage.write(LocalStorage.rememberMeEmail, email.text.trim());
+      //remove Loader
+      TFullScreenLoader.stopLoading();
+      // UserController.instance.fetchUserRecord();
+      TLoaders.customToast(message: 'Details updated successfully!');
+      // move to next screen
+      Get.close(1);
+      Get.off(() => const UserProfileScreen());
+    } catch (error) {
+      //remove Loader
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
+    }
+  }
 
   //Woocommerce update profile details
   Future<void> wooChangeProfileDetails() async {
@@ -57,8 +102,7 @@ class ChangeProfileController extends GetxController {
 
       //update single field user
       Map<String, dynamic> updateField = {
-        CustomerFieldName.firstName: firstName.text.trim(),
-        CustomerFieldName.lastName: lastName.text.trim(),
+        CustomerFieldName.firstName: fullName.text.trim(),
         CustomerFieldName.email: email.text.trim(),
         CustomerFieldName.billing: {
           AddressFieldName.email: email.text.trim(),
@@ -150,7 +194,7 @@ class ChangeProfileController extends GetxController {
 
       //update single field user
       Map<String, dynamic> updateField = {
-        UserFieldName.name: firstName.text.trim(),
+        UserFieldName.name: fullName.text.trim(),
         UserFieldName.email: email.text.trim(),
         UserFieldName.phone: phone.text.trim(),
         UserFieldName.dateModified: Timestamp.now().toDate(),
@@ -158,7 +202,7 @@ class ChangeProfileController extends GetxController {
       await userRepository.updateSingleField(updateField);
 
       //update the Rx user value
-      userController.customer.value.firstName = firstName.text.trim();
+      userController.customer.value.firstName = fullName.text.trim();
       userController.customer.value.email = email.text.trim();
       userController.customer.value.email = phone.text.trim();
 

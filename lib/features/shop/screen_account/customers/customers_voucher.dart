@@ -5,17 +5,12 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../common/layout_models/customers_grid_layout.dart';
 import '../../../../common/styles/spacing_style.dart';
 import '../../../../common/widgets/loaders/animation_loader.dart';
-import '../../../../common/widgets/shimmers/customers_voucher_shimmer.dart';
-import '../../../../common/widgets/shimmers/product_voucher_shimmer.dart';
-import '../../../../common/widgets/tiles/Customers/customer_tile.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../controller_account/Customers_voucher/customers_voucher_controller.dart';
-import '../../controller_account/product_voucher/product_voucher_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../common/navigation_bar/appbar2.dart';
 import '../../screens/products/scrolling_products.dart';
 import '../search/search.dart';
@@ -51,6 +46,7 @@ class CustomersVoucher extends StatelessWidget {
       text: 'Whoops! No Customer Found...',
       animation: Images.pencilAnimation,
     );
+
     return Scaffold(
         appBar: const TAppBar2(titleText: 'Customers Voucher', searchType: SearchType.customers),
         body: RefreshIndicator(

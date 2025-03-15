@@ -63,7 +63,7 @@ class SingleOrderScreen extends StatelessWidget {
                     itemCount: order.lineItems!.length,
                     itemBuilder: (_, index) => Stack(
                         children:[
-                          ProductCardForCart(cartItem: order.lineItems![index]),
+                          CartTile(cartItem: order.lineItems![index]),
                         ]
                     ),
                   ),

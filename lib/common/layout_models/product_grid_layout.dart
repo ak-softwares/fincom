@@ -1,3 +1,4 @@
+import 'package:fincom/features/shop/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
@@ -15,15 +16,17 @@ class ProductGridLayout extends StatelessWidget {
   const ProductGridLayout({
     super.key,
     required this.controller,
-    required this.sourcePage,
+    this.sourcePage = '',
     this.orientation = OrientationType.vertical,
     this.emptyWidget = const TAnimationLoaderWidgets(text: 'Whoops! No products found...', animation: Images.pencilAnimation),
+    this.onTap,
   });
 
   final dynamic controller;
   final String sourcePage;
   final OrientationType orientation;
   final Widget emptyWidget;
+  final ValueChanged<ProductModel>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,12 @@ class ProductGridLayout extends StatelessWidget {
           mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : Sizes.productVoucherTileHeight,
           itemBuilder: (context, index) {
             if (index < products.length) {
-              return ProductVoucherCard(product: products[index], orientation: orientation, pageSource: sourcePage);
+              return ProductVoucherCard(
+                  product: products[index],
+                  orientation: orientation,
+                  pageSource: sourcePage,
+                  onTap: () => onTap?.call(products[index]), // Pass the product directly
+              );
             } else {
               return ProductVoucherShimmer(orientation: orientation);
             }

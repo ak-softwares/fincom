@@ -62,3 +62,17 @@ class TSectionHeading extends StatelessWidget {
   }
 }
 
+class Heading extends StatelessWidget {
+  const Heading({super.key, required this.title, this.paddingLeft = 0});
+
+  final String title;
+  final double paddingLeft;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: paddingLeft),
+      child: Text(title, style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+    );
+  }
+}

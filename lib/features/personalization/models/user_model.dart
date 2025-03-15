@@ -140,7 +140,7 @@ class UserModel {
   bool? isPayingCustomer;
   String? name;
   String? password;
-  String  phone;
+  String?  phone;
   String? role;
   Map<String, dynamic>? metaData;
   List<dynamic>? cartItems;
@@ -159,7 +159,7 @@ class UserModel {
     this.isPayingCustomer,
     this.name,
     this.password,
-    required this.phone,
+    this.phone,
     this.role,
     this.metaData,
     this.cartItems,
@@ -169,7 +169,7 @@ class UserModel {
   });
 
   ///Helper function to Format phone number
-  String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone);
+  String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone ?? '');
 
   /// static function to create an empty user model.
   static UserModel empty() => UserModel(phone: '');

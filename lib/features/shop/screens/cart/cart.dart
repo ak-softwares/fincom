@@ -74,7 +74,7 @@ class CartScreen extends StatelessWidget {
                   crossAxisCount: 1,
                   mainAxisExtent: Sizes.cartCardHorizontalHeight,
                   itemCount: cartController.cartItems.length,
-                  itemBuilder: (_, index) => ProductCardForCart(cartItem: cartController.cartItems[index], showBottomBar: true),
+                  itemBuilder: (_, index) => CartTile(cartItem: cartController.cartItems[index], showBottomBar: true),
                 ),
                 // Center(child: Text(cartController.cartItems.map((item) => item.pageSource ?? 'NA').join(', ')))
               ],

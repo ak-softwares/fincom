@@ -34,6 +34,13 @@ class AddVendorPage extends StatelessWidget {
                   ),
                 ),
                 TextFormField(
+                  controller: controller.nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Representative Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                TextFormField(
                   controller: controller.gstNumberController,
                   decoration: InputDecoration(
                     labelText: 'GST Number',
@@ -55,7 +62,6 @@ class AddVendorPage extends StatelessWidget {
                     labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: TextInputType.phone,
                 ),
                 TextFormField(
                   controller: controller.address1Controller,
@@ -100,15 +106,12 @@ class AddVendorPage extends StatelessWidget {
                     border: OutlineInputBorder(),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: controller.saveVendor,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: controller.saveVendor,
+                    child: Text('Save Vendor', style: TextStyle(fontSize: 16)),
                   ),
-                  child: Text('Save Vendor', style: TextStyle(fontSize: 16)),
                 ),
               ],
             ),

@@ -122,4 +122,13 @@ class ProductsVoucherController extends GetxController{
     }
   }
 
+  // Get All products
+  Future<void> updateProductQuantities({required List<Map<String, dynamic>> productQuantityPairs, required bool isAddition}) async {
+    try {
+      await mongoProductRepo.updateProductQuantities(productQuantityPairs: productQuantityPairs, isAddition: isAddition);
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
 }

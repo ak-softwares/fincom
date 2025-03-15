@@ -24,6 +24,8 @@ import 'services/notification/firebase_notification.dart';
 import 'services/notification/local_notification.dart';
 import 'utils/theme/theme.dart';
 
+//Theme.of(context).colorScheme.surface
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
@@ -149,10 +151,8 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [FBAnalytics.observer],
       title: AppSettings.appName,
       // theme: TAppTheme.lightTheme,
-      // The Mandy red, light theme.
-      theme: FlexThemeData.light(scheme: FlexScheme.blueM3),
-      // The Mandy red, dark theme.
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.blueM3),
+      theme: TAppTheme.lightTheme,
+      darkTheme: TAppTheme.darkTheme,
       initialBinding: GeneralBindings(),
       home: isUserLogin ? const BottomNavigation() : const MobileLoginScreen(),
       // initialRoute: '/',

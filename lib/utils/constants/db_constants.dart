@@ -24,6 +24,7 @@ class PurchaseListConstants {
   static const String purchaseOrders = 'purchaseOrders';
   static const String purchasedProductIds = 'purchasedProductIds';
   static const String notAvailableProductIds = 'notAvailableProductIds';
+  static const String lastSyncDate = 'lastSyncDate';
 }
 class ProductFieldName {
   static const String id = 'id';
@@ -167,6 +168,21 @@ class UserFieldName {
   static const String roleCustomer        = 'customer';
   static const String customerOrders      = 'customerOrders';
 }
+
+class VendorFieldName {
+  static const String id = 'id';
+  static const String email = 'email';
+  static const String password = 'password';
+  static const String name = 'first_name';
+  static const String company = 'company';
+  static const String gstNumber = 'gst_number';
+  static const String billing = 'billing';
+  static const String shipping = 'shipping';
+  static const String avatarUrl = 'avatar_url';
+  static const String dateCreated = 'date_created';
+  static const String balance = 'balance';
+}
+
 
 class CustomerFieldName {
   static const String id = 'id';
@@ -334,6 +350,26 @@ class PaymentFieldName {
   static const String image = 'image'; // corrected
   static const String key = 'key'; // corrected
   static const String secret = 'secret'; // corrected
+}
+
+class PurchaseFieldName {
+  static const String id = '_id';
+  static const String purchaseID = 'purchase_id';
+  static const String date = 'date';
+  static const String vendor = 'vendor';
+  static const String invoiceNumber = 'invoice_number';
+  static const String purchasedItems = 'purchased_items';
+  static const String purchaseInvoiceImages = 'purchase_invoice_images';
+  static const String total = 'total';
+  static const String paymentMethod = 'payment_method';
+  static const String paymentAmount = 'payment_amount';
+}
+
+class PaymentMethodFieldName {
+  static const String id = 'id';
+  static const String openingBalance = 'opening_balance';
+  static const String paymentMethodName = 'payment_method_name'; // corrected
+  static const String dateCreated = 'date_created'; // corrected
 }
 
 class PaymentMethodName {

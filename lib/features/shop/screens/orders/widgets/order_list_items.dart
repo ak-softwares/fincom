@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 
-import '../../../../../common/styles/shadows.dart';
 import '../../../../../common/styles/spacing_style.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/order_helper.dart';
+import '../../../models/cart_item_model.dart';
 import '../../../models/order_model.dart';
 import '../single_order_screen.dart';
 import 'order_image_gallery.dart';
@@ -23,6 +23,7 @@ class SingleOrderTile extends StatelessWidget {
     final double orderImageWidth = Sizes.orderImageWidth;
     final double orderTileHeight = Sizes.orderTileHeight;
     final double orderTileRadius = Sizes.orderTileRadius;
+    final List<CartModel> cartItems = order.lineItems ?? [];
 
     return InkWell(
       onTap: () => Get.to(() => SingleOrderScreen(order: order)),
@@ -42,7 +43,7 @@ class SingleOrderTile extends StatelessWidget {
               spacing: Sizes.xs,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OrderImageGallery(order: order, galleryImageHeight: 60),
+                OrderImageGallery(cartItems: cartItems, galleryImageHeight: 60),
                 Container(
                   height: 1,
                   color: TColors.borderSecondary,

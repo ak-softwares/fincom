@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,15 +13,16 @@ import '../../shimmers/shimmer_effect.dart';
 class TRoundedImage extends StatelessWidget {
   const TRoundedImage({
     super.key,
-    this.width = 56,
-    this.height = 56,
+    this.width = 35,
+    this.height = 35,
     this.overlayColor,
     required this.image,
     this.backgroundColor,
     this.fit = BoxFit.contain,
-    this.padding = Sizes.sm,
+    this.padding = 0,
     this.isNetworkImage = false,
     this.isTapToEnlarge = false,
+    this.isFileImage = false,
     this.borderRadius = 100,
     this.onTap,
     this.border,
@@ -29,6 +32,7 @@ class TRoundedImage extends StatelessWidget {
   final String image;
   final bool isNetworkImage;
   final bool isTapToEnlarge;
+  final bool isFileImage;
   final Color? overlayColor;
   final Color? backgroundColor;
   final double width, height, padding, borderRadius;
@@ -63,7 +67,9 @@ class TRoundedImage extends StatelessWidget {
               : Image(
                   fit: fit,
                   color: overlayColor,
-                  image:AssetImage(image),
+                  image: isFileImage
+                      ? FileImage(File(image)) as ImageProvider // Local file path
+                      : AssetImage(image) as ImageProvider, // Asset image
                 ),
         ),
       ),

@@ -66,7 +66,7 @@ class MongoProductRepo extends GetxController {
 
       // Fetch products from MongoDB where the ID matches any in the list
       final List<Map<String, dynamic>> productData =
-            await _mongoDatabase.fetchDocumentsByIds(collectionName, productIds,);
+            await _mongoDatabase.fetchDocumentsByIds(collectionName, productIds);
 
       // Convert data to a list of ProductModel
       final List<ProductModel> products = productData.map((data) => ProductModel.fromJson(data)).toList();
@@ -96,5 +96,18 @@ class MongoProductRepo extends GetxController {
       throw 'Failed to fetch products count: $e';
     }
   }
+
+  Future<void> updateProductQuantities({required List<Map<String, dynamic>> productQuantityPairs, required bool isAddition}) async {
+    try {
+      await _mongoDatabase.updateProductQuantitiesWithPairs(
+        collectionName: collectionName,
+        productQuantityPairs: productQuantityPairs,
+        isAddition: isAddition,
+      );
+    } catch (e) {
+      throw Exception('Failed to update product quantities: $e');
+    }
+  }
+
 
 }

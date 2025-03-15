@@ -18,26 +18,41 @@ import '../cart/cart_card_icon.dart';
 import '../favourite_icon/favourite_icon.dart';
 
 class ProductVoucherCard extends StatelessWidget {
-  const ProductVoucherCard({super.key, required this.product, this.pageSource = 'pc', this.orientation = OrientationType.vertical});
+  const ProductVoucherCard({
+    super.key,
+    required this.product,
+    this.pageSource = 'pc',
+    this.orientation = OrientationType.vertical,
+    this.onTap,
+
+  });
 
   final ProductModel product;
   final String pageSource;
   final OrientationType orientation;
+  final VoidCallback? onTap; // Make it nullable
 
 
   @override
   Widget build(BuildContext context) {
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product, pageSource: pageSource,))),
-      // onTap: () => Get.to(ProductDetailScreen(product: product)),
+      onTap: onTap ?? () {
+        // Default navigation when onTap is not provided
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ProductDetailScreen(
+            product: product,
+            pageSource: pageSource,
+          ),
+        ));
+      },
       child: orientation == OrientationType.vertical
-        ? productCardVertical()
-        : productCardHorizontal()
+        ? productCardVertical(context: context)
+        : productCardHorizontal(context: context)
     );
   }
 
-  Container productCardVertical() {
+  Container productCardVertical({required BuildContext context}) {
     const double productImageSizeVertical = Sizes.productImageSizeVertical;
     const double productCardVerticalHeight = Sizes.productCardVerticalHeight;
     const double productCardVerticalWidth = Sizes.productCardVerticalWidth;
@@ -47,9 +62,8 @@ class ProductVoucherCard extends StatelessWidget {
       width: productCardVerticalWidth,
       padding: const EdgeInsets.all(Sizes.xs),
       decoration: BoxDecoration(
-        boxShadow: [TShadowStyle.verticalProductShadow],
         borderRadius: BorderRadius.circular(productImageRadius),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         // border: Border.all(color: TColors.borderSecondary.withOpacity(0.5)),
       ),
       child: Column(
@@ -189,7 +203,7 @@ class ProductVoucherCard extends StatelessWidget {
     );
   }
 
-  Container productCardHorizontal() {
+  Container productCardHorizontal({required BuildContext context}) {
     const double productVoucherTileHeight = Sizes.productVoucherTileHeight;
     const double productVoucherTileWidth = Sizes.productVoucherTileWidth;
     const double productVoucherTileRadius = Sizes.productVoucherTileRadius;
@@ -200,9 +214,8 @@ class ProductVoucherCard extends StatelessWidget {
       width: productVoucherTileWidth,
       padding: const EdgeInsets.all(Sizes.xs),
       decoration: BoxDecoration(
-        boxShadow: [TShadowStyle.verticalProductShadow],
         borderRadius: BorderRadius.circular(productVoucherTileRadius),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: Row(
         children: [

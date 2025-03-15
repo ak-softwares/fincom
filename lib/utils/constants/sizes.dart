@@ -68,6 +68,13 @@ class Sizes {
   static const double cartCardHorizontalHeight = 105.0;
   static const double cartCardHorizontalWidth = 300.0;
 
+  // Cart Tile
+  static const double cartTileHeight = 90;
+  static const double cartTileWidth = 100.0;
+  static const double cartTileRadius = 5.0;
+  static const double cartImageHeight = 80.0;
+  static const double cartImageWidth = 80.0;
+
   // Category Tile
   static const double categoryTileHeight = 140;
   static const double categoryTileWidth = 85.0;
@@ -109,6 +116,20 @@ class Sizes {
   static const double customerVoucherTileRadius = 30.0;
   static const double customerVoucherImageHeight = 30.0;
   static const double customerVoucherImageWidth = 30.0;
+
+  // Purchase product Card
+  static const double purchaseTileHeight = 170;
+  static const double purchaseTileWidth = 100.0;
+  static const double purchaseTileRadius = 5.0;
+  static const double purchaseImageHeight = 60.0;
+  static const double purchaseImageWidth = 60.0;
+
+  // Purchase product Card
+  static const double purchaseProductTileHeight = 80;
+  static const double purchaseProductTileWidth = 100.0;
+  static const double purchaseProductTileRadius = 5.0;
+  static const double purchaseProductImageHeight = 60.0;
+  static const double purchaseProductImageWidth = 60.0;
 
   // Input Field
   static const double inputFieldRadius = 5;

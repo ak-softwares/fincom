@@ -8,7 +8,7 @@ import '../../screens/products/scrolling_products.dart';
 import '../../screens/search/widgets/search_product_screen.dart';
 
 // Enum to specify search type
-enum SearchType { products, customers, orders }
+enum SearchType { products, customers, orders, vendor, paymentMethod}
 
 class SearchVoucher extends SearchDelegate {
   RxList<String> recentlySearches = <String>[].obs;
@@ -155,6 +155,12 @@ class SearchVoucher extends SearchDelegate {
         case SearchType.orders:
           searchResults = _fetchUserSuggestions(query);
           break;
+        case SearchType.vendor:
+          // TODO: Handle this case.
+          throw UnimplementedError();
+        case SearchType.paymentMethod:
+          // TODO: Handle this case.
+          throw UnimplementedError();
       }
       suggestionList.value = searchResults.take(5).toList();
     }
@@ -183,6 +189,12 @@ class SearchVoucher extends SearchDelegate {
         return 'Customer';
       case SearchType.orders:
         return 'User';
+      case SearchType.vendor:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case SearchType.paymentMethod:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }

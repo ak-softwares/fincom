@@ -1,14 +1,23 @@
 import 'package:intl/intl.dart';
 
 class TFormatter {
+
   static String formatDate(DateTime? date) {
     date ??= DateTime.now();
     return DateFormat('dd-MM-yyyy').format(date);
   }
   static String formatStringDate(String dateString) {
-    DateTime dateTime = DateTime.parse(dateString);
-    String formattedDate = DateFormat('dd, MMMM yyyy').format(dateTime);
-    return formattedDate;
+    try {
+      // Try parsing the input string as a DateTime object
+      DateTime parsedDate = DateTime.parse(dateString);
+
+      // Format the date using the desired pattern
+      final DateFormat formatter = DateFormat('yyyy-MM-dd'); // Customize the format as needed
+      return formatter.format(parsedDate);
+    } catch (e) {
+      // If parsing fails, return the original string
+      return dateString;
+    }
   }
 
   static String maskEmail(String email) {
