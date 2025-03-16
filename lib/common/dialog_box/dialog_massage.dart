@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../widgets/loaders/loader.dart';
 
 class DialogHelper {
+
   static void showDialog({
     required BuildContext context,
     required String title,
