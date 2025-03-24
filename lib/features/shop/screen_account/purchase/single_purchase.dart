@@ -27,30 +27,28 @@ class SinglePurchase extends StatefulWidget {
 }
 
 class _SinglePurchaseState extends State<SinglePurchase> {
-  late PurchaseModel _purchase;
-  final PurchaseController _purchaseController = Get.put(PurchaseController());
+  late PurchaseModel purchase;
+  final PurchaseController purchaseController = Get.find<PurchaseController>();
 
   @override
   void initState() {
     super.initState();
-    _purchase = widget.purchase; // Initialize with the passed purchase
+    purchase = widget.purchase; // Initialize with the passed purchase
   }
 
   Future<void> _refreshPurchase() async {
-      final updatedPurchase = await _purchaseController.getPurchaseByID(id: _purchase.id ?? '');
+      final updatedPurchase = await purchaseController.getPurchaseByID(id: purchase.id ?? '');
       setState(() {
-        _purchase = updatedPurchase; // Update the purchase data
+        purchase = updatedPurchase; // Update the purchase data
       });
   }
 
   @override
   Widget build(BuildContext context) {
     const double cartTileHeight = Sizes.cartTileHeight;
-    final purchaseController = Get.put(PurchaseController());
-    final purchase = _purchase;
 
     return Scaffold(
-      appBar: TAppBar2(
+      appBar: AppAppBar2(
         titleText: 'Purchase #${purchase.purchaseID}',
         widget: TextButton(
             onPressed: () => Get.to(() => UpdatePurchase(purchase: purchase,)), 
@@ -65,7 +63,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Column(
-              spacing: Sizes.spaceBtwSection,
+              spacing: Sizes.spaceBtwSections,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
@@ -97,13 +95,6 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                       children: [
                         Text('Total'),
                         Text(purchase.total.toString()),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Payment'),
-                        Text(purchase.paymentAmount.toString()),
                       ],
                     ),
                     Container(
@@ -166,7 +157,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                   ],
                 ),
                 Center(child: TextButton(
-                    onPressed: () => purchaseController.deletePurchase(id: purchase.id ?? '', context: context),
+                    onPressed: () => purchaseController.deletePurchase(purchase: purchase, context: context),
                     child: Text('Delete', style: TextStyle(color: Colors.red),))
                 )
               ],

@@ -16,8 +16,6 @@ class PurchaseModel {
   List<CartModel>? purchasedItems;
   List<ImageModel>? purchaseInvoiceImages;
   double? total;
-  PaymentMethodModel? paymentMethod;
-  double? paymentAmount;
 
   PurchaseModel({
     this.id,
@@ -27,8 +25,6 @@ class PurchaseModel {
     this.invoiceNumber,
     this.purchasedItems,
     this.total,
-    this.paymentMethod,
-    this.paymentAmount,
     this.purchaseInvoiceImages,
   });
 
@@ -48,8 +44,6 @@ class PurchaseModel {
           .map<ImageModel>((item) => ImageModel.fromJson(item as Map<String, dynamic>))
           .toList(),
       total: (json[PurchaseFieldName.total] as num).toDouble(),
-      paymentMethod: PaymentMethodModel.fromJson(json[PurchaseFieldName.paymentMethod]),
-      paymentAmount: (json[PurchaseFieldName.paymentAmount] as num).toDouble(),
     );
   }
 
@@ -62,8 +56,6 @@ class PurchaseModel {
       PurchaseFieldName.purchasedItems: purchasedItems?.map((item) => item.toJson()).toList(),
       PurchaseFieldName.purchaseInvoiceImages: purchaseInvoiceImages?.map((item) => item.toJson()).toList(),
       PurchaseFieldName.total: total,
-      PurchaseFieldName.paymentMethod: paymentMethod?.toJson(),
-      PurchaseFieldName.paymentAmount: paymentAmount,
     };
   }
 }

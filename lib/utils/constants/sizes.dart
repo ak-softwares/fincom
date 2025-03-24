@@ -18,7 +18,7 @@ class Sizes {
 
   // Default spacing between sections
   static const double spaceBtwItems = 8;
-  static const double spaceBtwSection = 32.0;
+  static const double spaceBtwSections = 32.0;
 
   // Icons sizes
   static const double iconXs = 12.0;
@@ -116,6 +116,27 @@ class Sizes {
   static const double customerVoucherTileRadius = 30.0;
   static const double customerVoucherImageHeight = 30.0;
   static const double customerVoucherImageWidth = 30.0;
+
+  // Vendor Tile
+  static const double vendorTileHeight = 105;
+  static const double vendorTileWidth = 100.0;
+  static const double vendorTileRadius = 5.0;
+  static const double vendorImageHeight = 30.0;
+  static const double vendorImageWidth = 30.0;
+
+  // Payment Tile
+  static const double paymentTileHeight = 105;
+  static const double paymentTileWidth = 100.0;
+  static const double paymentTileRadius = 5.0;
+  static const double paymentImageHeight = 30.0;
+  static const double paymentImageWidth = 30.0;
+
+  // Transaction Tile
+  static const double transactionTileHeight = 145;
+  static const double transactionTileWidth = 100.0;
+  static const double transactionTileRadius = 5.0;
+  static const double transactionImageHeight = 30.0;
+  static const double transactionImageWidth = 30.0;
 
   // Purchase product Card
   static const double purchaseTileHeight = 170;

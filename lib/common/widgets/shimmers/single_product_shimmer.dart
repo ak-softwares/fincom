@@ -36,13 +36,13 @@ class SingleProductShimmer extends StatelessWidget {
             itemBuilder: (_, index) => const ShimmerEffect(height: galleryImageHeight, width: galleryImageHeight, radius: Sizes.productImageRadius,)
           )
         ),
-        const SizedBox(height: Sizes.spaceBtwSection),
+        const SizedBox(height: Sizes.spaceBtwSections),
         const ShimmerEffect(width: 100, height: 10, radius: 0,),
         const SizedBox(height: Sizes.spaceBtwInputFields),
         const ShimmerEffect(width: double.infinity, height: 25, radius: 0,),
         const SizedBox(height: Sizes.spaceBtwItems),
         const ShimmerEffect(width: 300, height: 25, radius: 0,),
-        const SizedBox(height: Sizes.spaceBtwSection),
+        const SizedBox(height: Sizes.spaceBtwSections),
         const ShimmerEffect(width: 150, height: 15),
         const SizedBox(height: Sizes.spaceBtwItems),
         const ShimmerEffect(width: 100, height: 15),

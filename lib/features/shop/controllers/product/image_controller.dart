@@ -65,7 +65,7 @@ class ImagesController extends GetxController{
                 ),
               ),
             ),
-            const SizedBox(height: Sizes.spaceBtwSection),
+            const SizedBox(height: Sizes.spaceBtwSections),
             Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(

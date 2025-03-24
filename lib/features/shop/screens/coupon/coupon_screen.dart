@@ -42,7 +42,7 @@ class CouponScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: 'Coupons', showBackArrow: true),
+      appBar: const AppAppBar2(titleText: 'Coupons', showBackArrow: true),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,
         onRefresh: () async => couponController.refreshCoupons(),

@@ -52,7 +52,7 @@ class OrderScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: const TAppBar2(titleText: "My Orders", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "My Orders", showBackArrow: true),
       body: !authenticationRepository.isUserLogin.value
       ? const CheckLoginScreen()
       : RefreshIndicator(

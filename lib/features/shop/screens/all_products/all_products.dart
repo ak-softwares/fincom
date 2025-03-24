@@ -63,7 +63,7 @@ class TAllProducts extends StatelessWidget {
       animation: Images.pencilAnimation,
     );
     return Scaffold(
-        appBar: TAppBar2(titleText: title, showBackArrow: true, showCartIcon: true, sharePageLink: sharePageLink ?? "",),
+        appBar: AppAppBar2(titleText: title, showBackArrow: true, showCartIcon: true, sharePageLink: sharePageLink ?? "",),
         body: RefreshIndicator(
           color: TColors.refreshIndicator,
           onRefresh: () async {

@@ -34,7 +34,7 @@ class CheckoutScreen extends StatelessWidget {
     Future.microtask(() => checkoutController.updateCheckout());
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Order summery", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Order summery", showBackArrow: true),
       bottomNavigationBar: Obx((){
         if (authenticationRepository.isUserLogin.value && cartController.cartItems.isNotEmpty){
           return Padding(
@@ -68,11 +68,11 @@ class CheckoutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: Sizes.spaceBtwSection,),
+                const SizedBox(height: Sizes.spaceBtwSections,),
 
                 /// -- coupon TextField
                 const TCouponCode(),
-                const SizedBox(height: Sizes.spaceBtwSection,),
+                const SizedBox(height: Sizes.spaceBtwSections,),
 
                 /// -- Billing Sections
                 const TRoundedContainer(

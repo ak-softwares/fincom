@@ -13,13 +13,17 @@ import '../../../../utils/constants/sizes.dart';
 import '../../controller_account/payment/payment_controller.dart';
 import '../../screens/products/scrolling_products.dart';
 import 'add_payment.dart';
+import 'single_payment.dart';
 import 'widget/payment_tile.dart';
+import 'widget/payment_tile_simmer.dart';
 
 class Payments extends StatelessWidget {
   const Payments({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const double paymentTileHeight = Sizes.paymentTileHeight;
+
     final ScrollController scrollController = ScrollController();
     final paymentController = Get.put(PaymentMethodController());
 
@@ -48,12 +52,12 @@ class Payments extends StatelessWidget {
     );
 
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Payment Methods'),
+        appBar: const AppAppBar2(titleText: 'Payment Methods'),
         floatingActionButton: FloatingActionButton(
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
           onPressed: () => Get.to(() => AddPayments()),
-          tooltip: 'Send WhatsApp Message',
+          tooltip: 'Add Payment Method',
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
@@ -66,7 +70,7 @@ class Payments extends StatelessWidget {
             children: [
               Obx(() {
                 if (paymentController.isLoading.value) {
-                  return  CustomersVoucherShimmer(itemCount: 2, orientation: OrientationType.horizontal);
+                  return  PaymentTileSimmer(itemCount: 2);
                 } else if(paymentController.paymentMethods.isEmpty) {
                   return emptyWidget;
                 } else {
@@ -76,12 +80,15 @@ class Payments extends StatelessWidget {
                       GridLayout(
                           itemCount: paymentController.isLoadingMore.value ? paymentMethods.length + 2 : paymentMethods.length,
                           crossAxisCount: 1,
-                          mainAxisExtent: Sizes.customerVoucherTileHeight,
+                          mainAxisExtent: paymentTileHeight,
                           itemBuilder: (context, index) {
                             if (index < paymentMethods.length) {
-                              return PaymentMethodTile(paymentMethod: paymentMethods[index]);
+                              return PaymentMethodTile(
+                                payment: paymentMethods[index],
+                                onTap: () => Get.to(() => SinglePayment(payment: paymentMethods[index])),
+                              );
                             } else {
-                              return CustomersVoucherShimmer(orientation: OrientationType.horizontal);
+                              return PaymentTileSimmer();
                             }
                           }
                       ),

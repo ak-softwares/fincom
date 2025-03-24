@@ -40,7 +40,7 @@ class MobileLoginScreen extends StatelessWidget {
                     Text(TTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
 
                 //Form Field
                 // PhoneFieldHint/TextField,
@@ -117,7 +117,7 @@ class MobileLoginScreen extends StatelessWidget {
                 ),
 
                 //Not a Member?  Divider
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(

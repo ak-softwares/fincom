@@ -23,7 +23,7 @@ Widget build(BuildContext context) {
   final authenticationRepository = Get.put(AuthenticationRepository());
 
   return Scaffold(
-    appBar: const TAppBar2(titleText: "Address", showBackArrow: true, showCartIcon: true),
+    appBar: const AppAppBar2(titleText: "Address", showBackArrow: true, showCartIcon: true),
     body: !authenticationRepository.isUserLogin.value
       ? const CheckLoginScreen()
       : Obx(() => SingleChildScrollView(

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../../features/shop/models/order_model.dart';
+import '../../../../features/shop/models/purchase_item_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
@@ -10,6 +11,7 @@ class MongoPurchaseListRepo extends GetxController {
   final MongoDatabase _mongoDatabase = MongoDatabase();
   final String collectionName = DbCollections.purchaseList;
   final String collectionNameMetaData = DbCollections.meta;
+  final String purchaseListMetaDataName = MetaDataName.purchaseList;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPageSync) ?? 10;
 
   // Fetch All Orders from MongoDB
@@ -50,33 +52,33 @@ class MongoPurchaseListRepo extends GetxController {
   }
 
   // Fetch All Orders from MongoDB
-  Future<dynamic> fetchMetaData({required String metadataName}) async {
+  Future<PurchaseListMetaModel> fetchMetaData() async {
     try {
       // Fetch orders from MongoDB with pagination
-      final jsonData = await _mongoDatabase.fetchMetaDocuments(collectionName: collectionNameMetaData, metaDataName: metadataName);
-      return jsonData;
+      final jsonData = await _mongoDatabase.fetchMetaDocuments(collectionName: collectionNameMetaData, metaDataName: purchaseListMetaDataName);
+      return PurchaseListMetaModel.fromJson(jsonData!);
     } catch (e) {
       throw 'Failed to fetch Meta data: $e';
     }
   }
 
-  Future<void> pushMetaData({required String metadataName, required dynamic value}) async {
+  Future<void> pushMetaData({required Map<String, dynamic> value}) async {
     try {
-      await _mongoDatabase.pushMetaDataValue(
-        collectionName: collectionNameMetaData,
-        metaDataName: metadataName,
-        value: value,
+      await _mongoDatabase.updateDocument(
+          collectionName: collectionNameMetaData,
+          filter: {MetaDataName.metaDocumentName: purchaseListMetaDataName},
+          updatedData: value
       );
     } catch (e) {
       throw Exception('Failed to push metadata: $e');
     }
   }
 
-  Future<void> deleteMetaData({required String metadataName}) async {
+  Future<void> deleteMetaData() async {
     try {
-      await _mongoDatabase.deleteMetaDataField(
+      await _mongoDatabase.deleteDocuments(
         collectionName: collectionNameMetaData,
-        metaDataName: metadataName,
+        filter: {MetaDataName.metaDocumentName: purchaseListMetaDataName}
       );
     } catch (e) {
       throw Exception('Failed to delete metadata: $e');

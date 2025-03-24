@@ -7,8 +7,24 @@ class DbCollections{
   static const String banners     = 'Banners';
   static const String addresses   = 'Addresses';
   static const String meta        = 'meta_data';
-  static const int metaId         = 123;
   static const String purchaseList = 'purchase_list';
+  static const String customers = 'customers';
+  static const String vendors = 'vendors';
+  static const String payments = 'payments';
+  static const String transactions = 'transactions';
+}
+
+class MetaDataName {
+  static const String metaDocumentName = 'meta_document_name';
+  static const String purchaseList = 'purchase_list';
+}
+
+class PurchaseListFieldName {
+  static const String id = '_id';
+  static const String lastSyncDate = 'last_sync_date';
+  static const String purchasedProductIds = 'purchased_product_ids';
+  static const String notAvailableProductIds = 'not_available_product_ids';
+  static const String orderStatus = 'order_status';
 }
 
 class AppSettingsFieldName{
@@ -22,9 +38,6 @@ class AppSettingsFieldName{
 class PurchaseListConstants {
   static const String expandedSections = 'expandedSections';
   static const String purchaseOrders = 'purchaseOrders';
-  static const String purchasedProductIds = 'purchasedProductIds';
-  static const String notAvailableProductIds = 'notAvailableProductIds';
-  static const String lastSyncDate = 'lastSyncDate';
 }
 class ProductFieldName {
   static const String id = 'id';
@@ -170,8 +183,10 @@ class UserFieldName {
 }
 
 class VendorFieldName {
-  static const String id = 'id';
+  static const String id = '_id';
+  static const String vendorId = 'vendor_id';
   static const String email = 'email';
+  static const String phone = 'phone';
   static const String password = 'password';
   static const String name = 'first_name';
   static const String company = 'company';
@@ -181,6 +196,7 @@ class VendorFieldName {
   static const String avatarUrl = 'avatar_url';
   static const String dateCreated = 'date_created';
   static const String balance = 'balance';
+  static const String openingBalance = 'opening_balance';
 }
 
 
@@ -248,6 +264,7 @@ class OrderFieldName {
   static const String currencySymbol = 'currency_symbol';
   static const String setPaid = 'set_paid';
 }
+
 class OrderMetaDataName {
   static const String id = 'id';
   static const String key = 'key';
@@ -260,6 +277,7 @@ class OrderStatusName {
   static const String processing = 'processing';
   static const String readyToShip = 'readytoship';
   static const String pendingPickup = 'pending-pickup';
+  static const String pendingPayment = 'pending';
   static const String inTransit = 'intransit';
   static const String completed = 'completed';
   static const String returnInTransit = 'returnintransit';
@@ -272,6 +290,7 @@ class OrderStatusPritiName {
   static const String processing = 'Processing';
   static const String readyToShip = 'Ready To Ship';
   static const String pendingPickup = 'Pending Pickup';
+  static const String pendingPayment = 'Pending Payment';
   static const String inTransit = 'In-Transit';
   static const String completed = 'Delivered';
   static const String returnInTransit = 'Return In-Transit';
@@ -366,10 +385,27 @@ class PurchaseFieldName {
 }
 
 class PaymentMethodFieldName {
-  static const String id = 'id';
+  static const String id = '_id';
+  static const String paymentId = 'payment_id';
   static const String openingBalance = 'opening_balance';
+  static const String balance = 'balance';
   static const String paymentMethodName = 'payment_method_name'; // corrected
   static const String dateCreated = 'date_created'; // corrected
+}
+
+class TransactionFieldName {
+  static const String id = '_id';
+  static const String transactionId = 'transaction_id';
+  static const String date = 'date';
+  static const String amount = 'amount';
+  static const String fromEntityId = 'from_entity_id';
+  static const String fromEntityName = 'from_entity_name';
+  static const String fromEntityType = 'from_entity_type';
+  static const String toEntityId = 'to_entity_id';
+  static const String toEntityName = 'to_entity_Name';
+  static const String toEntityType = 'to_entity_type';
+  static const String transactionType = 'transaction_type';
+  static const String purchaseId = 'purchase_id';
 }
 
 class PaymentMethodName {

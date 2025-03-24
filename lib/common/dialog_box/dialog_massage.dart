@@ -10,6 +10,7 @@ class DialogHelper {
     required String title,
     String? message,
     String? toastMessage,
+    String? actionButtonText,
     required Future<void> Function() function,
   }) {
     Get.dialog(
@@ -40,15 +41,17 @@ class DialogHelper {
                 onTap: () async {
                   Get.back();
                   await function();
-                  TLoaders.customToast(message: toastMessage ?? 'Success');
+                  if (toastMessage != null) {
+                    TLoaders.customToast(message: toastMessage);
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   width: double.infinity,
                   alignment: Alignment.center,
-                  child: const Text(
-                    "Delete",
-                    style: TextStyle(fontSize: 16, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                  child: Text(
+                    actionButtonText ?? "Delete",
+                    style: const TextStyle(fontSize: 16, color: Colors.redAccent, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

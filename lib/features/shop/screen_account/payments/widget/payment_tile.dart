@@ -1,36 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../../common/styles/shadows.dart';
 import '../../../../../utils/constants/icons.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../models/payment_method.dart';
+import '../../vendor/single_vendor.dart';
+import '../single_payment.dart';
 
 class PaymentMethodTile extends StatelessWidget {
-  const PaymentMethodTile({super.key, required this.paymentMethod});
+  const PaymentMethodTile({super.key, required this.payment, this.onTap});
 
-  final PaymentMethodModel paymentMethod;
+  final PaymentMethodModel payment;
+  final VoidCallback? onTap; // Function to handle tap events
 
   @override
   Widget build(BuildContext context) {
-    const double customerVoucherTileHeight = Sizes.customerVoucherTileHeight;
-    const double customerVoucherTileWidth = Sizes.customerVoucherTileWidth;
-    const double customerVoucherTileRadius = Sizes.customerVoucherTileRadius;
-    const double customerVoucherImageHeight = Sizes.customerVoucherImageHeight;
-    const double customerVoucherImageWidth = Sizes.customerVoucherImageWidth;
+    const double paymentTileHeight = Sizes.paymentTileHeight;
+    const double paymentTileWidth = Sizes.paymentTileWidth;
+    const double paymentTileRadius = Sizes.paymentTileRadius;
+    const double paymentImageHeight = Sizes.paymentImageHeight;
+    const double paymentImageWidth = Sizes.paymentImageWidth;
 
-    return Container(
-        width: customerVoucherTileWidth,
-        padding: const EdgeInsets.all(Sizes.xs),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(customerVoucherTileRadius),
-          color: Theme.of(context).colorScheme.surface,
-        ),
-        child: ListTile(
-          minTileHeight: customerVoucherTileHeight - 10,
-          title: Text(paymentMethod.paymentMethodName ?? '', style: TextStyle(fontSize: 14)),
-          subtitle: Text(paymentMethod.openingBalance.toString(), style: TextStyle(fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis,), // Paying status
-        )
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+          width: paymentTileWidth,
+          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(paymentTileRadius),
+            color: Theme.of(context).colorScheme.surface,
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Payment Id'),
+                  Text('#${payment.paymentId.toString()}', style: TextStyle(fontSize: 14))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Payment Method'),
+                  Text(payment.paymentMethodName ?? '', style: TextStyle(fontSize: 14))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Opening Balance'),
+                  Text(payment.openingBalance.toString(), style: TextStyle(fontSize: 14))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Balance'),
+                  AmountText(amount: payment.balance ?? 0.0)
+                ],
+              ),
+            ],
+          )
+      ),
     );
   }
 

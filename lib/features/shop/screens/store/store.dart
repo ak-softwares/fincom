@@ -28,7 +28,7 @@ class StoreScreen extends StatelessWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        appBar: const TAppBar2(titleText: "Store", showCartIcon: true),
+        appBar: const AppAppBar2(titleText: "Store", showCartIcon: true),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [

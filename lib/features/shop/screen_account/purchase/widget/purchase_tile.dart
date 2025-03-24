@@ -14,7 +14,9 @@ import '../../../../../utils/helpers/order_helper.dart';
 import '../../../models/cart_item_model.dart';
 import '../../../models/order_model.dart';
 import '../../../models/purchase_model.dart';
+import '../../../models/vendor_model.dart';
 import '../../../screens/orders/widgets/order_image_gallery.dart';
+import '../../vendor/single_vendor.dart';
 import '../single_purchase.dart';
 
 class PurchaseTile extends StatelessWidget {
@@ -61,7 +63,10 @@ class PurchaseTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor'),
-                Text(purchase.vendor?.company ?? ''),
+                InkWell(
+                  onTap: () => purchase.vendor != null ? Get.to(() => SingleVendor(vendor: purchase.vendor!)) : {},
+                  child: Text(purchase.vendor?.company ?? '', style: TextStyle(color: Colors.blue),)
+                ),
               ],
             ),
             Row(

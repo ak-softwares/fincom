@@ -15,7 +15,8 @@ class TAppBar extends StatelessWidget implements PreferredSizeWidget{
 
     return AppBar(
       centerTitle: true,
-      title: const Image(image: AssetImage(AppSettings.lightAppLogo), height: 25),
+      title: Text('Accounts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+      // title: const Image(image: AssetImage(AppSettings.lightAppLogo), height: 25),
       actions: [
         IconButton(
           icon: const Icon(Icons.search),

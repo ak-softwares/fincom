@@ -14,13 +14,13 @@ class MongoAuthenticationRepository extends GetxController {
     try {
       // Check if a user with the same email or phone already exists
       final existingUser = await _mongoDatabase.findOne(
-        collectionName,
-        {
-          r'$or': [
-            {'email': user.email},
-            {'phone': user.phone},
-          ]
-        },
+        collectionName: collectionName,
+       query : {
+                  r'$or': [
+                    {'email': user.email},
+                    {'phone': user.phone},
+                  ]
+                },
       );
 
       if (existingUser != null) {
@@ -39,8 +39,8 @@ class MongoAuthenticationRepository extends GetxController {
     try {
       // Check if a user with the provided email exists
       final existingUser = await _mongoDatabase.findOne(
-        collectionName,
-        {'email': email}, // Find user by email
+        collectionName: collectionName,
+        query : {'email': email}, // Find user by email
       );
 
       if (existingUser == null) {
@@ -67,8 +67,8 @@ class MongoAuthenticationRepository extends GetxController {
     try {
       // Check if a user with the provided email exists
       final existingUser = await _mongoDatabase.findOne(
-        collectionName,
-        {'phone': phone}, // Find user by email
+        collectionName: collectionName,
+       query : {'phone': phone}, // Find user by email
       );
 
       if (existingUser == null) {
@@ -90,8 +90,8 @@ class MongoAuthenticationRepository extends GetxController {
     try {
       // Check if a user with the provided email exists
       final existingUser = await _mongoDatabase.findOne(
-        collectionName,
-        {'email': email}, // Find user by email
+        collectionName: collectionName,
+        query: {'email': email}, // Find user by email
       );
 
       if (existingUser == null) {
@@ -112,14 +112,20 @@ class MongoAuthenticationRepository extends GetxController {
   Future<void> updateUserByEmail({required String email, required UserModel user}) async {
     try {
       // Check if a user with the provided email exists
-      final existingUser = await _mongoDatabase.findOne(collectionName, {'email': email});
+      final existingUser = await _mongoDatabase.findOne(
+          collectionName: collectionName,
+          query: {'email': email});
 
       if (existingUser == null) {
         throw 'Invalid user found for this email'; // User not found
       }
 
       // Update user data in the database
-      await _mongoDatabase.updateDocument(collectionName, {'email': email}, user.toMap());
+      await _mongoDatabase.updateDocument(
+        collectionName: collectionName,
+        filter: {'email': email},
+        updatedData: user.toMap()
+      );
     } catch (e) {
       throw 'Failed to update user: $e';
     }

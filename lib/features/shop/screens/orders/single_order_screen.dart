@@ -28,7 +28,7 @@ class SingleOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FBAnalytics.logPageView('order_single_screen');
     return Scaffold(
-      appBar: TAppBar2(titleText: "Order #${order.id}", showBackArrow: true),
+      appBar: AppAppBar2(titleText: "Order #${order.id}", showBackArrow: true),
       body: SingleChildScrollView(
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
@@ -134,7 +134,7 @@ class SingleOrderScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: Sizes.spaceBtwSection),
+            const SizedBox(height: Sizes.spaceBtwSections),
 
             // Track order
             TRoundedContainer(

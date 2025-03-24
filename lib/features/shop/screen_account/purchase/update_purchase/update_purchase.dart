@@ -38,18 +38,18 @@ class UpdatePurchase extends StatelessWidget {
     updatePurchaseController.resetValue(purchase);
 
     return Scaffold(
-      appBar: TAppBar2(titleText: 'Edit purchase'),
+      appBar: AppAppBar2(titleText: 'Edit purchase'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
         child: ElevatedButton(
-          onPressed: () => updatePurchaseController.updatePurchase(),
+          onPressed: () => updatePurchaseController.updatePurchase(previousPurchase: purchase),
           child: Text('Update Purchase')
         ),
       ),
       body: SingleChildScrollView(
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
-          spacing: Sizes.spaceBtwSection,
+          spacing: Sizes.spaceBtwSections,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date and Voucher number
@@ -217,74 +217,6 @@ class UpdatePurchase extends StatelessWidget {
                     Text('Total - ${AppSettings.appCurrencySymbol + (updatePurchaseController.purchaseTotal.value).toStringAsFixed(0)}'),
                   ],
                 ))
-              ],
-            ),
-
-            // Payment
-            Column(
-              spacing: Sizes.spaceBtwItems,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Payment Method'),
-                    InkWell(
-                      onTap: () async {
-                        // Navigate to the search screen and wait for the result
-                        final PaymentMethodModel getSelectedPayment = await showSearch(context: context,
-                          delegate: SearchVoucher1(searchType: SearchType.paymentMethod),
-                        );
-                        // If products are selected, update the state
-                        if (getSelectedPayment.paymentMethodName != null) {
-                          updatePurchaseController.selectedPaymentMethod(getSelectedPayment);
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Obx(() => updatePurchaseController.selectedPaymentMethod.value.paymentMethodName != '' && updatePurchaseController.selectedPaymentMethod.value.paymentMethodName != null
-                    ? Dismissible(
-                          key: Key(updatePurchaseController.selectedPaymentMethod.value.paymentMethodName ?? ''), // Unique key for each item
-                          direction: DismissDirection.endToStart, // Swipe left to remove
-                          onDismissed: (direction) {
-                            updatePurchaseController.selectedPaymentMethod.value = PaymentMethodModel();
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Method removed")),);
-                          },
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          child: SizedBox(width: double.infinity, child: PaymentMethodTile(paymentMethod: updatePurchaseController.selectedPaymentMethod.value))
-                      )
-                    : SizedBox.shrink(),
-                ),
-              ],
-            ),
-
-            // Payment mad
-            Row(
-              spacing: 50,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Payment Amount'),
-                Expanded(
-                  child: TextFormField(
-                      controller: updatePurchaseController.paymentAmountController,
-                      // validator: (value) => TValidator.validateEmptyText(value),
-                      decoration: const InputDecoration(
-                          labelText: 'Enter Amount'
-                      )
-                  ),
-                ),
               ],
             ),
 

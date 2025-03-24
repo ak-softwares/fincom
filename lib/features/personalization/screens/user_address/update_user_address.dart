@@ -36,7 +36,7 @@ class UpdateAddressScreen extends StatelessWidget {
     addressController.country.text = address.country!;
 
     return Scaffold(
-      appBar: TAppBar2(titleText: title, showBackArrow: true),
+      appBar: AppAppBar2(titleText: title, showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Sizes.defaultSpace),

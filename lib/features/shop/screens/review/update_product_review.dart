@@ -25,7 +25,7 @@ class UpdateReviewScreen extends StatelessWidget {
     productReviewController.editRating.value = review.rating ?? 0;
     productReviewController.editProductReview.text = review.review?.replaceAll('<p>', '').replaceAll('</p>', '').replaceAll('<br />', '') ?? '';
     return Scaffold(
-      appBar: const TAppBar2(titleText: 'Update Reviews', showBackArrow: true, showCartIcon: true,),
+      appBar: const AppAppBar2(titleText: 'Update Reviews', showBackArrow: true, showCartIcon: true,),
       body: !authenticationRepository.isUserLogin.value
           ? const CheckLoginScreen(text: 'Please Login! before edit review!')
           : SingleChildScrollView(
@@ -87,7 +87,7 @@ class UpdateReviewScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: Sizes.spaceBtwSection),
+                  const SizedBox(height: Sizes.spaceBtwSections),
                   ElevatedButton(
                     onPressed: () => productReviewController.updateReview(review.id),
                     child: const Padding(

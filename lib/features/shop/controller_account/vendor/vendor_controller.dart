@@ -1,7 +1,12 @@
+import 'package:fincom/features/shop/models/transaction_model.dart';
 import 'package:fincom/features/shop/models/vendor_model.dart';
+import 'package:fincom/utils/constants/enums.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../../../common/dialog_box/dialog_massage.dart';
 import '../../../../common/widgets/loaders/loader.dart';
+import '../../../../data/repositories/mongodb/transaction/transaction_repo.dart';
 import '../../../../data/repositories/mongodb/vendors/vendors_repositories.dart';
 
 
@@ -18,6 +23,7 @@ class VendorController extends GetxController{
 
   RxList<VendorModel> vendors = <VendorModel>[].obs;
   final mongoVendorsRepo = Get.put(MongoVendorsRepo());
+  final mongoTransactionRepo = Get.put(MongoTransactionRepo());
 
 
   // Get total customer count
@@ -55,5 +61,31 @@ class VendorController extends GetxController{
       isLoading(false);
     }
   }
+
+  // Get vendor by id
+  Future<VendorModel> getVendorByID({required String id}) async {
+    try {
+      final fetchedVendor = await mongoVendorsRepo.fetchVendorById(id: id);
+      return fetchedVendor;
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error in vendor getting', message: e.toString());
+      return VendorModel();
+    }
+  }
+
+  Future<void> deletePurchase ({required String id, required BuildContext context}) async {
+    try {
+      DialogHelper.showDialog(
+          context: context,
+          title: 'Delete Vendor',
+          message: 'Are you sure to delete this Vendor',
+          function: () async { await mongoVendorsRepo.deleteVendor(id: id); },
+          toastMessage: 'Deleted successfully!'
+      );
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
 
 }

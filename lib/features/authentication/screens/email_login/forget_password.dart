@@ -23,7 +23,7 @@ class ForgetPasswordScreen extends StatelessWidget {
       controller.email.text = email!;
     }
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Forget Password", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Forget Password", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -40,7 +40,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               //Form Field
               Form(
                 key: controller.forgetPasswordFormKey,
@@ -56,7 +56,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                             )
                         ),
                         // Forget password button
-                        const SizedBox(height: Sizes.spaceBtwSection),
+                        const SizedBox(height: Sizes.spaceBtwSections),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

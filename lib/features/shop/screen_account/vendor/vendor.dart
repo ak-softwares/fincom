@@ -18,13 +18,17 @@ import '../../controller_account/vendor/vendor_controller.dart';
 import '../../screens/products/scrolling_products.dart';
 import '../search/search.dart';
 import 'add_new_vendor.dart';
+import 'single_vendor.dart';
 import 'widget/vendor_tile.dart';
+import 'widget/vendor_tile_simmer.dart';
 
-class VendorVoucher extends StatelessWidget {
-  const VendorVoucher({super.key});
+class Vendors extends StatelessWidget {
+  const Vendors({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const double vendorTileHeight = Sizes.vendorTileHeight;
+
     final ScrollController scrollController = ScrollController();
     final vendorController = Get.put(VendorController());
 
@@ -52,12 +56,12 @@ class VendorVoucher extends StatelessWidget {
       animation: Images.pencilAnimation,
     );
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Vendors Voucher', searchType: SearchType.customers),
+        appBar: const AppAppBar2(titleText: 'Vendors', searchType: SearchType.customers),
         floatingActionButton: FloatingActionButton(
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
           onPressed: () => Get.to(() => AddVendorPage()),
-          tooltip: 'Send WhatsApp Message',
+          tooltip: 'Add New Vendor',
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
@@ -70,7 +74,7 @@ class VendorVoucher extends StatelessWidget {
             children: [
               Obx(() {
                 if (vendorController.isLoading.value) {
-                  return  CustomersVoucherShimmer(itemCount: 2, orientation: OrientationType.horizontal);
+                  return  VendorTileSimmer(itemCount: 2);
                 } else if(vendorController.vendors.isEmpty) {
                   return emptyWidget;
                 } else {
@@ -80,12 +84,15 @@ class VendorVoucher extends StatelessWidget {
                       GridLayout(
                           itemCount: vendorController.isLoadingMore.value ? vendors.length + 2 : vendors.length,
                           crossAxisCount: 1,
-                          mainAxisExtent: Sizes.customerVoucherTileHeight,
+                          mainAxisExtent: vendorTileHeight,
                           itemBuilder: (context, index) {
                             if (index < vendors.length) {
-                              return VendorTile(vendor: vendors[index]);
+                              return VendorTile(
+                                vendor: vendors[index],
+                                onTap: () => Get.to(() => SingleVendor(vendor: vendors[index])),
+                              );
                             } else {
-                              return CustomersVoucherShimmer(orientation: OrientationType.horizontal);
+                              return VendorTileSimmer();
                             }
                           }
                       ),

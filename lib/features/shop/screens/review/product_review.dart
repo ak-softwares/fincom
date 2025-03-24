@@ -47,7 +47,7 @@ class ProductReviewScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: 'Reviews & Ratings', showBackArrow: true, showCartIcon: true,),
+      appBar: const AppAppBar2(titleText: 'Reviews & Ratings', showBackArrow: true, showCartIcon: true,),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(Sizes.md),
         child: OutlinedButton(

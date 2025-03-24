@@ -22,7 +22,7 @@ class CreateReviewScreen extends StatelessWidget {
     final authenticationRepository = Get.put(AuthenticationRepository());
     final productReviewController = Get.put(ProductReviewController());
     return Scaffold(
-      appBar: const TAppBar2(titleText: 'Submit Reviews', showBackArrow: true, showCartIcon: true,),
+      appBar: const AppAppBar2(titleText: 'Submit Reviews', showBackArrow: true, showCartIcon: true,),
       body: !authenticationRepository.isUserLogin.value
           ? const CheckLoginScreen(text: 'Please Login! before submit review!')
           : SingleChildScrollView(
@@ -119,7 +119,7 @@ class CreateReviewScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: Sizes.spaceBtwSection),
+                  const SizedBox(height: Sizes.spaceBtwSections),
                   ElevatedButton(
                     onPressed: () => productReviewController.submitReview(productId),
                     child: const Padding(

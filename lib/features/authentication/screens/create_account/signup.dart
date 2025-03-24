@@ -21,7 +21,7 @@ class SignUpScreen extends StatelessWidget {
     FBAnalytics.logPageView('signup_screen');
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Signup", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Signup", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -31,7 +31,7 @@ class SignUpScreen extends StatelessWidget {
             children: [
               //SignUp , Title, Subtitle
               Text("Let's Create Your Account", style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               //Form Field
               Form(
                   key: controller.signupFormKey,
@@ -81,7 +81,7 @@ class SignUpScreen extends StatelessWidget {
                         ),
 
                         //terms and conditions
-                        const SizedBox(height: Sizes.spaceBtwSection),
+                        const SizedBox(height: Sizes.spaceBtwSections),
                         const TTermsAndConditionsCheckBox(),
 
                         // signup button

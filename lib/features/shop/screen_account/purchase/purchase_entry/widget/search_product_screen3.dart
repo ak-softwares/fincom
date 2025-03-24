@@ -1,4 +1,6 @@
 import 'package:fincom/common/widgets/shimmers/customers_voucher_shimmer.dart';
+import 'package:fincom/features/shop/screen_account/payments/widget/payment_tile_simmer.dart';
+import 'package:fincom/features/shop/screen_account/vendor/widget/vendor_tile_simmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -181,8 +183,9 @@ class SearchScreen3 extends StatelessWidget {
                 sourcePage: 'Search',
               ),
               SearchType.vendor => Obx(() {
+                const double vendorTileHeight = Sizes.vendorTileHeight; // Updated constant
                 if (searchVoucherController.isLoading.value) {
-                  return CustomersVoucherShimmer(itemCount: 2, orientation: orientation);
+                  return VendorTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
                   return searchVoucherController.selectedVendor.value.company != null
                       ? Obx(() {
@@ -216,7 +219,7 @@ class SearchScreen3 extends StatelessWidget {
                   return GridLayout(
                       itemCount: searchVoucherController.isLoadingMore.value ? vendors.length + 2 : vendors.length,
                       crossAxisCount: 1,
-                      mainAxisExtent: Sizes.customerVoucherTileHeight,
+                      mainAxisExtent: vendorTileHeight,
                       itemBuilder: (context, index) {
                         if (index < vendors.length) {
                           return Obx(() {
@@ -226,11 +229,9 @@ class SearchScreen3 extends StatelessWidget {
                               children: [
                                 SizedBox(
                                   width: double.infinity,
-                                  child: InkWell(
+                                  child: VendorTile(
+                                    vendor: vendor,
                                     onTap: () => searchVoucherController.toggleVendorSelection(vendor),
-                                    child: VendorTile(
-                                      vendor: vendor,
-                                    ),
                                   ),
                                 ),
                                 if (isSelected)
@@ -245,15 +246,16 @@ class SearchScreen3 extends StatelessWidget {
                             );
                           });
                         } else {
-                          return CustomersVoucherShimmer(orientation: orientation);
+                          return VendorTileSimmer();
                         }
                       }
                   );
                 }
               }),
               SearchType.paymentMethod => Obx(() {
+                const double paymentTileHeight = Sizes.paymentTileHeight; // Updated constant
                 if (searchVoucherController.isLoading.value) {
-                  return  CustomersVoucherShimmer(itemCount: 2, orientation: OrientationType.horizontal);
+                  return  PaymentTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
                   return searchVoucherController.selectedPayment.value.paymentMethodName != null
                       ? Obx(() {
@@ -262,9 +264,9 @@ class SearchScreen3 extends StatelessWidget {
                             children: [
                               SizedBox(
                                 width: double.infinity,
-                                child: InkWell(
+                                child: PaymentMethodTile(
+                                  payment: selectedPayment,
                                   onTap: () => searchVoucherController.togglePaymentSelection(selectedPayment),
-                                  child: PaymentMethodTile(paymentMethod: selectedPayment)
                                 ),
                               ),
                               Positioned(
@@ -283,7 +285,7 @@ class SearchScreen3 extends StatelessWidget {
                   return GridLayout(
                       itemCount: searchVoucherController.isLoadingMore.value ? payments.length + 2 : payments.length,
                       crossAxisCount: 1,
-                      mainAxisExtent: Sizes.customerVoucherTileHeight,
+                      mainAxisExtent: paymentTileHeight,
                       itemBuilder: (context, index) {
                         if (index < payments.length) {
                           return Obx(() {
@@ -295,7 +297,7 @@ class SearchScreen3 extends StatelessWidget {
                                   width: double.infinity,
                                   child: InkWell(
                                     onTap: () => searchVoucherController.togglePaymentSelection(payment),
-                                      child: PaymentMethodTile(paymentMethod: payment)
+                                      child: PaymentMethodTile(payment: payment)
                                   ),
                                 ),
                                 if (isSelected)
@@ -308,7 +310,7 @@ class SearchScreen3 extends StatelessWidget {
                             );
                           });
                         } else {
-                          return CustomersVoucherShimmer(orientation: orientation);
+                          return PaymentTileSimmer();
                         }
                       }
                   );

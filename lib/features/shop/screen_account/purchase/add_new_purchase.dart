@@ -34,7 +34,7 @@ class AddNewPurchase extends StatelessWidget {
     final purchaseController = Get.put(PurchaseController());
 
     return Scaffold(
-      appBar: TAppBar2(titleText: 'Add new purchase'),
+      appBar: AppAppBar2(titleText: 'Add new purchase'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
         child: ElevatedButton(
@@ -45,7 +45,7 @@ class AddNewPurchase extends StatelessWidget {
       body: SingleChildScrollView(
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
-          spacing: Sizes.spaceBtwSection,
+          spacing: Sizes.spaceBtwSections,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date and Voucher number
@@ -217,71 +217,72 @@ class AddNewPurchase extends StatelessWidget {
             ),
 
             // Payment
-            Column(
-              spacing: Sizes.spaceBtwItems,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Payment Method'),
-                    InkWell(
-                      onTap: () async {
-                        // Navigate to the search screen and wait for the result
-                        final PaymentMethodModel getSelectedPayment = await showSearch(context: context,
-                          delegate: SearchVoucher1(searchType: SearchType.paymentMethod),
-                        );
-                        // If products are selected, update the state
-                        if (getSelectedPayment.paymentMethodName != null) {
-                          purchaseController.selectedPaymentMethod(getSelectedPayment);
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Obx(() => purchaseController.selectedPaymentMethod.value.paymentMethodName != '' && purchaseController.selectedPaymentMethod.value.paymentMethodName != null
-                    ? Dismissible(
-                          key: Key(purchaseController.selectedPaymentMethod.value.paymentMethodName ?? ''), // Unique key for each item
-                          direction: DismissDirection.endToStart, // Swipe left to remove
-                          onDismissed: (direction) {
-                            purchaseController.selectedPaymentMethod.value = PaymentMethodModel();
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Method removed")),);
-                          },
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          child: SizedBox(width: double.infinity, child: PaymentMethodTile(paymentMethod: purchaseController.selectedPaymentMethod.value))
-                      )
-                    : SizedBox.shrink(),
-                ),
-              ],
-            ),
-            // Payment mad
-            Row(
-              spacing: 50,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Payment Amount'),
-                Expanded(
-                  child: TextFormField(
-                      controller: purchaseController.paymentAmountController,
-                      // validator: (value) => TValidator.validateEmptyText(value),
-                      decoration: const InputDecoration(
-                          labelText: 'Enter Amount'
-                      )
-                  ),
-                ),
-              ],
-            ),
+            // Column(
+            //   spacing: Sizes.spaceBtwItems,
+            //   children: [
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text('Payment Method'),
+            //         InkWell(
+            //           onTap: () async {
+            //             // Navigate to the search screen and wait for the result
+            //             final PaymentMethodModel getSelectedPayment = await showSearch(context: context,
+            //               delegate: SearchVoucher1(searchType: SearchType.paymentMethod),
+            //             );
+            //             // If products are selected, update the state
+            //             if (getSelectedPayment.paymentMethodName != null) {
+            //               purchaseController.selectedPaymentMethod(getSelectedPayment);
+            //             }
+            //           },
+            //           child: Row(
+            //             children: [
+            //               Icon(Icons.add, color: TColors.linkColor),
+            //               Text('Add', style:  TextStyle(color: TColors.linkColor),)
+            //             ],
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //     Obx(() => purchaseController.selectedPaymentMethod.value.paymentMethodName != '' && purchaseController.selectedPaymentMethod.value.paymentMethodName != null
+            //         ? Dismissible(
+            //               key: Key(purchaseController.selectedPaymentMethod.value.paymentMethodName ?? ''), // Unique key for each item
+            //               direction: DismissDirection.endToStart, // Swipe left to remove
+            //               onDismissed: (direction) {
+            //                 purchaseController.selectedPaymentMethod.value = PaymentMethodModel();
+            //                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Method removed")),);
+            //               },
+            //               background: Container(
+            //                 color: Colors.red,
+            //                 alignment: Alignment.centerRight,
+            //                 padding: const EdgeInsets.symmetric(horizontal: 20),
+            //                 child: const Icon(Icons.delete, color: Colors.white),
+            //               ),
+            //               child: SizedBox(width: double.infinity, child: PaymentMethodTile(payment: purchaseController.selectedPaymentMethod.value))
+            //           )
+            //         : SizedBox.shrink(),
+            //     ),
+            //   ],
+            // ),
+            //
+            // // Payment mad
+            // Row(
+            //   spacing: 50,
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text('Payment Amount'),
+            //     Expanded(
+            //       child: TextFormField(
+            //           controller: purchaseController.paymentAmountController,
+            //           // validator: (value) => TValidator.validateEmptyText(value),
+            //           decoration: const InputDecoration(
+            //               labelText: 'Enter Amount'
+            //           )
+            //       ),
+            //     ),
+            //   ],
+            // ),
 
             // Image of Invoice
             Column(

@@ -47,7 +47,7 @@ class SalesVoucher extends StatelessWidget {
     );
     
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Sales Voucher', searchType: SearchType.orders),
+        appBar: const AppAppBar2(titleText: 'Sales Voucher', searchType: SearchType.orders),
         body: RefreshIndicator(
           color: TColors.refreshIndicator,
           onRefresh: () async => salesVoucherController.refreshOrders(),

@@ -6,19 +6,19 @@ class TFormatter {
     date ??= DateTime.now();
     return DateFormat('dd-MM-yyyy').format(date);
   }
-  static String formatStringDate(String dateString) {
-    try {
-      // Try parsing the input string as a DateTime object
-      DateTime parsedDate = DateTime.parse(dateString);
 
-      // Format the date using the desired pattern
-      final DateFormat formatter = DateFormat('yyyy-MM-dd'); // Customize the format as needed
-      return formatter.format(parsedDate);
+  static String formatStringDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return 'N/A';
+    }
+    try {
+      DateTime dateTime = DateTime.parse(dateString);
+      return DateFormat('dd, MMMM yyyy').format(dateTime);
     } catch (e) {
-      // If parsing fails, return the original string
-      return dateString;
+      return 'N/A'; // Handle invalid date format cases
     }
   }
+
 
   static String maskEmail(String email) {
     // Split email into username and domain

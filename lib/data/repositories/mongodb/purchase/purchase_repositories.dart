@@ -108,7 +108,7 @@ class MongoPurchasesRepo extends GetxController {
     }
   }
 
-  // Upload a purchase
+  // Delete a purchase
   Future<void> deletePurchase({required String id}) async {
     try {
       await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);

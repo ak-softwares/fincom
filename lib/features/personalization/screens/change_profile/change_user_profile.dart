@@ -27,7 +27,7 @@ class ChangeUserProfile extends StatelessWidget {
     changeProfileController.phone.text = TValidator.getFormattedTenDigitNumber(userController.user.value.phone ?? '') ?? '';
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Update Profile", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Update Profile", showBackArrow: true),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,
         onRefresh: () async => userController.refreshCustomer(),
@@ -42,7 +42,7 @@ class ChangeUserProfile extends StatelessWidget {
                     key: changeProfileController.changeProfileFormKey,
                     child: Column(
                         children: [
-                          const SizedBox(height: Sizes.spaceBtwSection),
+                          const SizedBox(height: Sizes.spaceBtwSections),
                           //Name
                           TextFormField(
                             controller: changeProfileController.fullName,
@@ -69,7 +69,7 @@ class ChangeUserProfile extends StatelessWidget {
                                 labelText: TTexts.tPhone,
                               )
                           ),
-                          const SizedBox(height: Sizes.spaceBtwSection),
+                          const SizedBox(height: Sizes.spaceBtwSections),
                           // save button
                           SizedBox(
                             width: double.infinity,

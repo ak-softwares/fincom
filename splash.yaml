@@ -1,22 +1,19 @@
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/logos/fincom_splash.png
 
-#  color_dark: "#272727"
-#  image_dark: assets/logos/splash_logo_white.png
+  # Light theme
+  color: "#FFC61A"
+  image: assets/logos/ara_accounts_splash.png
 
-# this for theme color
-#  color: "#FFC61A"
-#  color_dark: "#272727"
-#  image: assets/logos/splash_logo_black.png
-#  image_dark: assets/logos/splash_logo_yellow.png
+  # Dark theme
+  color_dark: "#0B1014"
+  image_dark: assets/logos/ara_accounts_splash.png
 
   android_12:
-    color: "#FFFFFF"
-    image: assets/logos/fincom_splash.png
+    color: "#FFC61A"
+    image: assets/logos/ara_accounts_splash.png
 
-  #  color_dark: "#272727"
-  #  image_dark: assets/logos/splash_logo_white.png
+    color_dark: "#0B1014"
+    image_dark: assets/logos/ara_accounts_splash.png
 
   web: false
 

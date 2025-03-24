@@ -21,7 +21,7 @@ class TSubCategoriesScreen extends StatelessWidget {
 
     final productController = ProductController.instance;
     return Scaffold(
-      appBar: TAppBar2(titleText: category.name ?? '', showBackArrow: true),
+      appBar: AppAppBar2(titleText: category.name ?? '', showBackArrow: true),
       body: SingleChildScrollView(
         child: FutureBuilder(
             future: productController.getProductsByCategoryId(category.id ?? '', '1'),

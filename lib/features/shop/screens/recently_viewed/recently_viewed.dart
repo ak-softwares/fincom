@@ -52,7 +52,7 @@ class RecentlyViewed extends StatelessWidget {
       onActionPress: () => NavigationHelper.navigateToBottomNavigation(),
     );
     return Obx(() => Scaffold(
-        appBar: const TAppBar2(titleText: 'Recently viewed', showCartIcon: true),
+        appBar: const AppAppBar2(titleText: 'Recently viewed', showCartIcon: true),
         body: !authenticationRepository.isUserLogin.value
             ? const CheckLoginScreen()
             : RefreshIndicator(

@@ -1,3 +1,8 @@
+import 'package:mongo_dart/mongo_dart.dart';
+
+import '../../../utils/constants/db_constants.dart';
+import '../../../utils/constants/enums.dart';
+
 class PurchaseItemModel {
   int id;
   final String image;
@@ -41,4 +46,72 @@ class PurchaseItemModel {
     };
   }
 
+}
+
+class PurchaseListMetaModel {
+  String? id;
+  String? metaName;
+  DateTime? lastSyncDate;
+  List<int>? purchasedProductIds;
+  List<int>? notAvailableProductIds;
+  List<OrderStatus>? orderStatus;
+
+  PurchaseListMetaModel({
+    this.id,
+    this.metaName,
+    this.lastSyncDate,
+    this.purchasedProductIds,
+    this.notAvailableProductIds,
+    this.orderStatus,
+  });
+
+  factory PurchaseListMetaModel.fromJson(Map<String, dynamic> json) {
+    return PurchaseListMetaModel(
+      id: json[PurchaseListFieldName.id] is ObjectId
+          ? (json[PurchaseListFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
+          : json[PurchaseListFieldName.id]?.toString(), // Fallback to string if not ObjectId
+      metaName: json[MetaDataName.metaDocumentName]?.toString() ?? '',
+      lastSyncDate: json[PurchaseListFieldName.lastSyncDate],
+      purchasedProductIds: (json[PurchaseListFieldName.purchasedProductIds] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList() ??
+          [],
+      notAvailableProductIds: (json[PurchaseListFieldName.notAvailableProductIds] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList() ??
+          [],
+      orderStatus: (json[PurchaseListFieldName.orderStatus] as List<dynamic>?)
+          ?.map((e) => OrderStatusExtension.fromString(e.toString())!)
+          .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      PurchaseListFieldName.id: id,
+      MetaDataName.metaDocumentName: metaName,
+      PurchaseListFieldName.lastSyncDate: lastSyncDate,
+      PurchaseListFieldName.purchasedProductIds: purchasedProductIds,
+      PurchaseListFieldName.notAvailableProductIds: notAvailableProductIds,
+      PurchaseListFieldName.orderStatus: orderStatus?.map((e) => e.name).toList(),
+    };
+  }
+  PurchaseListMetaModel copyWith({
+    String? id,
+    String? metaName,
+    DateTime? lastSyncDate,
+    List<int>? purchasedProductIds,
+    List<int>? notAvailableProductIds,
+    List<OrderStatus>? orderStatus,
+  }) {
+    return PurchaseListMetaModel(
+      id: id ?? this.id,
+      metaName: metaName ?? this.metaName,
+      lastSyncDate: lastSyncDate ?? this.lastSyncDate,
+      purchasedProductIds: purchasedProductIds ?? this.purchasedProductIds,
+      notAvailableProductIds: notAvailableProductIds ?? this.notAvailableProductIds,
+      orderStatus: orderStatus ?? this.orderStatus,
+    );
+  }
 }

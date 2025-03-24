@@ -44,7 +44,7 @@ class AllBrandScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: TAppBar2(titleText: 'All Brands', showCartIcon: true, showSearchIcon: true,),
+      appBar: AppAppBar2(titleText: 'All Brands', showCartIcon: true, showSearchIcon: true,),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,
         onRefresh: () async => brandController.refreshBrands(),

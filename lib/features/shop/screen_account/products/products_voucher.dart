@@ -47,7 +47,7 @@ class ProductsVoucher extends StatelessWidget {
       animation: Images.pencilAnimation,
     );
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Products Voucher', searchType: SearchType.products),
+        appBar: const AppAppBar2(titleText: 'Products Voucher', searchType: SearchType.products),
         body: RefreshIndicator(
           color: TColors.refreshIndicator,
           onRefresh: () async => productsVoucherController.refreshProducts(),

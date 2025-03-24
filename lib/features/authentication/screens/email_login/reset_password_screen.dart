@@ -23,18 +23,18 @@ class ResetPasswordScreen extends StatelessWidget {
 
     int seconds  = 60;
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Reset Password Link"),
+      appBar: const AppAppBar2(titleText: "Reset Password Link"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Sizes.defaultSpace),
           child: Column(
             children: [
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               Image(
                   image: const AssetImage(Images.deliveredEmailIllustration),
                   width: THelperFunctions.screenWidth(context) * 0.6,
               ),
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               Text(email, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
               const SizedBox(height: Sizes.spaceBtwItems),
               Text(TTexts.confirmEmail, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),

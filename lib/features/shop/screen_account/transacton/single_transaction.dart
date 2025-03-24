@@ -1,0 +1,142 @@
+import 'package:fincom/utils/formatters/formatters.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../../common/dialog_box/dialog_massage.dart';
+import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/styles/spacing_style.dart';
+import '../../../../utils/constants/colors.dart';
+import '../../../../utils/constants/enums.dart';
+import '../../../../utils/constants/sizes.dart';
+import '../../controller_account/transaction/transaction_controller.dart';
+import '../../models/transaction_model.dart'; // Updated import
+import 'add_transaction.dart'; // Updated import
+
+class SingleTransaction extends StatefulWidget {
+  const SingleTransaction({super.key, required this.transaction});
+
+  final TransactionModel transaction; // Updated model
+
+  @override
+  State<SingleTransaction> createState() => _SingleTransactionState();
+}
+
+class _SingleTransactionState extends State<SingleTransaction> {
+  late TransactionModel transaction;
+  final transactionController = Get.put(TransactionController()); // Updated controller
+
+  @override
+  void initState() {
+    super.initState();
+    transaction = widget.transaction; // Initialize with the passed transaction
+  }
+
+  Future<void> _refreshTransaction() async {
+    final updatedTransaction = await transactionController.getTransactionByID(id: transaction.id ?? '');
+    setState(() {
+      transaction = updatedTransaction; // Update the transaction data
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const double transactionTileHeight = Sizes.transactionTileHeight; // Updated constant
+    const double transactionTileWidth = Sizes.transactionTileWidth; // Updated constant
+    const double transactionTileRadius = Sizes.transactionTileRadius; // Updated constant
+
+    return Scaffold(
+      appBar: AppAppBar2(
+        titleText: 'Transaction #${transaction.transactionId}', // Updated title
+        widget: TextButton(
+          onPressed: () {
+            if(transaction.transactionType == TransactionType.purchase) {
+              DialogHelper.showDialog(
+                context: context,
+                title: 'Error in Update Transaction',
+                message: 'You can not update this purchase transactions instead you can update purchase '
+                    'this transaction will update automatically',
+                function: () async { },
+                actionButtonText: 'Done',
+              );
+            } else {
+              Get.to(() => AddTransaction(transaction: transaction));
+            }
+          },
+          child: Text('Edit', style: TextStyle(color: TColors.linkColor)),
+        ),
+      ),
+      body: RefreshIndicator(
+        color: TColors.refreshIndicator,
+        onRefresh: () async => _refreshTransaction(), // Updated method
+        child: ListView(
+          padding: TSpacingStyle.defaultPagePadding,
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            Container(
+              width: transactionTileWidth,
+              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(transactionTileRadius),
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              child: Column(
+                children: [
+                  // Transaction ID
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Transaction ID', style: TextStyle(fontSize: 14)),
+                      Text('#${transaction.transactionId.toString()}', style: const TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: Sizes.spaceBtwItems),
+
+                  // Amount
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Amount', style: TextStyle(fontSize: 14)),
+                      Text(transaction.amount?.toStringAsFixed(2) ?? 'N/A', style: const TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: Sizes.spaceBtwItems),
+
+                  // Date
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Date', style: TextStyle(fontSize: 14)),
+                      Text(TFormatter.formatStringDate(transaction.date.toString()), style: const TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  const SizedBox(height: Sizes.spaceBtwItems),
+
+                  // Payment Method
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Payment Method', style: TextStyle(fontSize: 14)),
+                      Text('N/A', style: const TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: Sizes.spaceBtwSections),
+
+            // Delete Button
+            Center(
+              child: TextButton(
+                onPressed: () => transactionController.deleteTransactionByDialog(
+                  context: context,
+                  transaction: transaction
+                ),
+                child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

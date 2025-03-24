@@ -30,7 +30,7 @@ class NewOrderFound extends StatelessWidget {
     );
 
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'New Order Found', searchType: SearchType.orders),
+        appBar: const AppAppBar2(titleText: 'New Order Found', searchType: SearchType.orders),
         bottomNavigationBar: Obx(() => newOrderFoundController.selectedOrders.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: Sizes.sm, horizontal: Sizes.xl),

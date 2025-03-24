@@ -6,13 +6,10 @@ import '../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../common/navigation_bar/appbar2.dart';
 import '../../../../common/styles/spacing_style.dart';
 import '../../../../common/widgets/loaders/animation_loader.dart';
-import '../../../../common/widgets/shimmers/customers_voucher_shimmer.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controller_account/purchase/purchase_controller.dart';
-import '../../screens/products/scrolling_products.dart';
-import '../search/search.dart';
 import 'add_new_purchase.dart';
 import 'widget/purchase_shimmer.dart';
 import 'widget/purchase_tile.dart';
@@ -25,8 +22,6 @@ class Purchase extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
     final purchaseController = Get.put(PurchaseController());
     final double purchaseTileHeight = Sizes.purchaseTileHeight;
-
-    purchaseController.refreshPurchases();
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -47,8 +42,9 @@ class Purchase extends StatelessWidget {
       text: 'Whoops! No Purchase Found...',
       animation: Images.pencilAnimation,
     );
+
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Purchases Voucher'),
+        appBar: const AppAppBar2(titleText: 'Purchases Voucher'),
         floatingActionButton: FloatingActionButton(
           shape: CircleBorder(),
           backgroundColor: Colors.blue,

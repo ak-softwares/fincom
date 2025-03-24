@@ -2,20 +2,34 @@ import 'package:fincom/common/navigation_bar/appbar2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/styles/spacing_style.dart';
+import '../../../../data/repositories/mongodb/vendors/vendors_repositories.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/validators/validation.dart';
 import '../../controller_account/vendor/add_vendor_controller.dart';
+import '../../models/vendor_model.dart';
 class AddVendorPage extends StatelessWidget {
 
-  const AddVendorPage({super.key});
+  const AddVendorPage({super.key, this.vendor});
+
+  final VendorModel? vendor;
 
   @override
   Widget build(BuildContext context) {
     final AddVendorController controller = Get.put(AddVendorController());
 
+    if( vendor != null) {
+      controller.resetValue(vendor!);
+    }
+
     return Scaffold(
-      appBar: TAppBar2(titleText: 'Add New Vendor'),
+      appBar: AppAppBar2(titleText: vendor != null ? 'Update Vendor' : 'Add Vendor'),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(Sizes.defaultSpace),
+        child: ElevatedButton(
+          onPressed: () => vendor != null ? controller.saveUpdatedVendor(previousVendor: vendor!) : controller.saveVendor(),
+          child: Text(vendor != null ? 'Update Vendor' : 'Add Vendor', style: TextStyle(fontSize: 16)),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: Sizes.sm),
         child: Padding(
@@ -25,6 +39,15 @@ class AddVendorPage extends StatelessWidget {
             child: Column(
               spacing: Sizes.spaceBtwItems,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Vendor id'),
+                    vendor != null
+                        ? Text('#${vendor!.vendorId}')
+                        : Obx(() => Text('#${controller.vendorId.value}')),
+                  ],
+                ),
                 TextFormField(
                   controller: controller.companyController,
                   validator: (value) => TValidator.validateEmptyText('Company Name', value),
@@ -104,13 +127,6 @@ class AddVendorPage extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Country',
                     border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: controller.saveVendor,
-                    child: Text('Save Vendor', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ],

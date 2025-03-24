@@ -36,7 +36,7 @@ class UserMenuScreen extends StatelessWidget {
     userController.refreshCustomer();
 
     return  Obx(() => Scaffold(
-        appBar: const TAppBar2(titleText: 'Profile Setting', seeLogoutButton: true,),
+        appBar: const AppAppBar2(titleText: 'Profile Setting', seeLogoutButton: true,),
         body: !AuthenticationRepository.instance.isUserLogin.value
             ? const CheckLoginScreen()
             : RefreshIndicator(
@@ -68,19 +68,16 @@ class UserMenuScreen extends StatelessWidget {
 
                       // Version
                       Center(
-                        child: Stack(
-                          alignment: Alignment.bottomCenter, // Align text closer to the image
+                        child: Column(
                           children: [
-                            TRoundedImage(
-                              backgroundColor: Colors.transparent,
-                                width: 130,
-                                padding: 0,
-                                image: AppSettings.lightAppLogo
-                            ),
-                            Positioned(
-                                bottom: 0, // Adjust this to bring text closer
-                                child: Obx(() => Text('v${userController.appVersion.value}', style: TextStyle(fontSize: 12),))
-                            )
+                            Text('Accounts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+                            // TRoundedImage(
+                            //   backgroundColor: Colors.transparent,
+                            //     width: 130,
+                            //     padding: 0,
+                            //     image: AppSettings.lightAppLogo
+                            // ),
+                            Obx(() => Text('v${userController.appVersion.value}', style: TextStyle(fontSize: 12),))
                           ],
                         ),
                       ),

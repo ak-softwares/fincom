@@ -11,14 +11,18 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/image/image_kit_repo.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/mongodb/purchase/purchase_repositories.dart';
+import '../../../../data/repositories/mongodb/transaction/transaction_repo.dart';
+import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
 import '../../models/image_model.dart';
 import '../../models/payment_method.dart';
 import '../../models/product_model.dart';
 import '../../models/purchase_model.dart';
+import '../../models/transaction_model.dart';
 import '../../models/vendor_model.dart';
 import '../product/product_controller.dart';
+import '../transaction/transaction_controller.dart';
 import '../vendor/vendor_controller.dart';
 
 class PurchaseController extends GetxController {
@@ -42,7 +46,7 @@ class PurchaseController extends GetxController {
   RxInt purchaseNumber = 0.obs;
   final RxList<CartModel> selectedProducts = <CartModel>[].obs;
   Rx<VendorModel> selectedVendor = VendorModel().obs;
-  Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel().obs;
+  // Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel().obs;
 
   final RxString searchQuery = ''.obs;
 
@@ -55,16 +59,20 @@ class PurchaseController extends GetxController {
   final vendorController = Get.put(VendorController());
   final mongoProductRepo = Get.put(MongoProductRepo());
   final mongoPurchasesRepo = Get.put(MongoPurchasesRepo());
+  final transactionController = Get.put(TransactionController());
+  final mongoTransactionRepo = Get.put(MongoTransactionRepo());
+
 
   TextEditingController dateController = TextEditingController();
   TextEditingController invoiceNumberController = TextEditingController();
-  TextEditingController paymentAmountController = TextEditingController();
+  // TextEditingController paymentAmountController = TextEditingController();
 
   @override
   Future<void> onInit() async {
     super.onInit();
     purchaseNumber.value = await mongoPurchasesRepo.fetchPurchaseGetNextId();
     dateController.text = DateTime.now().toString();
+    refreshPurchases();
     updatePurchaseTotal();
   }
 
@@ -72,7 +80,6 @@ class PurchaseController extends GetxController {
   void onClose() {
     dateController.dispose();
     invoiceNumberController.dispose();
-    paymentAmountController.dispose();
     super.onClose();
   }
 
@@ -181,7 +188,6 @@ class PurchaseController extends GetxController {
     }
   }
 
-
   void removeProducts(CartModel item) {
     int index = selectedProducts.indexWhere((cartItem) => cartItem.productId == item.productId);
     if(index >= 0) {
@@ -271,63 +277,12 @@ class PurchaseController extends GetxController {
     purchaseNumber.value = await mongoPurchasesRepo.fetchPurchaseGetNextId();
     dateController.text = DateTime.now().toString();
     invoiceNumberController.text = '';
-    paymentAmountController.text = '';
     selectedVendor.value = VendorModel();
     selectedProducts.value = [];
-    selectedPaymentMethod.value = PaymentMethodModel();
     purchaseInvoiceImages.value = [];
     updatePurchaseTotal();
   }
 
-  void savePurchase() {
-    // Validate purchase fields
-    if (!validatePurchaseFields()) {
-      return; // Error messages are already shown inside validatePurchaseFields()
-    }
-
-    PurchaseModel purchase = PurchaseModel(
-      purchaseID: purchaseNumber.value,
-      date: DateTime.tryParse(dateController.text) ?? DateTime.now(),
-      vendor: selectedVendor.value,
-      invoiceNumber: invoiceNumberController.text.trim(),
-      purchasedItems: selectedProducts,
-      purchaseInvoiceImages: purchaseInvoiceImages,
-      total: purchaseTotal.value,
-      paymentMethod: selectedPaymentMethod.value,
-      paymentAmount: double.tryParse(paymentAmountController.text.trim()) ?? 0.0,
-    );
-    uploadPurchase(purchase: purchase);
-  }
-
-  // Upload purchase
-  Future<void> uploadPurchase({required PurchaseModel purchase}) async {
-    try {
-      //Start Loading
-      TFullScreenLoader.openLoadingDialog('We are updating your Address..', Images.docerAnimation);
-      //check internet connectivity
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-      final fetchedPurchaseId = await mongoPurchasesRepo.fetchPurchaseGetNextId();
-      if(fetchedPurchaseId != purchaseNumber.value){
-          throw 'purchase id is same';
-      }
-
-      await mongoPurchasesRepo.pushPurchase(purchase: purchase); // Use batch insert function
-      await updateProductQuantity(isAddition: true);
-      await clearPurchase();
-      await refreshPurchases();
-      TFullScreenLoader.stopLoading();
-      TLoaders.customToast(message: 'Purchase uploaded successfully!');
-      Navigator.of(Get.context!).pop();
-    } catch (e) {
-      //remove Loader
-      TFullScreenLoader.stopLoading();
-      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
-    }
-  }
 
   bool validatePurchaseFields() {
     try {
@@ -337,14 +292,8 @@ class PurchaseController extends GetxController {
       if (selectedVendor.value.company == null || selectedVendor.value.company!.isEmpty) {
         throw Exception('Please select a vendor.');
       }
-      if (selectedPaymentMethod.value.paymentMethodName == null || selectedPaymentMethod.value.paymentMethodName!.isEmpty) {
-        throw Exception('Please select a payment method.');
-      }
       if (dateController.text.isEmpty) {
         throw Exception('Please enter a date.');
-      }
-      if (paymentAmountController.text.isEmpty) {
-        throw Exception('Please enter a payment amount.');
       }
       // Validate purchaseInvoiceImages
       for (var imageModel in purchaseInvoiceImages) {
@@ -375,14 +324,91 @@ class PurchaseController extends GetxController {
     }
   }
 
-  Future<void> deletePurchase ({required String id, required BuildContext context}) async {
+  Future<void> savePurchase() async {
+    // Validate purchase fields
+    if (!validatePurchaseFields()) {
+      return; // Error messages are already shown inside validatePurchaseFields()
+    }
+
+    PurchaseModel purchase = PurchaseModel(
+      purchaseID: purchaseNumber.value,
+      date: DateTime.tryParse(dateController.text) ?? DateTime.now(),
+      vendor: selectedVendor.value,
+      invoiceNumber: invoiceNumberController.text.trim(),
+      purchasedItems: selectedProducts,
+      purchaseInvoiceImages: purchaseInvoiceImages,
+      total: purchaseTotal.value,
+    );
+
+    TransactionModel transaction = TransactionModel(
+        amount: purchaseTotal.value,
+        date:  DateTime.tryParse(dateController.text) ?? DateTime.now(),
+        fromEntityId: selectedVendor.value.vendorId,
+        fromEntityName: selectedVendor.value.company,
+        fromEntityType: EntityType.vendor,
+        transactionType: TransactionType.purchase,
+        purchaseId: purchaseNumber.value
+    );
+
+    await uploadPurchase(purchase: purchase, transaction: transaction);
+  }
+
+  Future<void> uploadPurchase({required PurchaseModel purchase, required TransactionModel transaction}) async {
+    try {
+      //Start Loading
+      TFullScreenLoader.openLoadingDialog('We are adding purchase...', Images.docerAnimation);
+      //check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+        throw 'Internet Not connected';
+      }
+      final fetchedPurchaseId = await mongoPurchasesRepo.fetchPurchaseGetNextId();
+      if (fetchedPurchaseId != purchaseNumber.value) {
+        purchase.purchaseID = fetchedPurchaseId;
+        transaction.purchaseId = fetchedPurchaseId;
+      }
+
+      Future<void> updateTransaction = transactionController.processTransaction(transaction: transaction);
+
+      Future<void> updateProductQuantities = updateProductQuantity(isAddition: true);
+
+      Future<void> uploadPurchase = mongoPurchasesRepo.pushPurchase(purchase: purchase); // Use batch insert function
+
+      // Execute all three operations
+      await Future.wait([updateTransaction, updateProductQuantities, uploadPurchase]);
+
+      await clearPurchase();
+      await refreshPurchases();
+      TFullScreenLoader.stopLoading();
+      TLoaders.customToast(message: 'Purchase uploaded successfully!');
+      Navigator.of(Get.context!).pop();
+    } catch (e) {
+      //remove Loader
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
+  Future<void> deletePurchase ({required PurchaseModel purchase, required BuildContext context}) async {
     try {
       DialogHelper.showDialog(
           context: context,
           title: 'Delete Purchase',
           message: 'Are you sure to delete this Purchase',
-          function: () async { await mongoPurchasesRepo.deletePurchase(id: id); },
-          toastMessage: 'Deleted successfully!'
+          function: () async {
+            // Reverse product quantities before deleting the purchase
+            await updateProductQuantity(isAddition: false);
+            // Delete the associated transaction (if any)
+            await transactionController.deleteTransactionByPurchaseId(purchaseId: purchase.purchaseID ?? 0);
+            // Delete purchase record
+            await mongoPurchasesRepo.deletePurchase(id: purchase.id ?? '');
+            // Refresh purchase list
+            await refreshPurchases();
+            // Close the current screen after successful deletion
+            Navigator.pop(context);
+            },
+          toastMessage: 'Purchase deleted successfully!'
       );
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());

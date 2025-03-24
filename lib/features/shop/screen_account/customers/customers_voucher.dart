@@ -48,7 +48,7 @@ class CustomersVoucher extends StatelessWidget {
     );
 
     return Scaffold(
-        appBar: const TAppBar2(titleText: 'Customers Voucher', searchType: SearchType.customers),
+        appBar: const AppAppBar2(titleText: 'Customers Voucher', searchType: SearchType.customers),
         body: RefreshIndicator(
           color: TColors.refreshIndicator,
           onRefresh: () async => customersVoucherController.refreshCustomers(),

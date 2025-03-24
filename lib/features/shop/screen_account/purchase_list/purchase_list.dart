@@ -1,4 +1,6 @@
 import 'package:fincom/common/layout_models/product_grid_layout.dart';
+import 'package:fincom/common/navigation_bar/appbar2.dart';
+import 'package:fincom/common/text/section_heading.dart';
 import 'package:fincom/features/shop/models/purchase_item_model.dart';
 import 'package:fincom/utils/formatters/formatters.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,9 @@ import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controller_account/purchase_list_controller/purchase_list_controller.dart';
 import '../../screens/orders/widgets/order_list_items.dart';
+import 'orders_by_status.dart';
 import 'widget/purchase_list_item.dart';
+import 'widget/purchase_list_shimmer.dart';
 
 class PurchaseList extends StatelessWidget {
   const PurchaseList({super.key});
@@ -24,11 +28,9 @@ class PurchaseList extends StatelessWidget {
     final controller = Get.put(PurchaseListController());
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text('Purchase Product List', style: TextStyle(fontSize: 18)),
-        actions: [
-          Obx(() => Padding(
+      appBar: AppAppBar2(
+        titleText: 'Purchase Product List',
+        widget: Obx(() => Padding(
             padding: const EdgeInsets.only(right: Sizes.xl),
             child: !controller.isFetching.value
                 ? InkWell(
@@ -50,20 +52,23 @@ class PurchaseList extends StatelessWidget {
                     ),
                   ),
           )),
-        ],
       ),
       bottomSheet: Obx(() => Container(
         color:  Theme.of(context).colorScheme.background,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('Last Sync - ${TFormatter.formatStringDate(controller.lastSyncDate.value.toString())}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),),
-              Text('Total - ${controller.products.length}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),),
-              Text('Purchased - ${controller.purchasedProductIds.length}', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              Text(
+                  'Last Sync - ${TFormatter.formatStringDate(controller.purchaseListMetaData.value.lastSyncDate.toString())}',
+                  style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+              Text('Total - ${controller.products.length}',
+                style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),),
+              Text('Purchased - ${controller.purchaseListMetaData.value.purchasedProductIds?.length ?? 0}',
+                  style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant)),
             ],
           ),
-      ),
-      ),
+      )),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,
         onRefresh: () async {
@@ -74,7 +79,26 @@ class PurchaseList extends StatelessWidget {
           children: [
             Obx(() {
               if (controller.isLoading.value) {
-                return OrderShimmer(itemCount: 2);
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Status'),
+                        InkWell(
+                          onTap: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Orders'),
+                              const Icon(Icons.arrow_right, size: 25, color: Colors.blue),
+                            ],
+                          ),
+                        )                      ],
+                    ),
+                    PurchaseListShimmer(),
+                  ],
+                );
               } else if (controller.products.isEmpty) {
                 return TAnimationLoaderWidgets(
                   text: 'Whoops! No Orders Found...',
@@ -84,99 +108,114 @@ class PurchaseList extends StatelessWidget {
                   onActionPress: () => controller.showDialogForSelectOrderStatus(),
                 );
               } else {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.vendorKeywords.keys.length,
-                  itemBuilder: (context, index) {
-                    final companyName = controller.vendorKeywords.keys.elementAt(index);
-                    final allVendorProducts = controller.filterProductsByVendor(vendorName: companyName);
-                    final availableVendorProducts = allVendorProducts
-                        .where((product) =>
-                    !controller.purchasedProductIds.contains(product.id) &&
-                        !controller.notAvailableProductIds.contains(product.id))
-                        .toList();
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(controller.purchaseListMetaData.value.orderStatus?.map((e) => e.prettyName).join(', ') ?? '',),
+                        InkWell(
+                          onTap: () => Get.to(() => OrdersByStatus(orders: controller.orders, orderStatus: controller.purchaseListMetaData.value.orderStatus ?? [OrderStatus.unknown],)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Orders'),
+                              const Icon(Icons.arrow_right, size: 25, color: Colors.blue),
+                            ],
+                          ),
+                        )                      ],
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controller.vendorKeywords.keys.length,
+                      itemBuilder: (context, index) {
+                        final companyName = controller.vendorKeywords.keys.elementAt(index);
+                        final allVendorProducts = controller.filterProductsByVendor(vendorName: companyName);
+                        // Initialize expanded states if not already present
+                        controller.initializeExpansionState(companyName); // Ensure companyName exists
+                        return allVendorProducts.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: Sizes.sm),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Vendor Header
+                                    InkWell(
+                                      onTap: () {
+                                        // Toggle the expansion state for a specific section
+                                        controller.expandedSections[companyName]![PurchaseListType.vendors] =
+                                              !controller.expandedSections[companyName]![PurchaseListType.vendors]!;
 
-                    // Initialize expanded states if not already present
-                    controller.initializeExpansionState(companyName); // Ensure companyName exists
+                                        // Refresh the UI
+                                        controller.expandedSections.refresh();
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(Sizes.defaultSpace),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.surface, // Use surface for a neutral background
+                                          borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: Theme.of(context).colorScheme.outline, // `outline` works well for borders in flex_color_scheme
+                                          ),                                    ),
+                                        child: Obx(() => Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('$companyName ${allVendorProducts.length}'),
+                                            Icon((controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                                          ],
+                                        )),
+                                      ),
+                                    ),
 
-                    return availableVendorProducts.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: Sizes.sm),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Vendor Header
-                                InkWell(
-                                  onTap: () {
-                                    // Toggle the expansion state for a specific section
-                                    controller.expandedSections[companyName]![PurchaseListType.vendors] =
-                                          !controller.expandedSections[companyName]![PurchaseListType.vendors]!;
+                                    // Vendor Products List
+                                    Obx(() {
+                                      if (controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) {
+                                        // Ensure that the Obx is observing the reactive properties
+                                        final purchasedProductIds = controller.purchaseListMetaData.value.purchasedProductIds ?? [];
+                                        final notAvailableProductIds = controller.purchaseListMetaData.value.notAvailableProductIds ?? [];
 
-                                    // Refresh the UI
-                                    controller.expandedSections.refresh();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(Sizes.defaultSpace),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.surface, // Use surface for a neutral background
-                                      borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Theme.of(context).colorScheme.outline, // `outline` works well for borders in flex_color_scheme
-                                      ),                                    ),
-                                    child: Obx(() => Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('$companyName ${allVendorProducts.length}'),
-                                        Icon((controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                                      ],
-                                    )),
-                                  ),
+                                        return Column(
+                                          children: [
+                                            _buildProductListSection(
+                                              context: context,
+                                              companyName: companyName,
+                                              title: 'Purchasable',
+                                              purchaseListType: PurchaseListType.purchasable,
+                                              backgroundColor: Colors.green,
+                                              filterCondition: (product) => !purchasedProductIds.contains(product.id) && !notAvailableProductIds.contains(product.id),
+                                            ),
+                                            _buildProductListSection(
+                                              context: context,
+                                              companyName: companyName,
+                                              title: 'Purchased',
+                                              purchaseListType: PurchaseListType.purchased,
+                                              backgroundColor: Colors.blue,
+                                              filterCondition: (product) => purchasedProductIds.contains(product.id),
+                                            ),
+                                            _buildProductListSection(
+                                              context: context,
+                                              companyName: companyName,
+                                              title: 'Not Available',
+                                              purchaseListType: PurchaseListType.notAvailable,
+                                              backgroundColor: Colors.red,
+                                              filterCondition: (product) => notAvailableProductIds.contains(product.id),
+                                            ),
+                                          ],
+                                        );
+                                      } else {
+                                        return SizedBox.shrink();
+                                      }
+                                    }),
+                                  ],
                                 ),
-
-                                // Vendor Products List
-                                Obx(() {
-                                  if (controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) {
-                                    return Column(
-                                      children: [
-                                        _buildProductListSection(
-                                          context: context,
-                                          companyName: companyName,
-                                          title: 'Purchasable',
-                                          purchaseListType: PurchaseListType.purchasable,
-                                          backgroundColor: Colors.green,
-                                          filterCondition: (product) =>
-                                              !controller.purchasedProductIds.contains(product.id) &&
-                                              !controller.notAvailableProductIds.contains(product.id),
-                                        ),
-                                        _buildProductListSection(
-                                          context: context,
-                                          companyName: companyName,
-                                          title: 'Purchased',
-                                          purchaseListType: PurchaseListType.purchased,
-                                          backgroundColor: Colors.blue,
-                                          filterCondition: (product) => controller.purchasedProductIds.contains(product.id),
-                                        ),
-                                        _buildProductListSection(
-                                          context: context,
-                                          companyName: companyName,
-                                          title: 'Not Available',
-                                          purchaseListType: PurchaseListType.notAvailable,
-                                          backgroundColor: Colors.red,
-                                          filterCondition: (product) => controller.notAvailableProductIds.contains(product.id),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return SizedBox.shrink();
-                                  }
-                                }),
-                              ],
-                            ),
-                          )
-                        : SizedBox.shrink();
-                  },
+                              )
+                            : SizedBox.shrink();
+                      },
+                    ),
+                    SizedBox(height: 50),
+                  ],
                 );
               }
             }),
@@ -250,23 +289,11 @@ class PurchaseList extends StatelessWidget {
                   ? DismissDirection.horizontal
                   : DismissDirection.endToStart,
                 onDismissed: (direction) {
-                  if (purchaseListType == PurchaseListType.purchasable) {
-                    if (direction == DismissDirection.endToStart) {
-                      controller.purchasedProductIds.add(product.id);
-                    } else if (direction == DismissDirection.startToEnd) {
-                      controller.notAvailableProductIds.add(product.id);
-                    }
-                  }
-                  if(purchaseListType == PurchaseListType.purchased) {
-                    if (direction == DismissDirection.endToStart) {
-                      controller.purchasedProductIds.remove(product.id);
-                    }
-                  }
-                  if(purchaseListType == PurchaseListType.notAvailable) {
-                    if (direction == DismissDirection.endToStart) {
-                      controller.notAvailableProductIds.remove(product.id);
-                    }
-                  }
+                  controller.handleProductListUpdate(
+                    productId: product.id,
+                    purchaseListType: purchaseListType,
+                    direction: direction,
+                  );
                 },
                 background: Padding(
                   padding: const EdgeInsets.only(top: Sizes.sm),
@@ -297,7 +324,7 @@ class PurchaseList extends StatelessWidget {
                       children: [
                         // SizedBox.shrink(),
                         Text('Restore'),
-                        Icon(Icons.restore, color: Colors.white),
+                        Icon(Icons.restore, color: Theme.of(context).colorScheme.onSurface),
                       ],
                     )
                   ),

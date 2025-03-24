@@ -69,7 +69,7 @@ class EnterOTPScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
 
                 //Otp Input field
                 SizedBox(
@@ -84,8 +84,8 @@ class EnterOTPScreen extends StatelessWidget {
                     ),
                     textInputAction: TextInputAction.done,
                     decoration: UnderlineDecoration(
-                      textStyle: const TextStyle(fontSize: 18, color: Colors.black),
-                      colorBuilder: FixedColorBuilder(Colors.black.withOpacity(0.4)),
+                      textStyle: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
+                      colorBuilder: FixedColorBuilder(Theme.of(context).colorScheme.onSurfaceVariant),
                       // bgColorBuilder: FixedColorBuilder(Colors.grey.withOpacity(0.2))
                     ),
                     controller: otpController.otp,
@@ -98,7 +98,7 @@ class EnterOTPScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
 
                 //Button Verify OTP
                 SizedBox(

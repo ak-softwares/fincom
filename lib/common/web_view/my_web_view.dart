@@ -70,7 +70,7 @@ class MyWebView extends StatelessWidget {
         // return;
       },
       child: Scaffold(
-        appBar: TAppBar2(titleText: title),
+        appBar: AppAppBar2(titleText: title),
         body: RefreshIndicator(
           color: TColors.primaryColor,
           onRefresh: () async {

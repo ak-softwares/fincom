@@ -114,7 +114,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
     });
 
     return Scaffold(
-      appBar: TAppBar2(titleText: widget.product?.name ?? 'Product Details', showCartIcon: true),
+      appBar: AppAppBar2(titleText: widget.product?.name ?? 'Product Details', showCartIcon: true),
       bottomNavigationBar: Obx(() => TBottomAddToCart(product: _product.value, quantity: quantityInCart.value, pageSource: 'product_detail1',)),
       body: RefreshIndicator(
         color: TColors.refreshIndicator,
@@ -262,7 +262,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                       futureMethod: productController.getFBTProducts
                   ),
 
-                  const SizedBox(height: Sizes.spaceBtwSection),
+                  const SizedBox(height: Sizes.spaceBtwSections),
                   _product.value.description != ''
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

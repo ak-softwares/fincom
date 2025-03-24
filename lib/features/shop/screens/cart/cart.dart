@@ -31,7 +31,7 @@ class CartScreen extends StatelessWidget {
     FBAnalytics.logViewCart(cartItems: cartController.cartItems);
 
     return Scaffold(
-        appBar: const TAppBar2(titleText: "Cart"),
+        appBar: const AppAppBar2(titleText: "Cart"),
         bottomNavigationBar: Obx((){
           if (AuthenticationRepository.instance.isUserLogin.value && cartController.cartItems.isNotEmpty){
             return Padding(

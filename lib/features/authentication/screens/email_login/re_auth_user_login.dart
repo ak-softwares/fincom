@@ -17,7 +17,7 @@ class ReAuthLoginForm extends StatelessWidget {
     FBAnalytics.logPageView('re_auth_login_screen');
     final controller = Get.put(CustomersController());
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Re-Authentication User", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Re-Authentication User", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Sizes.defaultSpace),
@@ -54,7 +54,7 @@ class ReAuthLoginForm extends StatelessWidget {
                                 )
                             )),
                         // Login button
-                        const SizedBox(height: Sizes.spaceBtwSection),
+                        const SizedBox(height: Sizes.spaceBtwSections),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

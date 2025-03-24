@@ -15,8 +15,8 @@ import '../../utils/constants/text_strings.dart';
 import '../../utils/device/device_utility.dart';
 import '../widgets/product/cart/cart_counter_icon.dart';
 
-class TAppBar2 extends StatelessWidget implements PreferredSizeWidget{
-  const TAppBar2({
+class AppAppBar2 extends StatelessWidget implements PreferredSizeWidget{
+  const AppAppBar2({
     super.key,
     required this.titleText,
     this.showBackArrow = false,

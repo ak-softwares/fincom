@@ -25,7 +25,7 @@ class EmailLoginScreen extends StatelessWidget {
     final controller = Get.put(LoginController());
     final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
-      appBar: const TAppBar2(titleText: "Login", showBackArrow: true),
+      appBar: const AppAppBar2(titleText: "Login", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -41,7 +41,7 @@ class EmailLoginScreen extends StatelessWidget {
                     Text(TTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
                 //Form Field
                 Form(
                   key: controller.loginFormKey,
@@ -99,7 +99,7 @@ class EmailLoginScreen extends StatelessWidget {
                           ),
 
                           //Login button
-                          const SizedBox(height: Sizes.spaceBtwSection),
+                          const SizedBox(height: Sizes.spaceBtwSections),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -112,7 +112,7 @@ class EmailLoginScreen extends StatelessWidget {
                 ),
 
                 //Not a Member?  Divider
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
@@ -134,7 +134,7 @@ class EmailLoginScreen extends StatelessWidget {
                 ),
 
                 //Social Login
-                const SizedBox(height: Sizes.spaceBtwSection),
+                const SizedBox(height: Sizes.spaceBtwSections),
                 const TSocialButtons(),
               ],
             ),

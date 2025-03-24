@@ -8,7 +8,8 @@ import '../../../../shop/screen_account/products/products_voucher.dart';
 import '../../../../shop/screen_account/purchase/purchase.dart';
 import '../../../../shop/screen_account/purchase_list/purchase_list.dart';
 import '../../../../shop/screen_account/sales/sales.dart';
-import '../../../../shop/screen_account/vendor/vendor_voucher.dart';
+import '../../../../shop/screen_account/transacton/transactions.dart';
+import '../../../../shop/screen_account/vendor/vendor.dart';
 
 class Menu extends StatelessWidget {
   const Menu({
@@ -58,7 +59,14 @@ class Menu extends StatelessWidget {
           trailing: Icon(Icons.arrow_forward_ios, size: 20,),
         ),
         ListTile(
-          onTap: () => Get.to(() => const VendorVoucher()),
+          onTap: () => Get.to(() => const Transactions()),
+          leading: Icon(Icons.list_alt,size: 20),
+          title: Text('Transactions'),
+          subtitle: Text('All Transactions list'),
+          trailing: Icon(Icons.arrow_forward_ios, size: 20,),
+        ),
+        ListTile(
+          onTap: () => Get.to(() => const Vendors()),
           leading: Icon(TIcons.customers,size: 20),
           title: Text('Vendors'),
           subtitle: Text('All Vendors list'),

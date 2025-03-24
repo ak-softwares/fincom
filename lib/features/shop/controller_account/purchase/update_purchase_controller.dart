@@ -11,14 +11,17 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/image/image_kit_repo.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/mongodb/purchase/purchase_repositories.dart';
+import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
 import '../../models/image_model.dart';
 import '../../models/payment_method.dart';
 import '../../models/product_model.dart';
 import '../../models/purchase_model.dart';
+import '../../models/transaction_model.dart';
 import '../../models/vendor_model.dart';
 import '../product/product_controller.dart';
+import '../transaction/transaction_controller.dart';
 import '../vendor/vendor_controller.dart';
 import 'purchase_controller.dart';
 
@@ -44,7 +47,6 @@ class UpdatePurchaseController extends GetxController {
   RxInt purchaseNumber = 0.obs;
   final RxList<CartModel> selectedProducts = <CartModel>[].obs;
   Rx<VendorModel> selectedVendor = VendorModel().obs;
-  Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel().obs;
 
   final RxString searchQuery = ''.obs;
 
@@ -58,10 +60,10 @@ class UpdatePurchaseController extends GetxController {
   final mongoProductRepo = Get.put(MongoProductRepo());
   final mongoPurchasesRepo = Get.put(MongoPurchasesRepo());
   final purchaseController = Get.put(PurchaseController());
+  final transactionController = Get.put(TransactionController());
 
   TextEditingController dateController = TextEditingController();
   TextEditingController invoiceNumberController = TextEditingController();
-  TextEditingController paymentAmountController = TextEditingController();
 
   @override
   Future<void> onInit() async {
@@ -74,7 +76,6 @@ class UpdatePurchaseController extends GetxController {
   void onClose() {
     dateController.dispose();
     invoiceNumberController.dispose();
-    paymentAmountController.dispose();
     super.onClose();
   }
 
@@ -83,10 +84,8 @@ class UpdatePurchaseController extends GetxController {
     purchaseNumber.value = purchase.purchaseID ?? 0;
     dateController.text = purchase.date.toString();
     invoiceNumberController.text = purchase.invoiceNumber ?? '';
-    paymentAmountController.text = purchase.paymentAmount.toString();
     selectedVendor.value = purchase.vendor ?? VendorModel();
     selectedProducts.value = purchase.purchasedItems ?? [];
-    selectedPaymentMethod.value = purchase.paymentMethod ?? PaymentMethodModel();
     purchaseInvoiceImages.value = purchase.purchaseInvoiceImages ?? [];
     updatePurchaseTotal();
   }
@@ -247,48 +246,74 @@ class UpdatePurchaseController extends GetxController {
     );
   }
 
-  void updatePurchase() {
+  void updatePurchase({required PurchaseModel previousPurchase}) {
     // Validate purchase fields
     if (!validatePurchaseFields()) {
       return; // Error messages are already shown inside validatePurchaseFields()
     }
+
     PurchaseModel purchase = PurchaseModel(
+      id: previousPurchase.id,
       purchaseID: purchaseNumber.value,
-      date: DateTime.tryParse(dateController.text) ?? DateTime.now(),
+      date: DateTime.tryParse(dateController.text) ?? previousPurchase.date,
       vendor: selectedVendor.value,
       invoiceNumber: invoiceNumberController.text.trim(),
       purchasedItems: selectedProducts,
       purchaseInvoiceImages: purchaseInvoiceImages,
       total: purchaseTotal.value,
-      paymentMethod: selectedPaymentMethod.value,
-      paymentAmount: double.tryParse(paymentAmountController.text.trim()) ?? 0.0,
     );
-    uploadEditPurchase(purchase: purchase);
+
+    TransactionModel transaction = TransactionModel(
+      amount: purchaseTotal.value,
+      date: DateTime.tryParse(dateController.text) ?? DateTime.now(),
+      fromEntityId: selectedVendor.value.vendorId,
+      fromEntityName: selectedVendor.value.company,
+      fromEntityType: EntityType.vendor,
+      transactionType: TransactionType.purchase,
+      purchaseId: purchaseNumber.value,
+    );
+
+    uploadEditPurchase(purchase: purchase, transaction: transaction);
   }
 
   // Upload purchase
-  Future<void> uploadEditPurchase({required PurchaseModel purchase}) async {
+  Future<void> uploadEditPurchase({required PurchaseModel purchase, required TransactionModel transaction}) async {
     try {
-      //Start Loading
-      TFullScreenLoader.openLoadingDialog('We are updating your Address..', Images.docerAnimation);
-      //check internet connectivity
+      // Start Loading
+      TFullScreenLoader.openLoadingDialog('We are updating purchase...', Images.docerAnimation);
+
+      // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         TFullScreenLoader.stopLoading();
-        return;
+        throw 'Internet Not Connected';
       }
-      await mongoPurchasesRepo.updatePurchase(id: id, purchase: purchase); // Use batch insert function
+
+      // Update the purchase record
+      await mongoPurchasesRepo.updatePurchase(id: purchase.id! , purchase: purchase);
+
+      // Update the associated transaction
+      await transactionController.updateTransactionByPurchaseId(purchaseId: purchase.purchaseID!, transaction: transaction);
+
+      // Update product quantities
       await updateProductQuantity(isAddition: true);
+
+      // Refresh the purchase list
       await purchaseController.refreshPurchases();
+
+      // Stop loading and show success message
       TFullScreenLoader.stopLoading();
-      TLoaders.customToast(message: 'Purchase uploaded successfully!');
+      TLoaders.customToast(message: 'Purchase updated successfully!');
+
+      // Navigate back
       Navigator.of(Get.context!).pop();
     } catch (e) {
-      //remove Loader
+      // Remove loader and show error message
       TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
+
 
   bool validatePurchaseFields() {
     try {
@@ -298,14 +323,8 @@ class UpdatePurchaseController extends GetxController {
       if (selectedVendor.value.company == null || selectedVendor.value.company!.isEmpty) {
         throw Exception('Please select a vendor.');
       }
-      if (selectedPaymentMethod.value.paymentMethodName == null || selectedPaymentMethod.value.paymentMethodName!.isEmpty) {
-        throw Exception('Please select a payment method.');
-      }
       if (dateController.text.isEmpty) {
         throw Exception('Please enter a date.');
-      }
-      if (paymentAmountController.text.isEmpty) {
-        throw Exception('Please enter a payment amount.');
       }
       // Validate purchaseInvoiceImages
       for (var imageModel in purchaseInvoiceImages) {
@@ -335,7 +354,5 @@ class UpdatePurchaseController extends GetxController {
       rethrow;
     }
   }
-
-
 
 }

@@ -25,14 +25,14 @@ class UserProfileScreen extends StatelessWidget {
     final controller = Get.put(CustomersController());
 
     return Scaffold(
-      appBar: const TAppBar2(titleText: 'Profile Setting', showBackArrow: true),
+      appBar: const AppAppBar2(titleText: 'Profile Setting', showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(Sizes.defaultSpace),
           ///- user image
           child: Column(
             children: [
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               Stack(
                 children: [
                   TRoundedImage(
@@ -58,7 +58,7 @@ class UserProfileScreen extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwSection),
+              const SizedBox(height: Sizes.spaceBtwSections),
               const Divider(),
               const SizedBox(height: Sizes.spaceBtwItems),
               const TSectionHeading(title: 'Profile Information', seeActionButton: false),

@@ -56,7 +56,7 @@ class FavouriteScreen extends StatelessWidget {
     );
 
     return Obx(() => Scaffold(
-          appBar: const TAppBar2(titleText: 'Wishlist', showCartIcon: true,),
+          appBar: const AppAppBar2(titleText: 'Wishlist', showCartIcon: true,),
           body: !authenticationRepository.isUserLogin.value
             ? const CheckLoginScreen(text: 'Please Login! before Add to ❤️ favorite!')
             : RefreshIndicator(
