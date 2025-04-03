@@ -22,9 +22,9 @@ class SingleProductShimmer extends StatelessWidget {
         const SizedBox(
           height: mainImageHeight, //Main image height
           width: double.infinity,
-          child: Center(child: ShimmerEffect(height: mainImageHeight, width: mainImageHeight, radius: Sizes.productImageRadius,)),
+          child: Center(child: ShimmerEffect(height: mainImageHeight, width: mainImageHeight, radius: AppSizes.productImageRadius,)),
         ),
-        const SizedBox(height: Sizes.spaceBtwItems),
+        const SizedBox(height: AppSizes.spaceBtwItems),
         SizedBox(
           height: galleryImageHeight,
           child: ListView.separated(
@@ -32,19 +32,19 @@ class SingleProductShimmer extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             physics: const AlwaysScrollableScrollPhysics(),
-            separatorBuilder: (_,__) => const SizedBox(width: Sizes.spaceBtwItems),
-            itemBuilder: (_, index) => const ShimmerEffect(height: galleryImageHeight, width: galleryImageHeight, radius: Sizes.productImageRadius,)
+            separatorBuilder: (_,__) => const SizedBox(width: AppSizes.spaceBtwItems),
+            itemBuilder: (_, index) => const ShimmerEffect(height: galleryImageHeight, width: galleryImageHeight, radius: AppSizes.productImageRadius,)
           )
         ),
-        const SizedBox(height: Sizes.spaceBtwSections),
+        const SizedBox(height: AppSizes.spaceBtwSection),
         const ShimmerEffect(width: 100, height: 10, radius: 0,),
-        const SizedBox(height: Sizes.spaceBtwInputFields),
+        const SizedBox(height: AppSizes.spaceBtwInputFields),
         const ShimmerEffect(width: double.infinity, height: 25, radius: 0,),
-        const SizedBox(height: Sizes.spaceBtwItems),
+        const SizedBox(height: AppSizes.spaceBtwItems),
         const ShimmerEffect(width: 300, height: 25, radius: 0,),
-        const SizedBox(height: Sizes.spaceBtwSections),
+        const SizedBox(height: AppSizes.spaceBtwSection),
         const ShimmerEffect(width: 150, height: 15),
-        const SizedBox(height: Sizes.spaceBtwItems),
+        const SizedBox(height: AppSizes.spaceBtwItems),
         const ShimmerEffect(width: 100, height: 15),
       ],
     );

@@ -12,6 +12,7 @@ class DbCollections{
   static const String vendors = 'vendors';
   static const String payments = 'payments';
   static const String transactions = 'transactions';
+  static const String expenses = 'expenses';
 }
 
 class MetaDataName {
@@ -21,6 +22,7 @@ class MetaDataName {
 
 class PurchaseListFieldName {
   static const String id = '_id';
+  static const String extraNote = 'extra_note';
   static const String lastSyncDate = 'last_sync_date';
   static const String purchasedProductIds = 'purchased_product_ids';
   static const String notAvailableProductIds = 'not_available_product_ids';
@@ -40,7 +42,8 @@ class PurchaseListConstants {
   static const String purchaseOrders = 'purchaseOrders';
 }
 class ProductFieldName {
-  static const String id = 'id';
+  static const String id = '_id';
+  static const String productId = 'product_id';
   static const String name = 'name';
   static const String mainImage = 'main_image';
   static const String permalink = 'permalink';
@@ -69,6 +72,7 @@ class ProductFieldName {
   static const String taxClass = 'tax_class';
   static const String manageStock = 'manage_stock';
   static const String stockQuantity = 'stock_quantity';
+  static const String purchaseHistory = 'purchase_history';
   static const String weight = 'weight';
   static const String dimensions = 'dimensions';
   static const String shippingRequired = 'shipping_required';
@@ -201,7 +205,8 @@ class VendorFieldName {
 
 
 class CustomerFieldName {
-  static const String id = 'id';
+  static const String id = '_id';
+  static const String customerId = 'id';
   static const String email = 'email';
   static const String password = 'password';
   static const String fullName = 'full_name';
@@ -319,6 +324,7 @@ class AddressFieldName {
 class CartFieldName {
   static const String id = 'id';
   static const String name = 'name';
+  static const String product_id = 'productId';
   static const String productId = 'product_id';
   static const String variationId = 'variation_id';
   static const String quantity = 'quantity';
@@ -384,6 +390,15 @@ class PurchaseFieldName {
   static const String paymentAmount = 'payment_amount';
 }
 
+class PurchaseHistoryFieldName {
+  static const String id = '_id';
+  static const String productId = 'product_id';
+  static const String purchaseId = 'purchase_id';
+  static const String price = 'price';
+  static const String quantity = 'quantity';
+  static const String purchaseDate = 'purchase_date';
+}
+
 class PaymentMethodFieldName {
   static const String id = '_id';
   static const String paymentId = 'payment_id';
@@ -391,6 +406,18 @@ class PaymentMethodFieldName {
   static const String balance = 'balance';
   static const String paymentMethodName = 'payment_method_name'; // corrected
   static const String dateCreated = 'date_created'; // corrected
+}
+
+class ExpenseFieldName {
+  static const String id = '_id';
+  static const String expenseId = 'expense_id';
+  static const String title = 'title';
+  static const String amount = 'amount';
+  static const String description = 'description';
+  static const String category = 'category';
+  static const String paymentMethod = 'payment_method';
+  static const String date = 'date';
+  static const String dateCreated = 'date_created';
 }
 
 class TransactionFieldName {

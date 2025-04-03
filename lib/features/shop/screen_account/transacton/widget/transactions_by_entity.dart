@@ -19,7 +19,7 @@ class TransactionsByEntity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double transactionTileHeight = Sizes.transactionTileHeight;
+    final double transactionTileHeight = AppSizes.transactionTileHeight;
     final transactionController = Get.put(TransactionController());
     final ScrollController scrollController = ScrollController();
 

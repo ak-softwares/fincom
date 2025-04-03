@@ -19,7 +19,7 @@ class TTermsAndConditionsCheckBox extends StatelessWidget {
               onChanged: (value) => controller.privacyPolicyChecked.value = !controller.privacyPolicyChecked.value,
           )),
         ),
-        const SizedBox(width: Sizes.spaceBtwItems),
+        const SizedBox(width: AppSizes.spaceBtwItems),
         Text.rich(
           TextSpan(
             children: [
@@ -27,18 +27,18 @@ class TTermsAndConditionsCheckBox extends StatelessWidget {
               TextSpan(
                 text: 'Privacy Policy',
                 style: Theme.of(context).textTheme.bodyMedium!.apply(
-                        color: TColors.linkColor,
+                        color: AppColors.linkColor,
                         decoration: TextDecoration.underline,
-                        decorationColor: TColors.linkColor,
+                        decorationColor: AppColors.linkColor,
                         )
               ),
               const TextSpan(text: ' And '),
               TextSpan(
                   text: 'Terms of Use',
                   style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    color: TColors.linkColor,
+                    color: AppColors.linkColor,
                     decoration: TextDecoration.underline,
-                    decorationColor: TColors.linkColor,
+                    decorationColor: AppColors.linkColor,
                   )
               )
             ]

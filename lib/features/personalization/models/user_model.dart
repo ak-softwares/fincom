@@ -6,7 +6,8 @@ import 'address_model.dart';
 
 //for woocommerce
 class CustomerModel {
-  final int? id;
+  String? id;
+  int? customerId;
   String? email;
   String? password;
   String? firstName;
@@ -17,6 +18,7 @@ class CustomerModel {
   String? gstNumber;
   AddressModel? billing;
   AddressModel? shipping;
+  double? balance;
   bool? isPayingCustomer;
   String? avatarUrl;
   String? dateCreated;
@@ -26,6 +28,7 @@ class CustomerModel {
 
   CustomerModel({
     this.id,
+    this.customerId,
     this.email,
     this.password,
     this.firstName,
@@ -35,6 +38,7 @@ class CustomerModel {
     this.gstNumber,
     this.billing,
     this.shipping,
+    this.balance,
     this.isPayingCustomer,
     this.avatarUrl,
     this.dateCreated,
@@ -49,7 +53,7 @@ class CustomerModel {
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
     return CustomerModel(
-      id: json[CustomerFieldName.id] ?? 0,
+      customerId: json[CustomerFieldName.customerId] ?? 0,
       email: json[CustomerFieldName.email] ?? '',
       firstName: json[CustomerFieldName.firstName] ?? '',
       lastName: json[CustomerFieldName.lastName] ?? '',
@@ -68,7 +72,7 @@ class CustomerModel {
 
   Map<String, dynamic> toMap() {
     return {
-      CustomerFieldName.id: id,
+      CustomerFieldName.customerId: customerId,
       CustomerFieldName.email: email,
       CustomerFieldName.firstName: firstName,
       CustomerFieldName.lastName: lastName,
@@ -169,7 +173,7 @@ class UserModel {
   });
 
   ///Helper function to Format phone number
-  String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone ?? '');
+  String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phone ?? '');
 
   /// static function to create an empty user model.
   static UserModel empty() => UserModel(phone: '');

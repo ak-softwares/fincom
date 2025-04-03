@@ -47,7 +47,7 @@ class MyMiddleware extends GetMiddleware {
 class AppRoutes {
   static final pages = [
     GetPage(name: RoutesPath.home, page: () => const BottomNavigation(),),
-    GetPage(name: RoutesPath.product, page: () => ProductDetailScreen(slug: Get.parameters['slug']),),
+    GetPage(name: RoutesPath.product, page: () => ProductScreen(slug: Get.parameters['slug']),),
     // GetPage(name: RoutesPath.category, page: () => const CategoryScreen(), middlewares: [MyMiddleware()],),
     GetPage(name: RoutesPath.category, page: () => TAllProducts(title: 'Products', categoryId: Get.parameters['slug'], futureMethodTwoString: ProductController.instance.getProductsByCategorySlug)),
     GetPage(name: RoutesPath.tracking, page: () => const OrderScreen(),),
@@ -75,7 +75,7 @@ class AppRoutes {
     if (isValidUrl(routeName)) {
       // Extract the slug from the URL and navigate to the product detail screen
       String slug = extractSlugFromUrl(routeName);
-      Get.to(() => ProductDetailScreen(slug: slug));
+      Get.to(() => ProductScreen(slug: slug));
       // Get.toNamed('${CustomRoutes.product}/$slug');
     } else {
       launchUrlString(routeName);

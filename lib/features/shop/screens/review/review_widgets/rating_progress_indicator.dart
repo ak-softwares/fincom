@@ -6,7 +6,7 @@ import '../../../../../utils/device/device_utility.dart';
 
 class TRatingProgressIndicator extends StatelessWidget {
   const TRatingProgressIndicator({
-    super.key, required this.text, required this.value, this.color = TColors.ratingBar,
+    super.key, required this.text, required this.value, this.color = AppColors.ratingBar,
   });
   final String text;
   final double value;
@@ -16,7 +16,7 @@ class TRatingProgressIndicator extends StatelessWidget {
     return Row(
       children: [
         Expanded(flex: 3, child: Text(text, style: Theme.of(context).textTheme.labelMedium,)),
-        const SizedBox(height: Sizes.md),
+        const SizedBox(height: AppSizes.md),
         Expanded(flex: 7,
             child: SizedBox(
               width: TDeviceUtils.getScreenWidth(context) * 0.8,

@@ -19,11 +19,11 @@ class BrandTileShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double brandImageHeight = Sizes.brandImageHeight;
-    final double brandImageWidth = Sizes.brandImageWidth;
-    final double brandTileRadius = Sizes.brandTileRadius;
-    final double brandTileHeight = Sizes.brandTileHeight;
-    final double brandTileWidth  = Sizes.brandTileWidth;
+    final double brandImageHeight = AppSizes.brandImageHeight;
+    final double brandImageWidth = AppSizes.brandImageWidth;
+    final double brandTileRadius = AppSizes.brandTileRadius;
+    final double brandTileHeight = AppSizes.brandTileHeight;
+    final double brandTileWidth  = AppSizes.brandTileWidth;
 
     return orientation == OrientationType.vertical
         ? GridLayout(
@@ -32,7 +32,7 @@ class BrandTileShimmer extends StatelessWidget {
             itemCount: itemCount,
             itemBuilder: (_, __) {
               return  Column(
-                spacing: Sizes.spaceBtwItems,
+                spacing: AppSizes.spaceBtwItems,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   //Image
@@ -52,9 +52,9 @@ class BrandTileShimmer extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 0),
                 itemBuilder: (_, __) {
                   return  Padding(
-                    padding: const EdgeInsets.only(left: Sizes.defaultBtwTiles, top: Sizes.defaultBtwTiles),
+                    padding: const EdgeInsets.only(left: AppSizes.defaultBtwTiles, top: AppSizes.defaultBtwTiles),
                     child: Column(
-                      spacing: Sizes.spaceBtwItems,
+                      spacing: AppSizes.spaceBtwItems,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Image

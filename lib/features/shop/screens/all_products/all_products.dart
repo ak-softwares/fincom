@@ -65,7 +65,7 @@ class TAllProducts extends StatelessWidget {
     return Scaffold(
         appBar: AppAppBar2(titleText: title, showBackArrow: true, showCartIcon: true, sharePageLink: sharePageLink ?? "",),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async {
             if(futureMethod != null) {
               allProductController.refreshAllProducts(futureMethod!);
@@ -89,7 +89,7 @@ class TAllProducts extends StatelessWidget {
                     .map((option) => DropdownMenuItem(value: option, child: Text(option)))
                     .toList(),
               ),
-              const SizedBox(height: Sizes.defaultSpace),
+              const SizedBox(height: AppSizes.defaultSpace),
               ProductGridLayout(controller: allProductController, emptyWidget: emptyWidget, sourcePage: 'APS_$title'),
             ],
           ),

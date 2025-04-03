@@ -45,22 +45,22 @@ class _SinglePaymentState extends State<SinglePayment> {
 
   @override
   Widget build(BuildContext context) {
-    const double paymentTileHeight = Sizes.paymentTileHeight;
-    const double paymentTileWidth = Sizes.paymentTileWidth;
-    const double paymentTileRadius = Sizes.paymentTileRadius;
-    const double paymentImageHeight = Sizes.paymentImageHeight;
-    const double paymentImageWidth = Sizes.paymentImageWidth;
+    const double paymentTileHeight = AppSizes.paymentTileHeight;
+    const double paymentTileWidth = AppSizes.paymentTileWidth;
+    const double paymentTileRadius = AppSizes.paymentTileRadius;
+    const double paymentImageHeight = AppSizes.paymentImageHeight;
+    const double paymentImageWidth = AppSizes.paymentImageWidth;
 
     return Scaffold(
         appBar: AppAppBar2(
           titleText: payment.paymentMethodName ?? 'Payment',
           widget: TextButton(
               onPressed: () => Get.to(() => AddPayments(payment: payment)),
-              child: Text('Edit', style: TextStyle(color: TColors.linkColor),)
+              child: Text('Edit', style: TextStyle(color: AppColors.linkColor),)
           )
         ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshPayment(),
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
@@ -68,7 +68,7 @@ class _SinglePaymentState extends State<SinglePayment> {
           children: [
             Container(
                 width: paymentTileWidth,
-                padding: const EdgeInsets.all(Sizes.defaultSpace),
+                padding: const EdgeInsets.all(AppSizes.defaultSpace),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(paymentTileRadius),
                   color: Theme.of(context).colorScheme.surface,
@@ -108,9 +108,9 @@ class _SinglePaymentState extends State<SinglePayment> {
             ),
 
             // Transaction
-            SizedBox(height: Sizes.spaceBtwItems),
+            SizedBox(height: AppSizes.spaceBtwItems),
             Heading(title: 'Transaction'),
-            SizedBox(height: Sizes.spaceBtwItems),
+            SizedBox(height: AppSizes.spaceBtwItems),
             SizedBox(
                 height: 350,
                 child: TransactionsByEntity(entityType: EntityType.payment, entityId: payment.paymentId ?? 0)

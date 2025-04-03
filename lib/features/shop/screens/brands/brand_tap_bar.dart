@@ -35,20 +35,20 @@ class BrandTapBarScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          backgroundColor: TColors.white,
+          backgroundColor: AppColors.white,
           title: Text('Shop by Brands', style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w600)),
           actions: [
-            IconButton( icon: Icon(TIcons.search), color: TColors.secondaryColor, onPressed: () => showSearch(context: context, delegate: TSearchDelegate())),
-            TCartCounterIcon(iconColor: TColors.secondaryColor),
+            IconButton( icon: Icon(TIcons.search), color: AppColors.secondaryColor, onPressed: () => showSearch(context: context, delegate: TSearchDelegate())),
+            TCartCounterIcon(iconColor: AppColors.secondaryColor),
           ],
           toolbarHeight: 80,
           bottom: TabBar(
             unselectedLabelColor: Colors.black87,
-            indicatorColor: TColors.secondaryColor,
+            indicatorColor: AppColors.secondaryColor,
             isScrollable: true,
             tabs: brands.map((brand) {
               return Padding(
-                padding: const EdgeInsets.only(top: Sizes.defaultBtwTiles, bottom: Sizes.defaultBtwTiles),
+                padding: const EdgeInsets.only(top: AppSizes.defaultBtwTiles, bottom: AppSizes.defaultBtwTiles),
                 child: SingleBrandTile(
                     image: brand.image ?? '',
                 ),

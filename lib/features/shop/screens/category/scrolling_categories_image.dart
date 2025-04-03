@@ -20,7 +20,7 @@ class ScrollingCategoriesImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     final categoryController = Get.put(CategoryController());
-    final double categoryTileHeight = Sizes.categoryTileHeight;
+    final double categoryTileHeight = AppSizes.categoryTileHeight;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -44,7 +44,7 @@ class ScrollingCategoriesImage extends StatelessWidget {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(title: 'Categories Loading...', seeActionButton: true, onPressed: () => Get.to(() => const CategoryScreen())),
             ),
             CategoryTileShimmer(itemCount: 4, orientation: OrientationType.horizontal),
@@ -58,7 +58,7 @@ class ScrollingCategoriesImage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(title: 'Popular Categories', seeActionButton: true, onPressed: () => Get.to(() => const CategoryScreen())),
             ),
             ListLayout(
@@ -69,7 +69,7 @@ class ScrollingCategoriesImage extends StatelessWidget {
                 if (index < categories.length) {
                   final category = categories[index];
                   return Padding(
-                    padding: const EdgeInsets.only(left: Sizes.defaultBtwTiles, top: Sizes.defaultBtwTiles),
+                    padding: const EdgeInsets.only(left: AppSizes.defaultBtwTiles, top: AppSizes.defaultBtwTiles),
                     child: SingleCategoryTile(
                         title: category.name ?? '',
                         image: category.image ?? '',

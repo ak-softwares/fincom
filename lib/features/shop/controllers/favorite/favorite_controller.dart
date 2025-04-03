@@ -39,7 +39,7 @@ class FavoriteController extends GetxController{
   }
 
   void toggleFavoriteProduct({required ProductModel product}) {
-    final String productId = product.id.toString();
+    final String productId = product.productId.toString();
     if(!favorites.contains(productId)) {
       favorites.add(productId);
       FBAnalytics.logAddToWishlist(product: product);

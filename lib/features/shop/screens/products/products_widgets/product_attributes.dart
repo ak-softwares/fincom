@@ -15,21 +15,21 @@ class TProductAttributes extends StatelessWidget {
     return Column(
       children: [
         TRoundedContainer(
-          padding: const EdgeInsets.all(Sizes.sm),
+          padding: const EdgeInsets.all(AppSizes.sm),
           backgroundColor: Colors.grey.shade300,
           child: const Column(
             children: [
               Row(
                 children: [
                   TSectionHeading(title: 'Variation'),
-                  SizedBox(width: Sizes.spaceBtwItems),
+                  SizedBox(width: AppSizes.spaceBtwItems),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           Text('Price'),
-                          SizedBox(width: Sizes.spaceBtwItems),
+                          SizedBox(width: AppSizes.spaceBtwItems),
                           ProductPrice(salePrice: 449, regularPrice: 999, size: 20),
                         ],
                       ),
@@ -45,14 +45,14 @@ class TProductAttributes extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Sizes.spaceBtwItems),
+        const SizedBox(height: AppSizes.spaceBtwItems),
 
         ///attributes
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const TSectionHeading(title: 'Colors'),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             Wrap(
               spacing: 10,
               children: [
@@ -63,12 +63,12 @@ class TProductAttributes extends StatelessWidget {
             )
           ],
         ),
-        const SizedBox(height: Sizes.sm),
+        const SizedBox(height: AppSizes.sm),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const TSectionHeading(title: 'Size'),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             Wrap(
               spacing: 10,
               children: [

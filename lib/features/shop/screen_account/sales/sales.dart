@@ -49,7 +49,7 @@ class SalesVoucher extends StatelessWidget {
     return Scaffold(
         appBar: const AppAppBar2(titleText: 'Sales Voucher', searchType: SearchType.orders),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async => salesVoucherController.refreshOrders(),
           child: ListView(
             controller: scrollController,
@@ -60,7 +60,7 @@ class SalesVoucher extends StatelessWidget {
                 onPressed: () => Get.to(() => NewOrderFound()),
                 child: Text('Go to new Orders ->'),
               ),
-              SizedBox(height: Sizes.spaceBtwItems),
+              SizedBox(height: AppSizes.spaceBtwItems),
               Obx(() => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -82,7 +82,7 @@ class SalesVoucher extends StatelessWidget {
                   )
                 ],
               )),
-              SizedBox(height: Sizes.spaceBtwItems),
+              SizedBox(height: AppSizes.spaceBtwItems),
               OrdersGridLayout(controller: salesVoucherController, orientation: OrientationType.horizontal, emptyWidget: emptyWidget, sourcePage: 'recently_view',),
             ],
           ),

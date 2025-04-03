@@ -24,7 +24,7 @@ class InternalAppRoutes {
 
   static void navigateBasedOnUrlType(String url, String slug) {
     if (url.contains(APIConstant.urlContainProduct)) {
-      Get.to(() => ProductDetailScreen(slug: slug));
+      Get.to(() => ProductScreen(slug: slug));
     } else if (url.contains(APIConstant.urlContainProductCategory)) {
       Get.to(() => TAllProducts(title: 'Products', categoryId: slug, futureMethodTwoString: productController.getProductsByCategorySlug));
     } else if (url.contains(APIConstant.urlContainOrders)) {

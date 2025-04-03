@@ -29,7 +29,7 @@ class FBAnalytics {
     // Check if the user is logged in, and add user-specific details
     if (authenticationRepository.isUserLogin.value) {
       defaultParameters.addAll({
-        'user_id': userController.customer.value.id?.toString() ?? 'NA',
+        'user_id': userController.customer.value.customerId?.toString() ?? 'NA',
         'user_email': userController.customer.value.email ?? 'NA',
       });
     }
@@ -62,7 +62,7 @@ class FBAnalytics {
     _analytics.logViewItem(
       items: [
         AnalyticsEventItem(
-          itemId: product.id.toString(),
+          itemId: product.productId.toString(),
           itemName: product.name,
           price: product.getPrice(),
           itemCategory: product.categories?[0].name,
@@ -104,7 +104,7 @@ class FBAnalytics {
     _analytics.logAddToWishlist(
       items: [
         AnalyticsEventItem(
-          itemId: product.id.toString(),
+          itemId: product.productId.toString(),
           itemName: product.name,
           price: product.getPrice(),
           itemCategory: product.categories?[0].name,

@@ -37,11 +37,11 @@ class EmailLoginScreen extends StatelessWidget {
                 Column(
                   children: [
                     Text(TTexts.loginTitle, style: Theme.of(context).textTheme.headlineMedium),
-                    const SizedBox(height: Sizes.sm),
+                    const SizedBox(height: AppSizes.sm),
                     Text(TTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
                 //Form Field
                 Form(
                   key: controller.loginFormKey,
@@ -57,7 +57,7 @@ class EmailLoginScreen extends StatelessWidget {
                             )
                           ),
                           //Password
-                          const SizedBox(height: Sizes.spaceBtwInputFields),
+                          const SizedBox(height: AppSizes.spaceBtwInputFields),
                           Obx(
                                 () => TextFormField(
                                   controller: controller.password,
@@ -72,7 +72,7 @@ class EmailLoginScreen extends StatelessWidget {
                                       )
                                   )
                               )),
-                          const SizedBox(height: Sizes.spaceBtwInputFields / 2),
+                          const SizedBox(height: AppSizes.spaceBtwInputFields / 2),
                           //forget password and remember me
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,13 +93,13 @@ class EmailLoginScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(builder: (context) => ForgetPasswordScreen(email: controller.email.text.trim(),))
                                       );},
-                                    child: Text(TTexts.forgotPassword, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor))
+                                    child: Text(TTexts.forgotPassword, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor))
                                 )
                               ]
                           ),
 
                           //Login button
-                          const SizedBox(height: Sizes.spaceBtwSections),
+                          const SizedBox(height: AppSizes.spaceBtwSection),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -112,7 +112,7 @@ class EmailLoginScreen extends StatelessWidget {
                 ),
 
                 //Not a Member?  Divider
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
@@ -134,7 +134,7 @@ class EmailLoginScreen extends StatelessWidget {
                 ),
 
                 //Social Login
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
                 const TSocialButtons(),
               ],
             ),

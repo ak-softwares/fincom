@@ -15,7 +15,7 @@ class SupportWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: TColors.primaryBackground,
+        color: AppColors.primaryBackground,
         width: double.infinity,
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
@@ -25,7 +25,7 @@ class SupportWidget extends StatelessWidget {
               ? const Column(
                   children: [
                     TSectionHeading(title: 'Support', verticalPadding: false),
-                    Divider(color: TColors.primaryColor, thickness: 2,),
+                    Divider(color: AppColors.primaryColor, thickness: 2,),
                   ],
                 )
               : const SizedBox.shrink(),

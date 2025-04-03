@@ -32,7 +32,7 @@ class SearchVoucher1 extends SearchDelegate {
   TextStyle? get searchFieldStyle => const TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
-    color: TColors.primaryColor,
+    color: AppColors.primaryColor,
   );
 
   @override
@@ -120,11 +120,11 @@ class SearchVoucher1 extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: TColors.primaryBackground,
+        backgroundColor: AppColors.primaryBackground,
         titleTextStyle: theme.textTheme.titleLarge,
         toolbarTextStyle: theme.textTheme.bodyMedium,
       ),
-      primaryColor: TColors.primaryColor,
+      primaryColor: AppColors.primaryColor,
     );
   }
 

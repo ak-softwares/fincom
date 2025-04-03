@@ -23,7 +23,7 @@ class DeeplinkGoRouter {
             path: 'product/:slug', //RoutesPath.product,
             pageBuilder: (BuildContext context, GoRouterState state) {
               final slug = state.pathParameters['slug'];
-              return MaterialPage(child: ProductDetailScreen(slug: slug));
+              return MaterialPage(child: ProductScreen(slug: slug));
             },
           ),
           GoRoute(

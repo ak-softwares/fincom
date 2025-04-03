@@ -33,7 +33,7 @@ class NewOrderFound extends StatelessWidget {
         appBar: const AppAppBar2(titleText: 'New Order Found', searchType: SearchType.orders),
         bottomNavigationBar: Obx(() => newOrderFoundController.selectedOrders.isNotEmpty
             ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: Sizes.sm, horizontal: Sizes.xl),
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.sm, horizontal: AppSizes.xl),
                 child: ElevatedButton(
                     onPressed: () => newOrderFoundController.uploadSelectedOrders(),
                     child: newOrderFoundController.isUploading.value
@@ -44,7 +44,7 @@ class NewOrderFound extends StatelessWidget {
             : SizedBox.shrink(),
         ),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async => newOrderFoundController.refreshOrders(),
           child: ListView(
             padding: TSpacingStyle.defaultPagePadding,
@@ -64,7 +64,7 @@ class NewOrderFound extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: Sizes.spaceBtwItems),
+              SizedBox(height: AppSizes.spaceBtwItems),
               Obx(() => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -87,7 +87,7 @@ class NewOrderFound extends StatelessWidget {
                 ],
               ),
               ),
-              SizedBox(height: Sizes.spaceBtwItems),
+              SizedBox(height: AppSizes.spaceBtwItems),
               Obx(() => newOrderFoundController.selectedOrders.isEmpty
                 ? InkWell(
                     onTap: newOrderFoundController.selectAll,
@@ -117,7 +117,7 @@ class NewOrderFound extends StatelessWidget {
                   return GridLayout(
                     itemCount: newOrderFoundController.isLoadingMore.value ? orders.length + 2 : orders.length,
                     crossAxisCount: 1,
-                    mainAxisExtent: Sizes.orderTileHeight,
+                    mainAxisExtent: AppSizes.orderTileHeight,
                     itemBuilder: (context, index) {
                       if (index < orders.length) {
                         final order = orders[index];

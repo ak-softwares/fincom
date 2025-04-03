@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../../utils/constants/db_constants.dart';
 import 'brand_model.dart';
@@ -7,7 +10,8 @@ import 'category_model.dart';
 import 'product_attribute_model.dart';
 
 class ProductModel {
-  int id;
+  String? id;
+  int productId;
   String? name;
   String? mainImage;
   String? permalink;
@@ -34,6 +38,7 @@ class ProductModel {
   String? taxClass;
   bool? manageStock;
   int? stockQuantity;
+  List<ProductPurchaseHistory>? purchaseHistory;
   String? weight;
   Map<String, dynamic>? dimensions;
   bool? shippingRequired;
@@ -62,7 +67,8 @@ class ProductModel {
   bool? isCODBlocked;
 
   ProductModel({
-    required this.id,
+    this.id,
+    required this.productId,
     this.name,
     this.mainImage,
     this.permalink,
@@ -89,6 +95,7 @@ class ProductModel {
     this.taxClass,
     this.manageStock,
     this.stockQuantity,
+    this.purchaseHistory,
     this.weight,
     this.dimensions,
     this.shippingRequired,
@@ -118,20 +125,30 @@ class ProductModel {
   });
 
   // create product empty model
-  static ProductModel empty() => ProductModel(id: 0);
+  static ProductModel empty() => ProductModel(productId: 0);
 
   bool isProductAvailable() {
     // Check if the coupon provides free shipping
     return stockStatus == 'instock' && getPrice() != 0;
   }
+
   double getPrice() {
+    if (purchaseHistory != null && purchaseHistory!.isNotEmpty) {
+      return purchaseHistory?.last.price ?? 0; // Get last purchase price
+    }
     if (salePrice != null && salePrice! > 0) {
       return salePrice!;
-    } else {
-      // If salePrice is null or <= 0, fallback to regularPrice
-      return regularPrice ?? 0.0;
     }
+    return regularPrice ?? 0.0;
   }
+
+  int getTotalStock() {
+    if (purchaseHistory == null || purchaseHistory!.isEmpty) {
+      return 0; // Return 0 if purchaseHistory is null or empty
+    }
+    return purchaseHistory!.fold(0, (total, history) => total + (history.quantity ?? 0));
+  }
+
 
   //-- Calculate Discount Percentage
   String? calculateSalePercentage() {
@@ -165,6 +182,12 @@ class ProductModel {
 
     final String type = json[ProductFieldName.type] ?? '';
 
+    // Extracting purchase History data from the JSON
+    List<ProductPurchaseHistory>? purchaseHistory = [];
+    if (json.containsKey(ProductFieldName.purchaseHistory) && json[ProductFieldName.purchaseHistory] is List) {
+      purchaseHistory = (json[ProductFieldName.purchaseHistory] as List).map((history) => ProductPurchaseHistory.fromJson(history)).toList();
+    }
+
     // Extracting category data from the JSON
     List<CategoryModel>? categories = [CategoryModel.empty()];
     if (json.containsKey(ProductFieldName.categories) && json[ProductFieldName.categories] is List) {
@@ -192,7 +215,10 @@ class ProductModel {
     }
 
     return ProductModel(
-      id: json[ProductFieldName.id],
+      id: json[PurchaseFieldName.id] is ObjectId
+          ? (json[PurchaseFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
+          : json[PurchaseFieldName.id]?.toString(),
+      productId: json[ProductFieldName.productId] ?? 0,
       name: json[ProductFieldName.name].replaceAll('&amp;', '&'),
       mainImage: json[ProductFieldName.images] != null && json[ProductFieldName.images].isNotEmpty
           ? json[ProductFieldName.images][0]['src'] : '',
@@ -220,6 +246,7 @@ class ProductModel {
       taxClass: json[ProductFieldName.taxClass] ?? '',
       manageStock: json[ProductFieldName.manageStock] ?? false,
       stockQuantity: json[ProductFieldName.stockQuantity] ?? 0,
+      purchaseHistory: purchaseHistory,
       weight: json[ProductFieldName.weight] ?? '',
       dimensions: json[ProductFieldName.dimensions] != null
           ? Map<String, dynamic>.from(json[ProductFieldName.dimensions])
@@ -263,6 +290,7 @@ class ProductModel {
   Map<String, dynamic> toMap() {
     return {
       ProductFieldName.id: id,
+      ProductFieldName.productId: productId,
       ProductFieldName.name: name,
       ProductFieldName.mainImage: mainImage,
       ProductFieldName.permalink: permalink,
@@ -289,6 +317,7 @@ class ProductModel {
       ProductFieldName.taxClass: taxClass,
       ProductFieldName.manageStock: manageStock,
       ProductFieldName.stockQuantity: stockQuantity,
+      ProductFieldName.purchaseHistory: purchaseHistory,
       ProductFieldName.weight: weight,
       ProductFieldName.dimensions: dimensions, // Already a map
       ProductFieldName.shippingRequired: shippingRequired,
@@ -348,7 +377,7 @@ class ProductModel {
     if(document.data() == null) return ProductModel.empty();
     final data = document.data()!;
     return ProductModel(
-      id: int.parse(document.id),
+      productId: int.parse(document.id),
       // title: data[ProductFieldName.title],
       // mainImage: data[ProductFieldName.mainImage],
       // price: data[ProductFieldName.price] ?? 0,
@@ -370,7 +399,7 @@ class ProductModel {
   factory ProductModel.fromQuerySnapshot(QueryDocumentSnapshot<Object?> document) {
     final data = document.data() as Map<String, dynamic>;
     return ProductModel(
-      id: int.parse(document.id),
+      productId: int.parse(document.id),
       // title: data[ProductFieldName.title],
       // mainImage: data[ProductFieldName.mainImage],
       // price: data[ProductFieldName.price] ?? 0,
@@ -403,7 +432,7 @@ class ProductModel {
     String? stockStatus,
   }) {
     return ProductModel(
-      id: id ?? this.id,
+      productId: id ?? this.productId,
       name: name ?? this.name,
       mainImage: mainImage ?? this.mainImage,
       images: images ?? this.images,
@@ -430,4 +459,48 @@ int parseDoubleToInt(dynamic value) {
     }
     return 0;
   }
+}
+
+class ProductPurchaseHistory {
+  double? price;
+  int? quantity;
+  String? productId;
+  int? purchaseId;
+  String? purchaseDate;
+
+  ProductPurchaseHistory({
+    this.price,
+    this.quantity,
+    this.productId,
+    this.purchaseId,
+    this.purchaseDate,
+  });
+
+  /// Convert PurchaseHistory object to a Map
+  Map<String, dynamic> toMap() {
+    return {
+      PurchaseHistoryFieldName.price: price,
+      PurchaseHistoryFieldName.quantity: quantity,
+      PurchaseHistoryFieldName.productId: productId,
+      PurchaseHistoryFieldName.purchaseId: purchaseId,
+      PurchaseHistoryFieldName.purchaseDate: purchaseDate, // Convert DateTime to string
+    };
+  }
+
+  /// Convert Map to PurchaseHistory object
+  factory ProductPurchaseHistory.fromMap(Map<String, dynamic> map) {
+    return ProductPurchaseHistory(
+      price: map[PurchaseHistoryFieldName.price]?.toDouble(),
+      quantity: map[PurchaseHistoryFieldName.quantity]?.toInt(),
+      // productId: map[PurchaseHistoryFieldName.productId],
+      purchaseId: map[PurchaseHistoryFieldName.purchaseId]?.toInt(),
+      purchaseDate: map[PurchaseHistoryFieldName.purchaseDate],
+    );
+  }
+
+  /// Convert PurchaseHistory object to JSON string
+  String toJson() => json.encode(toMap());
+
+  /// Convert JSON string to PurchaseHistory object
+  factory ProductPurchaseHistory.fromJson(Map<String, dynamic> json) => ProductPurchaseHistory.fromMap(json);
 }

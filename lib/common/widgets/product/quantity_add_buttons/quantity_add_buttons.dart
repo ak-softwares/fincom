@@ -17,7 +17,7 @@ class QuantityAddButtons extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      padding: EdgeInsets.all(Sizes.xs),
+      padding: EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(

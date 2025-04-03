@@ -28,11 +28,11 @@ class UserProfileScreen extends StatelessWidget {
       appBar: const AppAppBar2(titleText: 'Profile Setting', showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           ///- user image
           child: Column(
             children: [
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
               Stack(
                 children: [
                   TRoundedImage(
@@ -58,14 +58,14 @@ class UserProfileScreen extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
               const Divider(),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
               const TSectionHeading(title: 'Profile Information', seeActionButton: false),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
               Obx(() {
                 if(controller.isLoading.value){
-                  return const Center(child: CircularProgressIndicator(color: TColors.linkColor),);
+                  return const Center(child: CircularProgressIndicator(color: AppColors.linkColor),);
                 } else {
                   return Column(
                     children: [
@@ -123,7 +123,7 @@ class TProfileMenu extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(Sizes.spaceBtwItems),
+        padding: const EdgeInsets.all(AppSizes.spaceBtwItems),
         child: Row(
           children: [
             Expanded(flex: 2, child: Text(title, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),

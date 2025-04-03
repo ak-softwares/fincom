@@ -30,7 +30,7 @@ class TSearchDelegate extends SearchDelegate {
   TextStyle? get searchFieldStyle => const TextStyle(
     fontSize: 15, // Customize font size
     fontWeight: FontWeight.w500,
-    color: TColors.secondaryColor, // Customize font color
+    color: AppColors.secondaryColor, // Customize font color
   );
 
 
@@ -98,9 +98,9 @@ class TSearchDelegate extends SearchDelegate {
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             dense: true, // Reduce default padding inside ListTile
-                            leading: const Icon(Icons.history, color: TColors.black, size: 18),
+                            leading: const Icon(Icons.history, color: AppColors.black, size: 18),
                             trailing: IconButton(
-                              icon: const Icon(Icons.close, color: TColors.black, size: 18),
+                              icon: const Icon(Icons.close, color: AppColors.black, size: 18),
                               onPressed: () => _removeSearch(suggestionList[index]),
                             ),
                             title: Text(
@@ -130,17 +130,17 @@ class TSearchDelegate extends SearchDelegate {
     final ColorScheme colorScheme = theme.colorScheme;
     return theme.copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: TColors.primaryColor,
+        backgroundColor: AppColors.primaryColor,
         // iconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
         titleTextStyle: theme.textTheme.titleLarge,
         toolbarTextStyle: theme.textTheme.bodyMedium,
       ),
-      primaryColor: TColors.primaryColor,
+      primaryColor: AppColors.primaryColor,
       inputDecorationTheme: searchFieldDecorationTheme ??
           InputDecorationTheme(
             hintStyle: searchFieldStyle ?? theme.inputDecorationTheme.hintStyle,
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: Sizes.xs, horizontal: Sizes.md), // Define input field height
+            contentPadding: const EdgeInsets.symmetric(vertical: AppSizes.xs, horizontal: AppSizes.md), // Define input field height
             // fillColor: Colors.grey.shade200, // Customize the background color
             // filled: true, // Ensure the fill color is applied
             // hintStyle: const TextStyle(

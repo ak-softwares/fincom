@@ -40,7 +40,7 @@ class AddressModel {
     this.selectedAddress = true,
   });
 
-  String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone!);
+  String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phone!);
   String get name => '$firstName $lastName';
 
   static AddressModel empty() => AddressModel(id: '');

@@ -19,7 +19,7 @@ class CheckLoginScreen extends StatelessWidget {
       animation: animation,
       showAction: true,
       actionText: 'Login',
-      onActionPress: () => NavigationHelper.navigateToLoginScreen(),
+      onActionPressed: () => NavigationHelper.navigateToLoginScreen(),
     );
   }
 }

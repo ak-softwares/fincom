@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../features/personalization/models/user_model.dart';
 import '../../../../utils/constants/api_constants.dart';
+import '../../../../utils/constants/db_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
 
 class MongoCustomersRepo extends GetxController {
@@ -67,6 +68,20 @@ class MongoCustomersRepo extends GetxController {
     }
   }
 
+  // Update a customer
+  Future<void> updateCustomer({required String id, required CustomerModel customer}) async {
+    try {
+      Map<String, dynamic> customerMap = customer.toMap();
+      await _mongoDatabase.updateDocumentById(
+          id: id,
+          collectionName: collectionName,
+          updatedData: customerMap
+      );
+    } catch (e) {
+      throw 'Failed to update customer: $e';
+    }
+  }
+
   // Upload multiple products
   Future<void> pushCustomers({required List<CustomerModel> customers}) async {
     try {
@@ -76,4 +91,56 @@ class MongoCustomersRepo extends GetxController {
       throw 'Failed to upload customers: $e';
     }
   }
+
+  // Add a new customer
+  Future<void> pushCustomer({required CustomerModel customer}) async {
+    try {
+      Map<String, dynamic> customerMap = customer.toMap(); // Convert customer model to map
+      await _mongoDatabase.insertDocument(collectionName, customerMap);
+    } catch (e) {
+      throw 'Failed to add customer: $e';
+    }
+  }
+
+  Future<CustomerModel> fetchCustomerById({required String id}) async {
+    try {
+      // Fetch a single document by ID
+      final Map<String, dynamic>? customerData =
+      await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+
+      // Check if the document exists
+      if (customerData == null) {
+        throw Exception('Customer not found with ID: $id');
+      }
+
+      // Convert the document to a CustomerModel object
+      final CustomerModel customer = CustomerModel.fromJson(customerData);
+      return customer;
+    } catch (e) {
+      throw 'Failed to fetch customer: $e';
+    }
+  }
+
+  Future<void> deleteCustomer({required String id}) async {
+    try {
+      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+    } catch (e) {
+      throw 'Failed to delete customer: $e';
+    }
+  }
+
+  // Get the next customer ID
+  Future<int> fetchCustomerGetNextId() async {
+    try {
+      int nextID = await _mongoDatabase.getNextId(
+          collectionName: collectionName,
+          fieldName: CustomerFieldName.customerId
+      );
+      return nextID;
+    } catch (e) {
+      throw 'Failed to fetch customer ID: $e';
+    }
+  }
+
+
 }

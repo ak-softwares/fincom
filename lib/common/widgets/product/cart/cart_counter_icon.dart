@@ -39,7 +39,7 @@ class TCartCounterIcon extends StatelessWidget {
                   // spreadRadius: 5, // Adjust as needed
                   offset: Offset(0, 0), // Adjust as needed
                 )],
-                color: counterColorInvert ? TColors.secondaryColor : TColors.primaryColor,
+                color: counterColorInvert ? AppColors.secondaryColor : AppColors.primaryColor,
                 borderRadius: BorderRadius.circular(100)
               ),
               child: Center(
@@ -47,7 +47,7 @@ class TCartCounterIcon extends StatelessWidget {
                   () => Text(
                       controller.noOfCartItems.value.toString(),
                       style: Theme.of(context).textTheme.labelSmall!.apply(
-                          color: counterColorInvert ? Colors.white : TColors.secondaryColor,
+                          color: counterColorInvert ? Colors.white : AppColors.secondaryColor,
                           fontSizeFactor: 0.9,
                           fontWeightDelta: 2
                       )
@@ -84,7 +84,7 @@ class TWishlistCounterIcon extends StatelessWidget {
               height: 18,
               width: 18,
               decoration: BoxDecoration(
-                  color: TColors.primaryColor,
+                  color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(100)
               ),
               child: Center(

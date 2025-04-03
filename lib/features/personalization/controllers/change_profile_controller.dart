@@ -109,7 +109,7 @@ class ChangeProfileController extends GetxController {
           AddressFieldName.phone: phone.text.trim()
         },
       };
-      final userId = userController.customer.value.id.toString();
+      final userId = userController.customer.value.customerId.toString();
       final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateField);
       //update the Rx user value
       userController.customer(customer);
@@ -143,7 +143,7 @@ class ChangeProfileController extends GetxController {
       Map<String, dynamic> updateField = {
         CustomerFieldName.billing: {AddressFieldName.phone: updatePhone.text.trim()},
       };
-      final userId = userController.customer.value.id.toString();
+      final userId = userController.customer.value.customerId.toString();
       final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateField);
       userController.customer(customer);
       // UserController.instance.fetchUserRecord();
@@ -223,7 +223,7 @@ class ChangeProfileController extends GetxController {
     return showModalBottomSheet(
         context: context,
         builder: (_) => Container(
-          padding: const EdgeInsets.all(Sizes.lg),
+          padding: const EdgeInsets.all(AppSizes.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -235,7 +235,7 @@ class ChangeProfileController extends GetxController {
               const Expanded(
                 child: Text('hi'),
               ),
-              const SizedBox(height: Sizes.defaultSpace * 2),
+              const SizedBox(height: AppSizes.defaultSpace * 2),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

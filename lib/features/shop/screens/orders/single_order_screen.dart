@@ -1,3 +1,4 @@
+import 'package:fincom/utils/constants/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class SingleOrderScreen extends StatelessWidget {
             TRoundedContainer(
               showBorder: true,
               padding: TSpacingStyle.defaultPagePadding,
-              borderColor: TColors.borderPrimary,
+              borderColor: AppColors.borderLight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +45,7 @@ class SingleOrderScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TOrderHelper.mapOrderStatus(order.status ?? ''),
+                      OrderHelper.mapOrderStatus(order.status ?? OrderStatus.unknown),
                       Text('Order #${order.id}', style: Theme.of(context).textTheme.bodyLarge)
                     ],
                   ),
@@ -61,9 +62,10 @@ class SingleOrderScreen extends StatelessWidget {
                     crossAxisCount: 1,
                     mainAxisExtent: 90,
                     itemCount: order.lineItems!.length,
-                    itemBuilder: (_, index) => Stack(
+                    itemBuilder: (_, index) =>
+                        Stack(
                         children:[
-                          CartTile(cartItem: order.lineItems![index]),
+                          ProductCardForCart(cartItem: order.lineItems![index]),
                         ]
                     ),
                   ),
@@ -134,36 +136,36 @@ class SingleOrderScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: Sizes.spaceBtwSections),
+            const SizedBox(height: AppSizes.spaceBtwSection),
 
             // Track order
             TRoundedContainer(
               showBorder: true,
               padding: TSpacingStyle.defaultPagePadding,
-              borderColor: TColors.borderPrimary,
+              borderColor: AppColors.borderLight,
               child: TrackOrderWidget(orderId: order.id.toString())
             ),
-            const SizedBox(height: Sizes.spaceBtwItems),
+            const SizedBox(height: AppSizes.spaceBtwItems),
 
             // Repeat Order
             TRoundedContainer(
                 showBorder: true,
                 padding: TSpacingStyle.defaultPagePadding,
-                borderColor: TColors.borderPrimary,
+                borderColor: AppColors.borderLight,
                 child: RepeatOrderWidget(cartItems: order.lineItems ?? []),
             ),
-            const SizedBox(height: Sizes.spaceBtwItems),
+            const SizedBox(height: AppSizes.spaceBtwItems),
 
             // Cancel order
-            TOrderHelper.checkOrderStatusForReturn(order.status ?? '')
+            OrderHelper.checkOrderStatusForReturn(order.status ?? OrderStatus.unknown)
               ? TRoundedContainer(
                 showBorder: true,
                 padding: TSpacingStyle.defaultPagePadding,
-                borderColor: TColors.borderPrimary,
+                borderColor: AppColors.borderLight,
                 child: CancelOrderWidget(orderId: order.id.toString()),
               )
               : const SizedBox.shrink(),
-            const SizedBox(height: Sizes.spaceBtwItems),
+            const SizedBox(height: AppSizes.spaceBtwItems),
 
             // Return order
             // TRoundedContainer(
@@ -181,8 +183,8 @@ class SingleOrderScreen extends StatelessWidget {
 
   Padding dividerIWithPadding() {
     return const Padding(
-      padding: EdgeInsets.symmetric(vertical: Sizes.xs),
-      child: Divider(color: TColors.borderSecondary),
+      padding: EdgeInsets.symmetric(vertical: AppSizes.xs),
+      child: Divider(color: AppColors.borderDark),
     );
   }
 }

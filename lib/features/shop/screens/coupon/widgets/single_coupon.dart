@@ -103,7 +103,7 @@ class SingleCouponItem extends StatelessWidget {
           Container(
             width: 60,
             decoration: BoxDecoration(
-              color: TColors.primaryColor,
+              color: AppColors.primaryColor,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(10),
                 bottomRight: Radius.circular(10),

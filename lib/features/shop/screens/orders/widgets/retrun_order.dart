@@ -21,7 +21,7 @@ class ReturnOrderWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.refresh, size: 18, color: Colors.red),
-            const SizedBox(width: Sizes.sm),
+            const SizedBox(width: AppSizes.sm),
             Text('Return Order', style: Theme.of(context).textTheme.bodyMedium!,),
           ],
         )

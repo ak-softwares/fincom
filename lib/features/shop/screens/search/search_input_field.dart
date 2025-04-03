@@ -14,7 +14,7 @@ class TSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ? const EdgeInsets.all(Sizes.spaceBtwItems) : const EdgeInsets.all(0),
+      padding: padding ? const EdgeInsets.all(AppSizes.spaceBtwItems) : const EdgeInsets.all(0),
       child: InkWell(
         onTap: () {
         showSearch(
@@ -25,15 +25,15 @@ class TSearchBar extends StatelessWidget {
           color: Colors.transparent,
           child: Container(
             width: TDeviceUtils.getScreenWidth(context),
-            padding: const EdgeInsets.all(Sizes.sm),
+            padding: const EdgeInsets.all(AppSizes.sm),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(Sizes.productImageRadius),
+              borderRadius: BorderRadius.circular(AppSizes.productImageRadius),
               border: Border.all(color: Colors.grey),
             ),
             child: Row(
               children: [
-                const Icon(Icons.search, color: TColors.secondaryColor),
+                const Icon(Icons.search, color: AppColors.secondaryColor),
                 const SizedBox(width: 20),
                 Text(searchText!)
               ],

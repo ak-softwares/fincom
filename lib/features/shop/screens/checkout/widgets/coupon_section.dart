@@ -21,13 +21,13 @@ class TCouponCode extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Enter coupon code',
               prefixIcon: const Icon(Iconsax.discount_shape),
-              prefixIconColor: TColors.primaryColor,
+              prefixIconColor: AppColors.primaryColor,
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: TextButton(
                   onPressed: () {couponController.applyCoupon(couponController.coupon.text.trim());},
                   child: Obx(() => couponController.isCouponLoad.value
-                      ? const SizedBox(width: 25, height: 25, child: CircularProgressIndicator(color: TColors.linkColor),)
+                      ? const SizedBox(width: 25, height: 25, child: CircularProgressIndicator(color: AppColors.linkColor),)
                       : const Text('Apply', style: TextStyle(color: Colors.blue))),
                 ),
               ),

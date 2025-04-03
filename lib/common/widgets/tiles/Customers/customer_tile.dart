@@ -16,17 +16,17 @@ class CustomerVoucherTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double customerVoucherTileHeight = Sizes.customerVoucherTileHeight;
-    const double customerVoucherTileWidth = Sizes.customerVoucherTileWidth;
-    const double customerVoucherTileRadius = Sizes.customerVoucherTileRadius;
-    const double customerVoucherImageHeight = Sizes.customerVoucherImageHeight;
-    const double customerVoucherImageWidth = Sizes.customerVoucherImageWidth;
+    const double customerVoucherTileHeight = AppSizes.customerVoucherTileHeight;
+    const double customerVoucherTileWidth = AppSizes.customerVoucherTileWidth;
+    const double customerVoucherTileRadius = AppSizes.customerVoucherTileRadius;
+    const double customerVoucherImageHeight = AppSizes.customerVoucherImageHeight;
+    const double customerVoucherImageWidth = AppSizes.customerVoucherImageWidth;
 
     return GestureDetector(
         onTap: () => Get.to(() => const UserProfileScreen()),
         child: Container(
           width: customerVoucherTileWidth,
-          padding: const EdgeInsets.all(Sizes.xs),
+          padding: const EdgeInsets.all(AppSizes.xs),
           decoration: BoxDecoration(
             boxShadow: [TShadowStyle.verticalProductShadow],
             borderRadius: BorderRadius.circular(customerVoucherTileRadius),

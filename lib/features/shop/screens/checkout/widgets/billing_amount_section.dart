@@ -28,7 +28,7 @@ class TBillingAmountSection extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,),
             ],
           ),
-          const SizedBox(height: Sizes.spaceBtwItems / 2),
+          const SizedBox(height: AppSizes.spaceBtwItems / 2),
 
           //Discount
           if (checkoutController.discount.value != 0) ...[
@@ -46,12 +46,12 @@ class TBillingAmountSection extends StatelessWidget {
                         ),
                         Icon(
                           Icons.discount, // Using discount icon
-                          color: TColors.offerColor, // Green color for the icon
+                          color: AppColors.offerColor, // Green color for the icon
                           size: 20, // Adjust the size as needed
                         ),
                         Text(
                           ' ${checkoutController.coupon.value.code!.toUpperCase().toString()}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: TColors.offerColor),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.offerColor),
                         ),
                       ],
                     ),
@@ -59,7 +59,7 @@ class TBillingAmountSection extends StatelessWidget {
                       children: [
                         Text(
                           '- ${AppSettings.appCurrencySymbol}${checkoutController.discount.value.toStringAsFixed(0)}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: TColors.offerColor)
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.offerColor)
                         ),
                         const SizedBox(width: 5,),
                         InkWell(
@@ -72,7 +72,7 @@ class TBillingAmountSection extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwItems / 2),
+                const SizedBox(height: AppSizes.spaceBtwItems / 2),
               ],
             ),
           ],
@@ -105,7 +105,7 @@ class TBillingAmountSection extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwItems / 2),
+                const SizedBox(height: AppSizes.spaceBtwItems / 2),
               ],
             ),
           ],
@@ -123,7 +123,7 @@ class TBillingAmountSection extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium,)
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwItems / 2),
+                const SizedBox(height: AppSizes.spaceBtwItems / 2),
               ],
             ),
           ],
@@ -137,7 +137,7 @@ class TBillingAmountSection extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,)
             ],
           ),
-          const SizedBox(height: Sizes.spaceBtwItems / 2),
+          const SizedBox(height: AppSizes.spaceBtwItems / 2),
         ],
       ),
     );

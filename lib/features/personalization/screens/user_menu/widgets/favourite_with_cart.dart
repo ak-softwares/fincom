@@ -22,7 +22,7 @@ class FavouriteWithCart extends StatelessWidget {
             child: InkWell(
               onTap: () => Get.to(const FavouriteScreen()),
               child: Container(
-                  color: TColors.primaryBackground,
+                  color: AppColors.primaryBackground,
                   padding: TSpacingStyle.defaultPagePadding,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,13 +34,13 @@ class FavouriteWithCart extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Sizes.spaceBtwInputFields),
+          const SizedBox(width: AppSizes.spaceBtwInputFields),
           Expanded(
             flex: 1,
             child: InkWell(
               onTap: () => Get.to(const CartScreen()),
               child: Container(
-                  color: TColors.primaryBackground,
+                  color: AppColors.primaryBackground,
                   padding: TSpacingStyle.defaultPagePadding,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

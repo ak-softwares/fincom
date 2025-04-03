@@ -20,9 +20,11 @@ class PurchaseListController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingMore = false.obs;
   RxBool isFetching = false.obs;
+  RxBool isExtraTextUpdating = false.obs;
   RxList<OrderModel> orders = <OrderModel>[].obs;
   RxList<PurchaseItemModel> products = <PurchaseItemModel>[].obs;
   Rx<PurchaseListMetaModel> purchaseListMetaData = PurchaseListMetaModel().obs;
+  TextEditingController extraNoteController = TextEditingController();
 
   final storage = GetStorage();
 
@@ -97,6 +99,22 @@ class PurchaseListController extends GetxController {
 
   }
 
+  Future<void> saveExtraNote(String extraNote) async {
+    try{
+      isExtraTextUpdating(true);
+      await mongoPurchaseListRepo.pushMetaData(
+        value: {
+          PurchaseListFieldName.extraNote: extraNote,
+        },
+      );
+      TLoaders.customToast(message: 'Extra Notes updated successfully');
+    } catch(e){
+      TLoaders.errorSnackBar(title: 'Error in uploading Notes', message: e.toString());
+    } finally{
+      isExtraTextUpdating(false);
+    }
+  }
+
   // Ensure keys exist before using them
   void initializeExpansionState(String companyName) async {
     // Try to read the expansion state from local storage
@@ -128,6 +146,7 @@ class PurchaseListController extends GetxController {
     await refreshOrders();
     final fetchedPurchaseListMetaData = await mongoPurchaseListRepo.fetchMetaData();
     purchaseListMetaData.value = fetchedPurchaseListMetaData;
+    extraNoteController.text = purchaseListMetaData.value.extraNote ?? '';
   }
 
   Future<void> clearStoredProducts() async {
@@ -272,8 +291,8 @@ class PurchaseListController extends GetxController {
 
   Future<void> showDialogForSelectOrderStatus() async {
     Get.defaultDialog(
-      contentPadding: const EdgeInsets.only(bottom: Sizes.xl),
-      titlePadding: const EdgeInsets.only(top: Sizes.xl),
+      contentPadding: const EdgeInsets.only(bottom: AppSizes.xl),
+      titlePadding: const EdgeInsets.only(top: AppSizes.xl),
       radius: 10,
       title: "Choose Status",
       content: Obx(
@@ -294,7 +313,7 @@ class PurchaseListController extends GetxController {
       confirm: ElevatedButton(
         onPressed: confirmSelection,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: const Text("Fetch Orders"),
         ),
       ),

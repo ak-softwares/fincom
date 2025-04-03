@@ -33,11 +33,11 @@ class PurchaseProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double purchaseProductTileHeight = Sizes.purchaseProductTileHeight;
-    const double purchaseProductTileWidth = Sizes.purchaseProductTileWidth;
-    const double purchaseProductTileRadius = Sizes.purchaseProductTileRadius;
-    const double purchaseProductImageHeight = Sizes.purchaseProductImageHeight;
-    const double purchaseProductImageWidth = Sizes.purchaseProductImageWidth;
+    const double purchaseProductTileHeight = AppSizes.purchaseProductTileHeight;
+    const double purchaseProductTileWidth = AppSizes.purchaseProductTileWidth;
+    const double purchaseProductTileRadius = AppSizes.purchaseProductTileRadius;
+    const double purchaseProductImageHeight = AppSizes.purchaseProductImageHeight;
+    const double purchaseProductImageWidth = AppSizes.purchaseProductImageWidth;
 
     // Reactive variables for quantity and total
     final RxInt quantity = cartItem.quantity.obs;
@@ -52,7 +52,7 @@ class PurchaseProductCard extends StatelessWidget {
               children: [
                 // Main Image
                 Padding(
-                  padding: const EdgeInsets.only(left: Sizes.xs),
+                  padding: const EdgeInsets.only(left: AppSizes.xs),
                   child: TRoundedImage(
                     image: cartItem.image ?? '',
                     height: purchaseProductImageHeight,
@@ -65,7 +65,7 @@ class PurchaseProductCard extends StatelessWidget {
                 // Title, Rating, and Price
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top:Sizes.xs, left: Sizes.sm, right: Sizes.sm),
+                    padding: const EdgeInsets.only(top:AppSizes.xs, left: AppSizes.sm, right: AppSizes.sm),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +79,7 @@ class PurchaseProductCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
-                              spacing: Sizes.sm,
+                              spacing: AppSizes.sm,
                               children: [
                                 Text(AppSettings.appCurrencySymbol, style: TextStyle(fontSize: 16),),
                                 SizedBox(

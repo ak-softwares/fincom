@@ -23,11 +23,11 @@ class HomeBanner extends StatelessWidget {
       // loader
       if (bannerController.isLoading.value) {
         return Column(
-          spacing: Sizes.spaceBtwItems,
+          spacing: AppSizes.spaceBtwItems,
           children: [
             const ShimmerEffect(height: bannerHeight + 2, width: bannerWidth, radius: 0),
             Row(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const ShimmerEffect(height: 5, width: 10, radius: 10),
@@ -44,7 +44,7 @@ class HomeBanner extends StatelessWidget {
         return const SizedBox.shrink();
       }
       return Column(
-        spacing: Sizes.spaceBtwItems,
+        spacing: AppSizes.spaceBtwItems,
         children: [
           CarouselSlider(
             options: CarouselOptions(
@@ -74,13 +74,13 @@ class HomeBanner extends StatelessWidget {
                     width: 20,
                     height: 4,
                     margin: EdgeInsets.only(right: 6),
-                    backgroundColor: TColors.primaryColor,
+                    backgroundColor: AppColors.primaryColor,
                   )
                       : const TRoundedContainer(
                     width: 10,
                     height: 4,
                     margin: EdgeInsets.only(right: 6),
-                    backgroundColor: TColors.secondaryColor,
+                    backgroundColor: AppColors.secondaryColor,
                   )
               ],
             )

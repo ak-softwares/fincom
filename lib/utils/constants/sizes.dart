@@ -1,6 +1,6 @@
 
-class Sizes {
-  Sizes._();
+class AppSizes {
+  AppSizes._();
 
   //Padding and margin sizes
   static const double xs = 4.0;
@@ -15,10 +15,11 @@ class Sizes {
   static const double defaultSpace = 12.0;
   static const double defaultSpaceLg = 30.0;
   static const double defaultBtwTiles = 10.0;
+  static const double defaultBorderWidth = 0.2;
 
   // Default spacing between sections
   static const double spaceBtwItems = 8;
-  static const double spaceBtwSections = 32.0;
+  static const double spaceBtwSection = 32.0;
 
   // Icons sizes
   static const double iconXs = 12.0;
@@ -111,7 +112,7 @@ class Sizes {
   static const double productVoucherImageWidth = 60.0;
 
   // Customer Voucher Card
-  static const double customerVoucherTileHeight = 60;
+  static const double customerVoucherTileHeight = 100;
   static const double customerVoucherTileWidth = 100.0;
   static const double customerVoucherTileRadius = 30.0;
   static const double customerVoucherImageHeight = 30.0;
@@ -137,6 +138,13 @@ class Sizes {
   static const double transactionTileRadius = 5.0;
   static const double transactionImageHeight = 30.0;
   static const double transactionImageWidth = 30.0;
+
+  // Transaction Tile
+  static const double expenseTileHeight = 145;
+  static const double expenseTileWidth = 100.0;
+  static const double expenseTileRadius = 5.0;
+  static const double expenseImageHeight = 30.0;
+  static const double expenseImageWidth = 30.0;
 
   // Purchase product Card
   static const double purchaseTileHeight = 170;

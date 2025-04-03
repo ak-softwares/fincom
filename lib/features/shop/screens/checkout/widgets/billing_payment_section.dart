@@ -47,12 +47,12 @@ class TBillingPaymentSection extends StatelessWidget {
                   ? null // Disable tap interaction if COD is blocked.
                   : () => checkoutController.updateSelectedPaymentOption(paymentMethod),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Sizes.sm),
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
                 child: Obx(() => Row(
                       children: [
                         // Text(checkoutController.isCODDisabled.value.toString() ?? 'No blocked pincodes'),
                         Radio(
-                          activeColor: TColors.info,
+                          activeColor: AppColors.info,
                           value: paymentMethod.id,
                           groupValue: checkoutController.selectedPaymentMethod.value.id,
                           onChanged: isCOD && checkoutController.isCODDisabled.value

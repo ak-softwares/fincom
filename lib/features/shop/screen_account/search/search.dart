@@ -28,7 +28,7 @@ class SearchVoucher extends SearchDelegate {
   TextStyle? get searchFieldStyle => const TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
-    color: TColors.primaryColor,
+    color: AppColors.primaryColor,
   );
 
   @override
@@ -76,9 +76,9 @@ class SearchVoucher extends SearchDelegate {
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               dense: true,
-              leading: const Icon(Icons.history, color: TColors.black, size: 18),
+              leading: const Icon(Icons.history, color: AppColors.black, size: 18),
               trailing: IconButton(
-                icon: const Icon(Icons.close, color: TColors.black, size: 18),
+                icon: const Icon(Icons.close, color: AppColors.black, size: 18),
                 onPressed: () => _removeSearch(suggestionList[index]),
               ),
               title: Text(
@@ -113,11 +113,11 @@ class SearchVoucher extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: TColors.primaryBackground,
+        backgroundColor: AppColors.primaryBackground,
         titleTextStyle: theme.textTheme.titleLarge,
         toolbarTextStyle: theme.textTheme.bodyMedium,
       ),
-      primaryColor: TColors.primaryColor,
+      primaryColor: AppColors.primaryColor,
     );
   }
 

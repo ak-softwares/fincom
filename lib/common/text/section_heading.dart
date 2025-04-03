@@ -21,7 +21,7 @@ class TSectionHeading extends StatelessWidget {
     List<String> titleParts = title.split(',');
 
     return Container(
-      padding: verticalPadding ? const EdgeInsets.symmetric(vertical: Sizes.sm) : const EdgeInsets.all(0),
+      padding: verticalPadding ? const EdgeInsets.symmetric(vertical: AppSizes.sm) : const EdgeInsets.all(0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

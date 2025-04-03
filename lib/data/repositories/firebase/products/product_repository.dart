@@ -33,7 +33,7 @@ class ProductRepository extends GetxController {
   Future<List<ProductModel>> fetchProductsByCategoryId(String categoryId) async {
     try{
       final snapshot = await _db.collection(DbCollections.products)
-          .where(ProductFieldName.id, isEqualTo: categoryId).get();
+          .where(ProductFieldName.productId, isEqualTo: categoryId).get();
       final List<ProductModel> productsByCategory =
       snapshot.docs.map((document) => ProductModel.fromSnapshot(document)).toList();
       return productsByCategory;

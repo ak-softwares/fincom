@@ -31,7 +31,7 @@ class AddTransaction extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: transaction != null ? 'Update Transaction' : 'Add Transaction'), // Updated title
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.md, vertical: Sizes.sm),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
         child: ElevatedButton(
           onPressed: () => transaction != null
               ? controller.saveUpdatedTransaction(previousTransaction: transaction!) // Updated method
@@ -43,13 +43,13 @@ class AddTransaction extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: Sizes.sm),
+        padding: const EdgeInsets.only(top: AppSizes.sm),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: controller.transactionFormKey, // Updated form key
             child: Column(
-              spacing: Sizes.spaceBtwSections,
+              spacing: AppSizes.spaceBtwSection,
               children: [
 
                 // Date and Voucher number
@@ -72,8 +72,8 @@ class AddTransaction extends StatelessWidget {
                           child: Row(
                             children: [
                               Text('Date - '),
-                              Text(TFormatter.formatStringDate(controller.date.text),
-                                style: TextStyle(color: TColors.linkColor),
+                              Text(AppFormatter.formatStringDate(controller.date.text),
+                                style: TextStyle(color: AppColors.linkColor),
                               ),
                             ],
                           ),
@@ -85,7 +85,7 @@ class AddTransaction extends StatelessWidget {
 
                 // Vendor
                 Column(
-                  spacing: Sizes.spaceBtwItems,
+                  spacing: AppSizes.spaceBtwItems,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,8 +107,8 @@ class AddTransaction extends StatelessWidget {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.add, color: TColors.linkColor),
-                              Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                              Icon(Icons.add, color: AppColors.linkColor),
+                              Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                             ],
                           ),
                         ),
@@ -148,7 +148,7 @@ class AddTransaction extends StatelessWidget {
 
                 // Payment
                 Column(
-                  spacing: Sizes.spaceBtwItems,
+                  spacing: AppSizes.spaceBtwItems,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,8 +167,8 @@ class AddTransaction extends StatelessWidget {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.add, color: TColors.linkColor),
-                              Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                              Icon(Icons.add, color: AppColors.linkColor),
+                              Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                             ],
                           ),
                         ),

@@ -40,9 +40,9 @@ class _SingleTransactionState extends State<SingleTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    const double transactionTileHeight = Sizes.transactionTileHeight; // Updated constant
-    const double transactionTileWidth = Sizes.transactionTileWidth; // Updated constant
-    const double transactionTileRadius = Sizes.transactionTileRadius; // Updated constant
+    const double transactionTileHeight = AppSizes.transactionTileHeight; // Updated constant
+    const double transactionTileWidth = AppSizes.transactionTileWidth; // Updated constant
+    const double transactionTileRadius = AppSizes.transactionTileRadius; // Updated constant
 
     return Scaffold(
       appBar: AppAppBar2(
@@ -62,11 +62,11 @@ class _SingleTransactionState extends State<SingleTransaction> {
               Get.to(() => AddTransaction(transaction: transaction));
             }
           },
-          child: Text('Edit', style: TextStyle(color: TColors.linkColor)),
+          child: Text('Edit', style: TextStyle(color: AppColors.linkColor)),
         ),
       ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshTransaction(), // Updated method
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
@@ -74,7 +74,7 @@ class _SingleTransactionState extends State<SingleTransaction> {
           children: [
             Container(
               width: transactionTileWidth,
-              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(transactionTileRadius),
                 color: Theme.of(context).colorScheme.surface,
@@ -89,7 +89,7 @@ class _SingleTransactionState extends State<SingleTransaction> {
                       Text('#${transaction.transactionId.toString()}', style: const TextStyle(fontSize: 14)),
                     ],
                   ),
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Amount
                   Row(
@@ -99,17 +99,17 @@ class _SingleTransactionState extends State<SingleTransaction> {
                       Text(transaction.amount?.toStringAsFixed(2) ?? 'N/A', style: const TextStyle(fontSize: 14)),
                     ],
                   ),
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Date
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Date', style: TextStyle(fontSize: 14)),
-                      Text(TFormatter.formatStringDate(transaction.date.toString()), style: const TextStyle(fontSize: 14)),
+                      Text(AppFormatter.formatStringDate(transaction.date.toString()), style: const TextStyle(fontSize: 14)),
                     ],
                   ),
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Payment Method
                   Row(
@@ -122,7 +122,7 @@ class _SingleTransactionState extends State<SingleTransaction> {
                 ],
               ),
             ),
-            SizedBox(height: Sizes.spaceBtwSections),
+            SizedBox(height: AppSizes.spaceBtwSection),
 
             // Delete Button
             Center(

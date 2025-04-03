@@ -51,6 +51,7 @@ class PurchaseItemModel {
 class PurchaseListMetaModel {
   String? id;
   String? metaName;
+  String? extraNote;
   DateTime? lastSyncDate;
   List<int>? purchasedProductIds;
   List<int>? notAvailableProductIds;
@@ -59,6 +60,7 @@ class PurchaseListMetaModel {
   PurchaseListMetaModel({
     this.id,
     this.metaName,
+    this.extraNote,
     this.lastSyncDate,
     this.purchasedProductIds,
     this.notAvailableProductIds,
@@ -71,6 +73,7 @@ class PurchaseListMetaModel {
           ? (json[PurchaseListFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
           : json[PurchaseListFieldName.id]?.toString(), // Fallback to string if not ObjectId
       metaName: json[MetaDataName.metaDocumentName]?.toString() ?? '',
+      extraNote: json[PurchaseListFieldName.extraNote]?.toString() ?? '',
       lastSyncDate: json[PurchaseListFieldName.lastSyncDate],
       purchasedProductIds: (json[PurchaseListFieldName.purchasedProductIds] as List<dynamic>?)
           ?.map((e) => e as int)
@@ -91,6 +94,7 @@ class PurchaseListMetaModel {
     return {
       PurchaseListFieldName.id: id,
       MetaDataName.metaDocumentName: metaName,
+      PurchaseListFieldName.extraNote: extraNote,
       PurchaseListFieldName.lastSyncDate: lastSyncDate,
       PurchaseListFieldName.purchasedProductIds: purchasedProductIds,
       PurchaseListFieldName.notAvailableProductIds: notAvailableProductIds,
@@ -100,6 +104,7 @@ class PurchaseListMetaModel {
   PurchaseListMetaModel copyWith({
     String? id,
     String? metaName,
+    String? extraNote,
     DateTime? lastSyncDate,
     List<int>? purchasedProductIds,
     List<int>? notAvailableProductIds,
@@ -108,6 +113,7 @@ class PurchaseListMetaModel {
     return PurchaseListMetaModel(
       id: id ?? this.id,
       metaName: metaName ?? this.metaName,
+      extraNote: extraNote ?? this.metaName,
       lastSyncDate: lastSyncDate ?? this.lastSyncDate,
       purchasedProductIds: purchasedProductIds ?? this.purchasedProductIds,
       notAvailableProductIds: notAvailableProductIds ?? this.notAvailableProductIds,

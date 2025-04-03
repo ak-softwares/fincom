@@ -18,14 +18,14 @@ class TAnimationLoaderWidgets extends StatelessWidget {
     required this.animation,
     this.showAction = false,
     this.actionText,
-    this.onActionPress
+    this.onActionPressed
   });
 
   final String text;
   final String animation;
   final bool showAction;
   final String? actionText;
-  final void Function()? onActionPress;
+  final void Function()? onActionPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +37,18 @@ class TAnimationLoaderWidgets extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Lottie.asset(animation, width: MediaQuery.of(context).size.width * 0.8), //display lottie animation
-            const SizedBox(height: Sizes.lg),
+            const SizedBox(height: AppSizes.lg),
             Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: Sizes.defaultSpace,),
+            const SizedBox(height: AppSizes.defaultSpace,),
             showAction
                 ? SizedBox(
                     width: 250,
                     child: ElevatedButton(
-                      onPressed: onActionPress,
+                      onPressed: onActionPressed,
                       child: Text(
                         actionText!,
                       ),

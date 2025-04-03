@@ -19,13 +19,13 @@ class PolicyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: TColors.primaryBackground,
+        color: AppColors.primaryBackground,
         width: double.infinity,
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
           children: [
             const TSectionHeading(title: 'Policies', verticalPadding: false),
-            const Divider(color: TColors.primaryColor, thickness: 2),
+            const Divider(color: AppColors.primaryColor, thickness: 2),
             ListTile(
               onTap: () => Get.to(() => const MyWebView(title: 'Privacy Policy', url: AppSettings.privacyPrivacy)),
               leading: Icon(TIcons.privacyPolicy, size: 18),

@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../../common/dialog_box/dialog_massage.dart';
 import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../data/repositories/user/user_repository.dart';
 import '../../../../data/repositories/woocommerce_repositories/products/woo_product_repositories.dart';
@@ -82,7 +84,7 @@ class CartController extends GetxController {
 
   // Toggle Cart item
   void toggleCartProduct({required ProductModel product, required String sourcePage}) {
-    if(!isInCart(product.id)) {
+    if(!isInCart(product.productId)) {
       addToCart(product: product, quantity: 1, pageSource: sourcePage);
     } else {
       // Convert the productModel to a cartItemModel with the give quantity
@@ -104,17 +106,17 @@ class CartController extends GetxController {
   }
 
   // Show dialog box before removing product
-  void removeFromCartDialog(CartModel item) {
-    Get.defaultDialog(
+  void removeFromCartDialog({required CartModel cartItem, required BuildContext context} ) {
+    DialogHelper.showDialog(
         title: 'Remove Product',
-        middleText: 'Are you sure you want to remove this product?',
-        onConfirm: () {
+        message: 'Are you sure you want to remove this product?',
+        toastMessage: 'Product removed form the cart.',
+        context: context,
+        actionButtonText: 'Remove',
+        function: () async {
           //remove the item form cart
-          removeFromCart(item: item);
-          TLoaders.customToast(message: 'Product removed form the cart.');
-          Get.back();
-        },
-        onCancel: () => () => Get.back()
+          removeFromCart(item: cartItem);
+        }
     );
   }
 
@@ -132,15 +134,15 @@ class CartController extends GetxController {
   }
 
   // Remove single item to cart
-  void removeOneToCart(CartModel item) {
-    int index = cartItems.indexWhere((cartItem) => cartItem.productId == item.productId);
+  void removeOneToCart({required CartModel cartItem, required BuildContext context}) {
+    int index = cartItems.indexWhere((cartItem) => cartItem.productId == cartItem.productId);
     if(index >= 0) {
       if (cartItems[index].quantity > 1) {
         cartItems[index].quantity -= 1;
         cartItems[index].subtotal = (cartItems[index].quantity * cartItems[index].price!).toStringAsFixed(0);
       } else {
         // Show dialog before completely removing
-        cartItems[index].quantity == 1 ? removeFromCartDialog(item) : cartItems.removeAt(index);
+        cartItems[index].quantity == 1 ? removeFromCartDialog(cartItem: cartItem, context: context) : cartItems.removeAt(index);
       }
     }
     updateCart();
@@ -220,7 +222,7 @@ class CartController extends GetxController {
     return CartModel(
       id: 1,
       name: product.name,
-      productId: product.id,
+      productId: product.productId,
       variationId: variationId,
       quantity: quantity,
       category: product.categories?[0].name,
@@ -245,8 +247,8 @@ class CartController extends GetxController {
       // Add to cart Using forEach method
       for (var product in products) {
         // Find the corresponding CartItemModel
-        var cartItem = selectedCartItems.firstWhere((item) => item.productId == product.id,
-          orElse: () => CartModel(productId: product.id, quantity: 1),
+        var cartItem = selectedCartItems.firstWhere((item) => item.productId == product.productId,
+          orElse: () => CartModel(productId: product.productId, quantity: 1),
         );
         // Add to cart
         isLoading.value = false; // Show loader

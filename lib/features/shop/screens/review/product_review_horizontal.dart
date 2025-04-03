@@ -64,7 +64,7 @@ class _ProductReviewHorizontalState extends State<ProductReviewHorizontal> {
       _isLoading(true);
       _currentPage.value = 1; // Reset page number
       _reviews.clear(); // Clear existing orders
-      await _getReviewsByProductId(widget.product.id.toString());
+      await _getReviewsByProductId(widget.product.productId.toString());
     } catch (error) {
       TLoaders.warningSnackBar(title: 'Error', message: error.toString());
     } finally {
@@ -82,7 +82,7 @@ class _ProductReviewHorizontalState extends State<ProductReviewHorizontal> {
           return; // Stop fetching
         }
         _currentPage.value++; // Increment current page
-        await _getReviewsByProductId(widget.product.id.toString());
+        await _getReviewsByProductId(widget.product.productId.toString());
         _isLoadingMore(false);
       }
     }
@@ -103,7 +103,7 @@ class _ProductReviewHorizontalState extends State<ProductReviewHorizontal> {
               radius: 10,
               backgroundColor: Colors.grey.shade100,
               child: Padding(
-                padding: const EdgeInsets.all(Sizes.defaultSpace),
+                padding: const EdgeInsets.all(AppSizes.defaultSpace),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -121,7 +121,7 @@ class _ProductReviewHorizontalState extends State<ProductReviewHorizontal> {
                         Text(' ${widget.product.averageRating?.toStringAsFixed(1)} (${widget.product.ratingCount.toString()})', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey.shade500)),
                       ],
                     ),
-                    const SizedBox(height: Sizes.sm),
+                    const SizedBox(height: AppSizes.sm),
                     CarouselSlider(
                       options: CarouselOptions(
                         height: 50,

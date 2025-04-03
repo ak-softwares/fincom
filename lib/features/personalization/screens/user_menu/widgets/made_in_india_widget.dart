@@ -15,9 +15,9 @@ class MadeInIndia extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Made with', style: Theme.of(context).textTheme.labelMedium,),
-          const SizedBox(width: Sizes.xs),
+          const SizedBox(width: AppSizes.xs),
           const Icon(Iconsax.heart5, color: Colors.redAccent, size: 20),
-          const SizedBox(width: Sizes.xs),
+          const SizedBox(width: AppSizes.xs),
           Text('in India', style: Theme.of(context).textTheme.labelMedium,)
         ]
     );

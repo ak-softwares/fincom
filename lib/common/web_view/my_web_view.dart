@@ -72,7 +72,7 @@ class MyWebView extends StatelessWidget {
       child: Scaffold(
         appBar: AppAppBar2(titleText: title),
         body: RefreshIndicator(
-          color: TColors.primaryColor,
+          color: AppColors.primaryColor,
           onRefresh: () async {
             // Reload the page here
             await webViewController.reload();

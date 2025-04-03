@@ -59,7 +59,7 @@ class MyHomePage extends StatelessWidget {
       floatingActionButton: const SendWhatsappScreen(),
       drawer: const MyDrawer(),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async {
           bannerController.refreshBanners();
           categoryController.refreshCategories();
@@ -81,17 +81,17 @@ class MyHomePage extends StatelessWidget {
             // ProductsScrollingByCategory(title: 'Products under, "₹199"', parameter: '199', futureMethod: productController.getProductsUnderPrice),
             // const SizedBox(height: TSizes.sm),
             ScrollingProducts(title: 'Recently viewed', futureMethod: productController.getRecentProducts, orientation: OrientationType.horizontal),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             ScrollingProducts(title: 'Top Selling',  futureMethod: productController.getAllProducts),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             ScrollingProducts(title: 'Popular Products',  futureMethod: productController.getFeaturedProducts),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             // ProductsScrollingByCategory(title: 'Mobile Repairing Tools', parameter: '617', futureMethod: productController.getProductsByCategoryId,),
             // const SizedBox(height: TSizes.sm),
             // ProductsScrollingByCategory(title: 'TV Repairing Tools', parameter: '662', futureMethod: productController.getProductsByCategoryId,),
             // const SizedBox(height: TSizes.sm),
             ProductsScrollingByItemID(itemName: 'Soldering Irons', itemID: '61', futureMethod: productController.getProductsByCategoryId,),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             const ProductCarousalByCategory(),
           ],
         ),

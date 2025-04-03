@@ -36,11 +36,11 @@ class MobileLoginScreen extends StatelessWidget {
                 Column(
                   children: [
                     Text('Your Phone!', style: Theme.of(context).textTheme.headlineMedium),
-                    const SizedBox(height: Sizes.sm),
+                    const SizedBox(height: AppSizes.sm),
                     Text(TTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
 
                 //Form Field
                 // PhoneFieldHint/TextField,
@@ -54,7 +54,7 @@ class MobileLoginScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (value) => TValidator.validatePhoneNumber(value.toString()),
-                  cursorColor: TColors.primaryColor,
+                  cursorColor: AppColors.primaryColor,
                   languageCode: "en",
                   initialCountryCode: 'IN',
                   onChanged: (phone) {
@@ -103,21 +103,21 @@ class MobileLoginScreen extends StatelessWidget {
                 // ),
 
                 // Button Otp send
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 SizedBox(
                   height: 60,
                   width: double.infinity,
                   child: Obx(() => ElevatedButton(
                         onPressed: () => otpController.fast2SmsSendOpt(phone: otpController.phoneNumber.value),
                         child: otpController.isLoading.value
-                            ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: TColors.primaryBackground,))
+                            ? const SizedBox(height: 25, width: 25, child: CircularProgressIndicator(color: AppColors.primaryBackground,))
                             : Text('Get OTP')
                     ),
                   ),
                 ),
 
                 //Not a Member?  Divider
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
@@ -139,11 +139,11 @@ class MobileLoginScreen extends StatelessWidget {
                 ),
 
                 //Social login
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 const TSocialButtons(),
 
                 //Continue with email and password
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(

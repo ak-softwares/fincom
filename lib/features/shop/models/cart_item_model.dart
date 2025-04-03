@@ -3,6 +3,7 @@ import '../../../utils/constants/db_constants.dart';
 class CartModel {
   int? id;
   String? name;
+  String? product_id;
   int productId;
   int? variationId;
   int quantity;
@@ -22,6 +23,7 @@ class CartModel {
   CartModel({
     this.id,
     this.name,
+    this.product_id,
     required this.productId,
     this.variationId,
     required this.quantity,
@@ -46,6 +48,7 @@ class CartModel {
     return {
       CartFieldName.id: id,
       CartFieldName.name: name,
+      CartFieldName.product_id: product_id,
       CartFieldName.productId: productId,
       CartFieldName.variationId: variationId,
       CartFieldName.quantity: quantity,
@@ -79,6 +82,7 @@ class CartModel {
     return CartModel(
       id: json[CartFieldName.id] ?? 0,
       name: json[CartFieldName.name] ?? '',
+      product_id: json[CartFieldName.product_id] ?? '',
       productId: int.tryParse(json[CartFieldName.productId]?.toString() ?? '') ?? 0,
       variationId: int.tryParse(json[CartFieldName.variationId]?.toString() ?? '') ?? 0,
       quantity: int.tryParse(json[CartFieldName.quantity]?.toString() ?? '') ?? 0,
@@ -102,6 +106,7 @@ class CartModel {
     return CartModel(
       id: json[CartFieldName.id] ?? 0,
       name: json[CartFieldName.name] ?? '',
+      product_id: json[CartFieldName.product_id] ?? '',
       productId: json[CartFieldName.productId] ?? 0, // Changed to product_id
       variationId: json[CartFieldName.variationId] ?? 0, // Changed to variation_id
       quantity: json[CartFieldName.quantity] ?? 0,
@@ -126,6 +131,7 @@ class CartModel {
     return {
       CartFieldName.id: id,
       CartFieldName.name: name,
+      CartFieldName.product_id: product_id,
       CartFieldName.productId: productId,
       CartFieldName.variationId: variationId,
       CartFieldName.quantity: quantity,

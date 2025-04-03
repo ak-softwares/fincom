@@ -72,7 +72,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(CustomersController()).customer.value.id.toString();
+        final userId = Get.put(CustomersController()).customer.value.customerId.toString();
         final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateShippingField);
         userController.customer(customer);
       } else {
@@ -89,7 +89,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(CustomersController()).customer.value.id.toString();
+        final userId = Get.put(CustomersController()).customer.value.customerId.toString();
         final CustomerModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateBillingField);
         userController.customer(customer);
         checkoutController.updateCheckout();
@@ -244,7 +244,7 @@ class AddressController extends GetxController{
     return showModalBottomSheet(
       context: context,
       builder: (_) => Container(
-        padding: const EdgeInsets.all(Sizes.lg),
+        padding: const EdgeInsets.all(AppSizes.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -264,7 +264,7 @@ class AddressController extends GetxController{
                   return ListView.separated(
                       shrinkWrap: true,
                       itemCount: addresses.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: Sizes.spaceBtwItems),
+                      separatorBuilder: (_, __) => const SizedBox(height: AppSizes.spaceBtwItems),
                       itemBuilder: (_, index) => TSingleAddress(
                           address: addresses[index],
                           onTap: () => selectAddress(addresses[index])
@@ -273,7 +273,7 @@ class AddressController extends GetxController{
                 }
               ),
             ),
-            const SizedBox(height: Sizes.defaultSpace * 2),
+            const SizedBox(height: AppSizes.defaultSpace * 2),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

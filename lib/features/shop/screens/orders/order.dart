@@ -27,7 +27,7 @@ class OrderScreen extends StatelessWidget {
     final orderController = Get.put(OrderController());
     final ScrollController scrollController = ScrollController();
     final authenticationRepository = Get.put(AuthenticationRepository());
-    final double orderTileHeight = Sizes.orderTileHeight;
+    final double orderTileHeight = AppSizes.orderTileHeight;
 
     orderController.refreshOrders();
 
@@ -56,7 +56,7 @@ class OrderScreen extends StatelessWidget {
       body: !authenticationRepository.isUserLogin.value
       ? const CheckLoginScreen()
       : RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async {
           await orderController.refreshOrders();
         },
@@ -75,7 +75,7 @@ class OrderScreen extends StatelessWidget {
                     animation: Images.orderCompletedAnimation,
                     showAction: true,
                     actionText: 'Let\'s add some',
-                    onActionPress: () => NavigationHelper.navigateToBottomNavigation(),
+                    onActionPressed: () => NavigationHelper.navigateToBottomNavigation(),
                   );
                 } else {
                   return GridLayout(

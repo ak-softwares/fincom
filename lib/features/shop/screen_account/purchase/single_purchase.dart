@@ -45,29 +45,29 @@ class _SinglePurchaseState extends State<SinglePurchase> {
 
   @override
   Widget build(BuildContext context) {
-    const double cartTileHeight = Sizes.cartTileHeight;
+    const double cartTileHeight = AppSizes.cartTileHeight;
 
     return Scaffold(
       appBar: AppAppBar2(
         titleText: 'Purchase #${purchase.purchaseID}',
         widget: TextButton(
             onPressed: () => Get.to(() => UpdatePurchase(purchase: purchase,)), 
-            child: Text('Edit', style: TextStyle(color: TColors.linkColor),)
+            child: Text('Edit', style: TextStyle(color: AppColors.linkColor),)
         ),
       ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshPurchase(),
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Column(
-              spacing: Sizes.spaceBtwSections,
+              spacing: AppSizes.spaceBtwSection,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
-                  spacing: Sizes.spaceBtwItems,
+                  spacing: AppSizes.spaceBtwItems,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +80,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Date'),
-                        Text(TFormatter.formatStringDate(purchase.date.toString())),
+                        Text(AppFormatter.formatStringDate(purchase.date.toString())),
                       ],
                     ),
                     Row(
@@ -99,7 +99,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                     ),
                     Container(
                       height: 1,
-                      color: TColors.borderSecondary,
+                      color: AppColors.borderDark,
                     ),
                   ],
                 ),
@@ -108,7 +108,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                 // Products
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: Sizes.spaceBtwItems,
+                  spacing: AppSizes.spaceBtwItems,
                   children: [
                     Text('Products ${purchase.purchasedItems?.length.toString()}'),
                     GridLayout(
@@ -116,7 +116,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                         crossAxisCount: 1,
                         mainAxisExtent: cartTileHeight,
                         itemBuilder: (context, index) {
-                          return CartTile(cartItem: purchase.purchasedItems![index]);
+                          return ProductCardForCart(cartItem: purchase.purchasedItems![index]);
                         }
                     ),
                     Row(
@@ -131,7 +131,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
 
                 // Image of Invoice
                 Column(
-                  spacing: Sizes.spaceBtwItems,
+                  spacing: AppSizes.spaceBtwItems,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Invoice Image'),
@@ -140,7 +140,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                         itemCount: purchase.purchaseInvoiceImages?.length ?? 0,
                         itemBuilder: (context, index) {
                           return Padding(
-                                padding: EdgeInsets.only(right: Sizes.sm),
+                                padding: EdgeInsets.only(right: AppSizes.sm),
                                 child: TRoundedImage(
                                   height: 150,
                                   width: 100,

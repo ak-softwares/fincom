@@ -33,7 +33,7 @@ class SingleReviewCard extends StatelessWidget {
               borderRadius: 50,
               isNetworkImage: true,
             ),
-            const SizedBox(width: Sizes.spaceBtwItems,),
+            const SizedBox(width: AppSizes.spaceBtwItems,),
             SizedBox(
               width: 210,
               child: Column(
@@ -46,13 +46,13 @@ class SingleReviewCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall
                   ),
-                  const SizedBox(height: Sizes.xs),
+                  const SizedBox(height: AppSizes.xs),
                   Flexible(
                     child: RatingBarIndicator(
                       rating: review.rating!.toDouble(),
                       itemSize: 12,
                       unratedColor: Colors.grey[300],
-                      itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: TColors.ratingStar),
+                      itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: AppColors.ratingStar),
                     ),
                   ),
                 ],

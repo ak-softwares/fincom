@@ -29,7 +29,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product, pageSource: pageSource,))),
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductScreen(product: product, pageSource: pageSource,))),
       // onTap: () => Get.to(ProductDetailScreen(product: product)),
       child: orientation == OrientationType.vertical
         ? productCardVertical()
@@ -38,14 +38,14 @@ class ProductCard extends StatelessWidget {
   }
 
   Container productCardVertical() {
-    const double productImageSizeVertical = Sizes.productImageSizeVertical;
-    const double productCardVerticalHeight = Sizes.productCardVerticalHeight;
-    const double productCardVerticalWidth = Sizes.productCardVerticalWidth;
-    const double productImageRadius = Sizes.productImageRadius;
+    const double productImageSizeVertical = AppSizes.productImageSizeVertical;
+    const double productCardVerticalHeight = AppSizes.productCardVerticalHeight;
+    const double productCardVerticalWidth = AppSizes.productCardVerticalWidth;
+    const double productImageRadius = AppSizes.productImageRadius;
     final salePercentage = product.calculateSalePercentage();
     return Container(
       width: productCardVerticalWidth,
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         boxShadow: [TShadowStyle.verticalProductShadow],
         borderRadius: BorderRadius.circular(productImageRadius),
@@ -111,7 +111,7 @@ class ProductCard extends StatelessWidget {
                       child: product.isProductAvailable()
                           ? const SizedBox.shrink()
                           : Container(
-                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: Sizes.sm),
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: AppSizes.sm),
                                 // color: Colors.grey.withOpacity(0.6),
                                 color: Colors.transparent,
                                 child: const Text('Out of Stock',
@@ -132,9 +132,9 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
               // Title and Star rating
-              const SizedBox(height: Sizes.xs),
+              const SizedBox(height: AppSizes.xs),
               Padding(
-                  padding: const EdgeInsets.only(left: Sizes.sm),
+                  padding: const EdgeInsets.only(left: AppSizes.sm),
                   child: Column(
                     children: [
                       ProductTitle(title: product.name ?? ''),
@@ -156,7 +156,7 @@ class ProductCard extends StatelessWidget {
             children: [
               // Price
               Container(
-                padding: const EdgeInsets.only(left: Sizes.sm, bottom: 5),
+                padding: const EdgeInsets.only(left: AppSizes.sm, bottom: 5),
                 child: ProductPrice(
                   salePrice: product.salePrice,
                   regularPrice: product.regularPrice ?? 0.0,
@@ -170,15 +170,15 @@ class ProductCard extends StatelessWidget {
                   width: 45,
                   height: 35,
                   decoration: const BoxDecoration(
-                      color: TColors.primaryColor,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.only(
                         // topLeft: Radius.circular(TSizes.cardRadiusMd),
                         bottomRight: Radius.circular(productImageRadius),
                       )
                   ),
                   child: SizedBox(
-                      width: Sizes.iconLg * 1.2,
-                      height: Sizes.iconLg * 1.2,
+                      width: AppSizes.iconLg * 1.2,
+                      height: AppSizes.iconLg * 1.2,
                       child: Center(child: CartIcon(product: product, sourcePage: pageSource))
                   ),
               )
@@ -190,14 +190,14 @@ class ProductCard extends StatelessWidget {
   }
 
   Container productCardHorizontal() {
-    const double productImageSizeHorizontal = Sizes.productImageSizeHorizontal;
-    const double productCardHorizontalHeight = Sizes.productCardHorizontalHeight;
-    const double productCardHorizontalWidth = Sizes.productCardHorizontalWidth;
-    const double productImageRadius = Sizes.productImageRadius;
+    const double productImageSizeHorizontal = AppSizes.productImageSizeHorizontal;
+    const double productCardHorizontalHeight = AppSizes.productCardHorizontalHeight;
+    const double productCardHorizontalWidth = AppSizes.productCardHorizontalWidth;
+    const double productImageRadius = AppSizes.productImageRadius;
     final salePercentage = product.calculateSalePercentage();
     return Container(
       width: productCardHorizontalWidth,
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         boxShadow: [TShadowStyle.verticalProductShadow],
         borderRadius: BorderRadius.circular(productImageRadius),
@@ -237,7 +237,7 @@ class ProductCard extends StatelessWidget {
           // Title, Rating and price
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: Sizes.sm),
+              padding: const EdgeInsets.only(left: AppSizes.sm),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -269,15 +269,15 @@ class ProductCard extends StatelessWidget {
                         width: 45,
                         height: 33,
                         decoration: const BoxDecoration(
-                            color: TColors.primaryColor,
+                            color: AppColors.primaryColor,
                             borderRadius: BorderRadius.only(
                               // topLeft: Radius.circular(TSizes.cardRadiusMd),
                               bottomRight: Radius.circular(productImageRadius),
                             )
                         ),
                         child: SizedBox(
-                            width: Sizes.iconLg,
-                            height: Sizes.iconLg,
+                            width: AppSizes.iconLg,
+                            height: AppSizes.iconLg,
                             child: Center(child: CartIcon(product: product, sourcePage: pageSource,))
                         ),
                       )

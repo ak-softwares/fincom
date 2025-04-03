@@ -23,7 +23,7 @@ class TRoundedImage extends StatelessWidget {
     this.isNetworkImage = false,
     this.isTapToEnlarge = false,
     this.isFileImage = false,
-    this.borderRadius = 100,
+    this.borderRadius = 0,
     this.onTap,
     this.border,
   });

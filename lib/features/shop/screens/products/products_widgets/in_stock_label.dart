@@ -13,7 +13,7 @@ class InStock extends StatelessWidget {
     return Row(
       children: [
         isProductAvailable
-          ? Text('In Stock', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: TColors.offerColor, fontWeight: FontWeight.w500))
+          ? Text('In Stock', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.offerColor, fontWeight: FontWeight.w500))
           : Text('Out of Stock', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red, fontWeight: FontWeight.w500)),
       ],
     );

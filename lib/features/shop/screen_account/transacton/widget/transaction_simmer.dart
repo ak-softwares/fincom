@@ -14,9 +14,9 @@ class TransactionTileShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double transactionTileHeight = Sizes.transactionTileHeight; // Updated constant
-    const double transactionTileWidth = Sizes.transactionTileWidth; // Updated constant
-    const double transactionTileRadius = Sizes.transactionTileRadius; // Updated constant
+    const double transactionTileHeight = AppSizes.transactionTileHeight; // Updated constant
+    const double transactionTileWidth = AppSizes.transactionTileWidth; // Updated constant
+    const double transactionTileRadius = AppSizes.transactionTileRadius; // Updated constant
 
     return GridLayout(
       itemCount: itemCount,
@@ -25,7 +25,7 @@ class TransactionTileShimmer extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           width: transactionTileWidth,
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(transactionTileRadius),
             color: Theme.of(context).colorScheme.surface,
@@ -40,7 +40,7 @@ class TransactionTileShimmer extends StatelessWidget {
                   ShimmerEffect(width: 100, height: 10), // Shimmer for transaction ID
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
 
               // Amount Row
               Row(
@@ -50,7 +50,7 @@ class TransactionTileShimmer extends StatelessWidget {
                   ShimmerEffect(width: 80, height: 10), // Shimmer for amount
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
 
               // Date Row
               Row(
@@ -60,7 +60,7 @@ class TransactionTileShimmer extends StatelessWidget {
                   ShimmerEffect(width: 120, height: 10), // Shimmer for date
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
 
               // Payment Method Row
               Row(

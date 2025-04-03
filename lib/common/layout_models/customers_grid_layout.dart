@@ -2,6 +2,7 @@ import 'package:fincom/common/widgets/shimmers/customers_voucher_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
+import '../../features/shop/screen_account/customers/widget/customer_tile_simmer.dart';
 import '../../features/shop/screens/products/scrolling_products.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/constants/sizes.dart';
@@ -27,7 +28,7 @@ class CustomersGridLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value) {
-        return  CustomersVoucherShimmer(itemCount: 2, orientation: orientation);
+        return  CustomersTileShimmer(itemCount: 2);
       } else if(controller.customers.isEmpty) {
         return emptyWidget;
       } else {
@@ -37,12 +38,12 @@ class CustomersGridLayout extends StatelessWidget {
             GridLayout(
                 itemCount: controller.isLoadingMore.value ? customers.length + 2 : customers.length,
                 crossAxisCount: 1,
-                mainAxisExtent: Sizes.customerVoucherTileHeight,
+                mainAxisExtent: AppSizes.customerVoucherTileHeight,
                 itemBuilder: (context, index) {
                   if (index < customers.length) {
                     return CustomerVoucherTile(customer: customers[index]);
                   } else {
-                    return CustomersVoucherShimmer(orientation: orientation);
+                    return CustomersTileShimmer();
                   }
                 }
             ),

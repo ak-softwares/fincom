@@ -36,8 +36,8 @@ import 'products_widgets/product_image_slider.dart';
 import 'products_widgets/product_price.dart';
 import 'products_widgets/sale_label.dart';
 
-class ProductDetailScreen extends StatefulWidget {
-  ProductDetailScreen({
+class ProductScreen extends StatefulWidget {
+  ProductScreen({
     Key? key,
     this.product,
     this.slug,
@@ -51,10 +51,10 @@ class ProductDetailScreen extends StatefulWidget {
   final String pageSource;
 
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+  State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
+class _ProductScreenState extends State<ProductScreen> {
   final RxBool _isLoading = false.obs;
   final RxBool _isLoadingVariation = false.obs;
   final RxInt _quantityInCart = 1.obs;
@@ -157,7 +157,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _updateProductAfterVariationSelected() {
     final selectedVariation = _getSelectedVariation();
-    if(selectedVariation.id != 0) {
+    if(selectedVariation.productId != 0) {
       // Creating a string with selected options dynamically
       String formattedOptions = selectedOptions.entries
           .map((entry) => '${entry.key.capitalizeFirst}: ${entry.value.capitalizeFirst}')
@@ -209,10 +209,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     } catch (e) {
       rethrow;
     } finally {
-      _quantityInCart.value = cartController.getCartQuantity(_product.value.id);
+      _quantityInCart.value = cartController.getCartQuantity(_product.value.productId);
       // Check is product variable or not
       if (_isProductVariable(_product.value)) {
-        String parentID = _product.value.id.toString();
+        String parentID = _product.value.productId.toString();
         _setDefaultVariation();
         _filterAttributes();
         _fetchProductVariations(parentID: parentID);
@@ -223,14 +223,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   //Get products by Refresh page
   Future<void> _refreshProduct() async {
-    final productId = _product.value.id;
+    final productId = _product.value.productId;
     try {
       _product.value = ProductModel.empty();
       await _fetchProduct(productId: productId.toString());
       // Check is product variable or not
       if (_product.value.type == "variable" && _product.value.variations != null && _product.value.variations!.isNotEmpty) {
         _productVariations.value = [ProductModel.empty()];
-        String parentID = _product.value.id.toString();
+        String parentID = _product.value.productId.toString();
         _fetchProductVariations(parentID: parentID);
       }
     } catch (error) {
@@ -243,16 +243,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     FBAnalytics.logPageView('product_screen');
     // Adding the product to recently viewed outside Obx's reactive context
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_product.value.id != 0) {
-        RecentlyViewedController.instance.addRecentProduct(_product.value.id.toString());
+      if (_product.value.productId != 0) {
+        RecentlyViewedController.instance.addRecentProduct(_product.value.productId.toString());
       }
     });
 
     return Scaffold(
       appBar: AppAppBar2(titleText: widget.product?.name ?? 'Product Details', showSearchIcon: true, showCartIcon: true),
-      bottomNavigationBar: Obx(() => TBottomAddToCart(product: _product.value, quantity: _quantityInCart.value, variationId: _getSelectedVariation().id, pageSource: widget.pageSource)),
+      bottomNavigationBar: Obx(() => TBottomAddToCart(product: _product.value, quantity: _quantityInCart.value, variationId: _getSelectedVariation().productId, pageSource: widget.pageSource)),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshProduct(),
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
@@ -262,7 +262,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               if (_isLoading.value) {
                 return const SingleProductShimmer();
               }
-              if(_product.value.id == 0) {
+              if(_product.value.productId == 0) {
                 return const TAnimationLoaderWidgets(
                   text: 'Whoops! No Product Found...',
                   animation: Images.pencilAnimation,
@@ -278,7 +278,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   // Product images
                   TProductImageSlider(product: _product.value),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   const Divider(),
 
                   // Title
@@ -297,9 +297,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: Row(
                         children: [
                           Text(_product.value.categories?[0].name ?? '',
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor)
+                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor)
                           ),
-                          SizedBox(width: Sizes.sm,),
+                          SizedBox(width: AppSizes.sm,),
                           GestureDetector(
                             onTap: () => AppShare.shareUrl(
                                 url: '${_product.value.categories?[0].permalink}',
@@ -309,14 +309,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             child: Icon(
                               TIcons.share,
-                              size: Sizes.md,
-                              color: TColors.linkColor,
+                              size: AppSizes.md,
+                              color: AppColors.linkColor,
                             ),
                           )
                         ],
                       )
                   ),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
 
                   // Brands
                   _product.value.brands != null && _product.value.brands!.isNotEmpty
@@ -327,9 +327,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               style: Theme.of(context)
                               .textTheme
                               .labelLarge!
-                              .copyWith(color: TColors.linkColor),
+                              .copyWith(color: AppColors.linkColor),
                             ),
-                            const SizedBox(height: Sizes.sm),
+                            const SizedBox(height: AppSizes.sm),
                           ],
                         )
                       : SizedBox.shrink(),
@@ -339,7 +339,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     children: [
                       TSaleLabel(discount: _product.value.calculateSalePercentage(), size: 13,),
                       // TOfferWidget(label: '${_product.value.calculateSalePercentage()}% off'),
-                      const SizedBox(width: Sizes.spaceBtwItems),
+                      const SizedBox(width: AppSizes.spaceBtwItems),
                       ProductPrice(salePrice: _product.value.salePrice,
                           regularPrice: _product.value.regularPrice ?? 0.0,
                           orientation: OrientationType.horizontal
@@ -348,43 +348,43 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       // TSaleLabel(discount: salePercentage),
                     ],
                   ),
-                  const SizedBox(height: Sizes.sm / 2 ),
+                  const SizedBox(height: AppSizes.sm / 2 ),
 
                   // Free Delivery Label
                   _product.value.getPrice() >= AppSettings.freeShippingOver
                       ? TRoundedContainer(
-                          radius: Sizes.productImageRadius,
+                          radius: AppSizes.productImageRadius,
                           backgroundColor: Colors.blue.shade50,
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Free Delivery', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: TColors.linkColor, fontSize: 10)),
-                              const SizedBox(width: Sizes.spaceBtwItems),
-                              Icon(TIcons.truck, color: TColors.linkColor, size: 10),
+                              Text('Free Delivery', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.linkColor, fontSize: 10)),
+                              const SizedBox(width: AppSizes.spaceBtwItems),
+                              Icon(TIcons.truck, color: AppColors.linkColor, size: 10),
                               const SizedBox(width: 5),
                             ],
                           )
                         )
                       : TRoundedContainer(
-                            radius: Sizes.productImageRadius,
+                            radius: AppSizes.productImageRadius,
                             backgroundColor: Colors.blue.shade50,
                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text('Free delivery over ₹999', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: TColors.linkColor, fontSize: 10)),
-                                const SizedBox(width: Sizes.spaceBtwItems),
-                                Icon(TIcons.truck, color: TColors.linkColor, size: 10),
+                                Text('Free delivery over ₹999', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.linkColor, fontSize: 10)),
+                                const SizedBox(width: AppSizes.spaceBtwItems),
+                                Icon(TIcons.truck, color: AppColors.linkColor, size: 10),
                                 const SizedBox(width: 5),
                               ],
                             )
                         ),
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // In Stock
                   InStock(isProductAvailable: _product.value.isProductAvailable()),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
 
                   // Variation
                   _product.value.type == "variable" && filteredAttributes.isNotEmpty
@@ -439,14 +439,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 color: _hasKeyValue(attribute?.name ?? '', option ?? '') ? Colors.blue.withOpacity(0.2) : Colors.transparent, // Optional background color
                                               ),
                                               child: attribute?.name?.toLowerCase() == 'color' &&
-                                                  TColors.getColorFromString(option?.toLowerCase() ?? '') != Colors.transparent
+                                                  AppColors.getColorFromString(option?.toLowerCase() ?? '') != Colors.transparent
                                                   ? Padding(
-                                                    padding: EdgeInsets.all(Sizes.sm),
+                                                    padding: EdgeInsets.all(AppSizes.sm),
                                                     child: TRoundedContainer(
                                                         height: 20,
                                                         width: 20,
                                                         radius: 100,
-                                                        backgroundColor: TColors.getColorFromString(option?.toLowerCase() ?? ''),
+                                                        backgroundColor: AppColors.getColorFromString(option?.toLowerCase() ?? ''),
                                                       ),
                                                   )
                                                   : Row(
@@ -464,7 +464,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                                     image: _getVariationImage(attribute?.name ?? '', option ?? '')
                                                                     // image: _productVariations.first.image ?? '',
                                                                 ),
-                                                              SizedBox(width: Sizes.sm),
+                                                              SizedBox(width: AppSizes.sm),
                                                             ],
                                                           )
                                                           : SizedBox.shrink(),
@@ -486,7 +486,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             }
                         )
                       : SizedBox.shrink(),
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Product review
                   _product.value.averageRating != 0
@@ -494,7 +494,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ProductReviewHorizontal(product: _product.value),
-                            const SizedBox(height: Sizes.sm),
+                            const SizedBox(height: AppSizes.sm),
                           ],
                         )
                       : const SizedBox.shrink(),
@@ -502,17 +502,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   // Frequently Bought together
                   ProductsScrollingByItemID(
                       itemName: 'Frequently Bought together',
-                      itemID: _product.value.id.toString(),
+                      itemID: _product.value.productId.toString(),
                       futureMethod: productController.getFBTProducts
                   ),
 
-                  const SizedBox(height: Sizes.spaceBtwSections),
+                  const SizedBox(height: AppSizes.spaceBtwSection),
                   _product.value.description != ''
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const TSectionHeading(title: 'Description'),
-                            const SizedBox(height: Sizes.sm),
+                            const SizedBox(height: AppSizes.sm),
                             // Text(product.description ?? ''),
                             Html(data: _product.value.description)
                           ],
@@ -525,7 +525,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       itemID: _product.value.categories?[0].id ?? '',
                       futureMethod: productController.getProductsByCategoryId
                   ),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
 
                   // Shown products by related products, up sale,cross sale
                   ProductsScrollingByItemID(
@@ -533,11 +533,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       itemID: _product.value.getAllRelatedProductsIdsAsString(),
                       futureMethod: productController.getProductsByIds
                   ),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   const Divider(),
 
                   // Review
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -570,6 +570,6 @@ class TOfferWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(label,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: TColors.offerColor, fontWeight: FontWeight.w600));
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.offerColor, fontWeight: FontWeight.w600));
   }
 }

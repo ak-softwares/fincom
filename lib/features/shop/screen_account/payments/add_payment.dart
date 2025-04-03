@@ -23,20 +23,20 @@ class AddPayments extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: payment != null ? 'Update Payment' : 'Add Payment'),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.md, vertical: Sizes.sm),
+        padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
         child: ElevatedButton(
           onPressed: () => payment != null ? controller.saveUpdatedPayment(previousPayment: payment!) : controller.savePaymentMethods(),
           child: Text(payment != null ? 'Update Payment' : 'Add Payment', style: TextStyle(fontSize: 16)),
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: Sizes.sm),
+        padding: EdgeInsets.only(top: AppSizes.sm),
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Form(
             key: controller.paymentFormKey,
             child: Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

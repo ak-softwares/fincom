@@ -40,7 +40,7 @@ class ProductGridLayout extends StatelessWidget {
         return GridLayout(
           itemCount: controller.isLoadingMore.value ? products.length + 2 : products.length,
           crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-          mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : Sizes.productVoucherTileHeight,
+          mainAxisExtent: orientation == OrientationType.vertical ? AppSizes.productCardVerticalHeight : AppSizes.productVoucherTileHeight,
           itemBuilder: (context, index) {
             if (index < products.length) {
               return ProductVoucherCard(
@@ -64,8 +64,8 @@ class GridLayout extends StatelessWidget {
     super.key,
     required this.itemCount,
     this.crossAxisCount = 1,
-    this.crossAxisSpacing = Sizes.defaultSpaceBWTCard,
-    this.mainAxisSpacing = Sizes.defaultSpaceBWTCard,
+    this.crossAxisSpacing = AppSizes.defaultSpaceBWTCard,
+    this.mainAxisSpacing = AppSizes.defaultSpaceBWTCard,
     required this.mainAxisExtent,
     required this.itemBuilder,
     this.onDelete,

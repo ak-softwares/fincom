@@ -18,17 +18,17 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double transactionTileHeight = Sizes.transactionTileHeight; // Updated constant
-    const double transactionTileWidth = Sizes.transactionTileWidth; // Updated constant
-    const double transactionTileRadius = Sizes.transactionTileRadius; // Updated constant
-    const double transactionImageHeight = Sizes.transactionImageHeight; // Updated constant
-    const double transactionImageWidth = Sizes.transactionImageWidth; // Updated constant
+    const double transactionTileHeight = AppSizes.transactionTileHeight; // Updated constant
+    const double transactionTileWidth = AppSizes.transactionTileWidth; // Updated constant
+    const double transactionTileRadius = AppSizes.transactionTileRadius; // Updated constant
+    const double transactionImageHeight = AppSizes.transactionImageHeight; // Updated constant
+    const double transactionImageWidth = AppSizes.transactionImageWidth; // Updated constant
 
     return InkWell(
       onTap: () => Get.to(() => SingleTransaction(transaction: transaction)), // Updated navigation
       child: Container(
         width: transactionTileWidth,
-        padding: const EdgeInsets.all(Sizes.defaultSpace),
+        padding: const EdgeInsets.all(AppSizes.defaultSpace),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(transactionTileRadius),
           color: Theme.of(context).colorScheme.surface,
@@ -46,7 +46,7 @@ class TransactionTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Date', style: TextStyle(fontSize: 14)),
-                Text(TFormatter.formatStringDate(transaction.date.toString()), style: const TextStyle(fontSize: 14)),
+                Text(AppFormatter.formatStringDate(transaction.date.toString()), style: const TextStyle(fontSize: 14)),
               ],
             ),
             Row(

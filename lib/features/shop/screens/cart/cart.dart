@@ -35,7 +35,7 @@ class CartScreen extends StatelessWidget {
         bottomNavigationBar: Obx((){
           if (AuthenticationRepository.instance.isUserLogin.value && cartController.cartItems.isNotEmpty){
             return Padding(
-              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
               child: ElevatedButton(
                   onPressed: () {
                     checkoutController.updateCheckout();
@@ -60,7 +60,7 @@ class CartScreen extends StatelessWidget {
             animation: Images.addToCartAnimation,
             showAction: true,
             actionText: 'Let\'s add some',
-            onActionPress: () => NavigationHelper.navigateToBottomNavigation(),
+            onActionPressed: () => NavigationHelper.navigateToBottomNavigation(),
           );
 
           // check empty cart
@@ -72,9 +72,9 @@ class CartScreen extends StatelessWidget {
               children: [
                 GridLayout(
                   crossAxisCount: 1,
-                  mainAxisExtent: Sizes.cartCardHorizontalHeight,
+                  mainAxisExtent: AppSizes.cartCardHorizontalHeight,
                   itemCount: cartController.cartItems.length,
-                  itemBuilder: (_, index) => CartTile(cartItem: cartController.cartItems[index], showBottomBar: true),
+                  itemBuilder: (_, index) => ProductCardForCart(cartItem: cartController.cartItems[index], showBottomBar: true),
                 ),
                 // Center(child: Text(cartController.cartItems.map((item) => item.pageSource ?? 'NA').join(', ')))
               ],

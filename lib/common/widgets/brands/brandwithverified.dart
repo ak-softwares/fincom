@@ -19,8 +19,8 @@ class TBrandwithVerifiedIcon extends StatelessWidget {
           maxLines: 1,
           textAlign: TextAlign.left,
         ),
-        const SizedBox(width: Sizes.xs),
-        const Icon(Iconsax.verify5, color: Colors.blue, size: Sizes.iconXs),
+        const SizedBox(width: AppSizes.xs),
+        const Icon(Iconsax.verify5, color: Colors.blue, size: AppSizes.iconXs),
       ],
     );
   }

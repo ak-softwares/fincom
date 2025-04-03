@@ -98,11 +98,11 @@ class _ScrollingProductsState extends State<ScrollingProducts> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(title: 'Products Loading..'),
             ),
             Padding(
-                padding: EdgeInsets.all(Sizes.defaultSpaceBWTCard / 2),
+                padding: EdgeInsets.all(AppSizes.defaultSpaceBWTCard / 2),
                 child: ProductShimmer(
                   itemCount: widget.orientation == OrientationType.horizontal ? 1 : 2,
                   crossAxisCount: widget.orientation == OrientationType.horizontal ? 1 : 2,
@@ -118,7 +118,7 @@ class _ScrollingProductsState extends State<ScrollingProducts> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(
                 title: widget.title,
                 seeActionButton: true,
@@ -128,19 +128,19 @@ class _ScrollingProductsState extends State<ScrollingProducts> {
             ),
             ListLayout(
               height: widget.orientation == OrientationType.vertical
-                  ? Sizes.productCardVerticalHeight + 10
-                  : Sizes.productCardHorizontalHeight + 10,
+                  ? AppSizes.productCardVerticalHeight + 10
+                  : AppSizes.productCardHorizontalHeight + 10,
               controller: _scrollController,
               itemCount: isLoadingMore.value ? products.length + 1 : products.length,
               itemBuilder: (context, index) {
                 if (index < products.length) {
                   return Padding(
-                    padding: EdgeInsets.all(Sizes.defaultSpaceBWTCard / 2),
+                    padding: EdgeInsets.all(AppSizes.defaultSpaceBWTCard / 2),
                     child: ProductCard(product: products[index], orientation: widget.orientation, pageSource: widget.title,),
                   );
                 } else {
                   return Padding(
-                      padding: EdgeInsets.all(Sizes.defaultSpaceBWTCard / 2),
+                      padding: EdgeInsets.all(AppSizes.defaultSpaceBWTCard / 2),
                       child: ProductShimmer(
                         itemCount: 1,
                         crossAxisCount: 1,

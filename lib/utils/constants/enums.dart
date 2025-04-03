@@ -19,7 +19,7 @@ extension TransactionTypeExtension on TransactionType {
 }
 enum PurchaseListType { vendors, purchasable, purchased, notAvailable }
 
-enum EntityType { vendor, payment, customer  }
+enum EntityType { vendor, payment, customer, expense }
 extension EntityTypeExtension on EntityType {
 
   String get name {
@@ -30,7 +30,8 @@ extension EntityTypeExtension on EntityType {
         return 'payment';
       case EntityType.customer:
         return 'customer';
-
+      case EntityType.expense:
+        return 'expense';
     }
   }
 
@@ -42,6 +43,9 @@ extension EntityTypeExtension on EntityType {
         return DbCollections.payments;
       case EntityType.customer:
         return DbCollections.customers;
+      case EntityType.expense:
+        // TODO: Handle this case.
+        throw DbCollections.expenses;
     }
   }
 
@@ -52,7 +56,10 @@ extension EntityTypeExtension on EntityType {
       case EntityType.payment:
         return PaymentMethodFieldName.paymentId;
       case EntityType.customer:
-        return CustomerFieldName.id;
+        return CustomerFieldName.customerId;
+      case EntityType.expense:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }

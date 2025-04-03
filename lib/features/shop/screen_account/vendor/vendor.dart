@@ -27,7 +27,7 @@ class Vendors extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double vendorTileHeight = Sizes.vendorTileHeight;
+    const double vendorTileHeight = AppSizes.vendorTileHeight;
 
     final ScrollController scrollController = ScrollController();
     final vendorController = Get.put(VendorController());
@@ -65,7 +65,7 @@ class Vendors extends StatelessWidget {
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async => vendorController.refreshVendors(),
           child: ListView(
             controller: scrollController,

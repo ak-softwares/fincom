@@ -1,9 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../../../common/dialog_box/dialog_massage.dart';
 import '../../../../common/widgets/loaders/loader.dart';
+import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/customers/customers_repositories.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
+import '../../../../utils/constants/image_strings.dart';
+import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../personalization/controllers/customers_controller.dart';
+import '../../../personalization/models/address_model.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../controllers/product/product_controller.dart';
 import '../../models/product_model.dart';
@@ -25,6 +31,25 @@ class CustomersVoucherController extends GetxController{
   RxList<CustomerModel> customers = <CustomerModel>[].obs;
   final mongoCustomersRepo = Get.put(MongoCustomersRepo());
   final customersController = Get.put(CustomersController());
+
+  RxInt customerId = 0.obs;
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final address1Controller = TextEditingController();
+  final address2Controller = TextEditingController();
+  final cityController = TextEditingController();
+  final stateController = TextEditingController();
+  final pincodeController = TextEditingController();
+  final countryController = TextEditingController();
+  GlobalKey<FormState> customerFormKey = GlobalKey<FormState>();
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    customerId.value = await mongoCustomersRepo.fetchCustomerGetNextId();
+  }
 
   Future<void> syncCustomers() async {
     try {
@@ -49,7 +74,7 @@ class CustomersVoucherController extends GetxController{
 
         // **Step 3: Filter only new customers**
         List<CustomerModel> newCustomers = customers.where((customer) {
-          return !uploadedCustomerIds.contains(customer.id);
+          return !uploadedCustomerIds.contains(customer.customerId);
         }).toList();
 
         // **Step 4: Bulk Insert**
@@ -118,7 +143,7 @@ class CustomersVoucherController extends GetxController{
       currentPage.value = 1; // Reset page number
       customers.clear(); // Clear existing orders
       await getAllCustomers();
-      await getTotalCustomerCount();
+      // await getTotalCustomerCount();
     } catch (error) {
       TLoaders.warningSnackBar(title: 'Errors', message: error.toString());
     } finally {
@@ -126,4 +151,151 @@ class CustomersVoucherController extends GetxController{
     }
   }
 
+  // Get Customer by ID
+  Future<CustomerModel> getCustomerByID({required String id}) async {
+    try {
+      final fetchedCustomer = await mongoCustomersRepo.fetchCustomerById(id: id);
+      return fetchedCustomer;
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error in getting customer', message: e.toString());
+      return CustomerModel.empty(); // Return an empty customer model in case of failure
+    }
+  }
+
+  Future<void> deleteCustomer({required String id, required BuildContext context}) async {
+    try {
+      DialogHelper.showDialog(
+        context: context,
+        title: 'Delete Customer',
+        message: 'Are you sure you want to delete this customer?',
+        function: () async { await mongoCustomersRepo.deleteCustomer(id: id); },
+        toastMessage: 'Deleted successfully!',
+      );
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
+  void saveCustomer() {
+    AddressModel address = AddressModel(
+      phone: phoneController.text,
+      email: emailController.text,
+      address1: address1Controller.text,
+      address2: address2Controller.text,
+      city: cityController.text,
+      state: stateController.text,
+      pincode: pincodeController.text,
+      country: countryController.text,
+    );
+
+    CustomerModel customer = CustomerModel(
+      customerId: customerId.value,
+      firstName: nameController.text,
+      email: emailController.text,
+      billing: address,
+      dateCreated: DateTime.now().toString(),
+    );
+
+    addCustomer(customer: customer);
+  }
+
+  Future<void> addCustomer({required CustomerModel customer}) async {
+    try {
+      // Start Loading
+      TFullScreenLoader.openLoadingDialog('We are adding customer..', Images.docerAnimation);
+
+      // Check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Form Validation
+      if (!customerFormKey.currentState!.validate()) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      final fetchedCustomerId = await mongoCustomersRepo.fetchCustomerGetNextId();
+      if (fetchedCustomerId != customerId.value) {
+        throw 'Customer ID mismatch!';
+      }
+
+      await mongoCustomersRepo.pushCustomer(customer: customer);
+      TFullScreenLoader.stopLoading();
+      TLoaders.customToast(message: 'Customer added successfully!');
+      Navigator.of(Get.context!).pop();
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
+  void resetValue(CustomerModel customer) {
+    customerId.value = customer.customerId ?? 0;
+    nameController.text = customer.name ?? '';
+    emailController.text = customer.email ?? '';
+    phoneController.text = customer.phone ?? '';
+
+    address1Controller.text = customer.billing?.address1 ?? '';
+    address2Controller.text = customer.billing?.address2 ?? '';
+    cityController.text = customer.billing?.city ?? '';
+    stateController.text = customer.billing?.state ?? '';
+    pincodeController.text = customer.billing?.pincode ?? '';
+    countryController.text = customer.billing?.country ?? '';
+  }
+
+  void saveUpdatedCustomer({required CustomerModel previousCustomer}) {
+    AddressModel address = AddressModel(
+      phone: phoneController.text,
+      email: emailController.text,
+      address1: address1Controller.text,
+      address2: address2Controller.text,
+      city: cityController.text,
+      state: stateController.text,
+      pincode: pincodeController.text,
+      country: countryController.text,
+    );
+
+    CustomerModel customer = CustomerModel(
+      id: previousCustomer.id,
+      customerId: previousCustomer.customerId,
+      firstName: nameController.text,
+      email: emailController.text,
+      billing: address,
+      dateCreated: previousCustomer.dateCreated,
+    );
+
+    updateCustomer(customer: customer);
+  }
+
+  Future<void> updateCustomer({required CustomerModel customer}) async {
+    try {
+      // Start Loading
+      TFullScreenLoader.openLoadingDialog('We are updating customer..', Images.docerAnimation);
+
+      // Check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Form Validation
+      if (!customerFormKey.currentState!.validate()) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      await mongoCustomersRepo.updateCustomer(id: customer.id ?? '', customer: customer);
+      TFullScreenLoader.stopLoading();
+      TLoaders.customToast(message: 'Customer updated successfully!');
+      Navigator.of(Get.context!).pop();
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
 }
+

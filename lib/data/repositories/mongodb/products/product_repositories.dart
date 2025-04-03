@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../features/shop/controllers/product/product_controller.dart';
 import '../../../../features/shop/models/product_model.dart';
 import '../../../../utils/constants/api_constants.dart';
+import '../../../../utils/constants/db_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
 
 class MongoProductRepo extends GetxController {
@@ -38,7 +39,7 @@ class MongoProductRepo extends GetxController {
 
       // Fetch products from MongoDB with pagination
       final List<Map<String, dynamic>> productData =
-            await _mongoDatabase.fetchDocuments(collectionName:collectionName, page: page);
+            await _mongoDatabase.fetchProducts(collectionName:collectionName, page: page);
 
       // Convert data to a list of ProductModel
       final List<ProductModel> products = productData.map((data) => ProductModel.fromJson(data)).toList();
@@ -97,17 +98,70 @@ class MongoProductRepo extends GetxController {
     }
   }
 
-  Future<void> updateProductQuantities({required List<Map<String, dynamic>> productQuantityPairs, required bool isAddition}) async {
+  Future<void> updateProductQuantities({required List<ProductPurchaseHistory> purchaseHistoryList, required bool isAddition}) async {
     try {
-      await _mongoDatabase.updateProductQuantitiesWithPairs(
-        collectionName: collectionName,
-        productQuantityPairs: productQuantityPairs,
-        isAddition: isAddition,
-      );
+      List<Map<String, dynamic>> productPurchaseHistoryMaps = purchaseHistoryList.map((purchaseHistory) => purchaseHistory.toMap()).toList();
+      await _mongoDatabase.updateProductsStock(collectionName, productPurchaseHistoryMaps); // Use batch insert function
     } catch (e) {
       throw Exception('Failed to update product quantities: $e');
     }
   }
 
+  Future<ProductModel> fetchProductById({required String id}) async {
+    try {
+      // Fetch a single document by ID
+      final Map<String, dynamic>? productData =
+          await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+
+      // Check if the document exists
+      if (productData == null) {
+        throw Exception('Product not found with ID: $id');
+      }
+
+      // Convert the document to a ProductModel object
+      final ProductModel product = ProductModel.fromJson(productData);
+      return product;
+    } catch (e) {
+      throw 'Failed to fetch product: $e';
+    }
+  }
+
+  Future<void> deleteProduct({required String id}) async {
+    try {
+      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+    } catch (e) {
+      throw 'Failed to delete product: $e';
+    }
+  }
+
+  // Get the total count of purchases in the collection
+  Future<int> fetchProductGetNextId() async {
+    try {
+      int nextID = await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: ProductFieldName.productId);
+      return nextID;
+    } catch (e) {
+      throw 'Failed to fetch vendor id: $e';
+    }
+  }
+
+  // Add product
+  Future<void> pushProduct({required ProductModel product}) async {
+    try {
+      Map<String, dynamic> productMap = product.toMap(); // Convert a single product to a map
+      await _mongoDatabase.insertDocument(collectionName, productMap);
+    } catch (e) {
+      throw 'Failed to add Product: $e';
+    }
+  }
+
+  // Update a product
+  Future<void> updateProduct({required String id, required ProductModel product}) async {
+    try {
+      Map<String, dynamic> productMap = product.toJson();
+      await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: productMap);
+    } catch (e) {
+      throw 'Failed to update Product: $e';
+    }
+  }
 
 }

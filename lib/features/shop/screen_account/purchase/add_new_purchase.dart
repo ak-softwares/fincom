@@ -30,13 +30,13 @@ class AddNewPurchase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double purchaseProductTileHeight = Sizes.purchaseProductTileHeight;
+    const double purchaseProductTileHeight = AppSizes.purchaseProductTileHeight;
     final purchaseController = Get.put(PurchaseController());
 
     return Scaffold(
       appBar: AppAppBar2(titleText: 'Add new purchase'),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
         child: ElevatedButton(
           onPressed: () => purchaseController.savePurchase(),
           child: Text('Add Purchase')
@@ -45,7 +45,7 @@ class AddNewPurchase extends StatelessWidget {
       body: SingleChildScrollView(
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
-          spacing: Sizes.spaceBtwSections,
+          spacing: AppSizes.spaceBtwSection,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date and Voucher number
@@ -66,8 +66,8 @@ class AddNewPurchase extends StatelessWidget {
                       child: Row(
                         children: [
                           Text('Date - '),
-                          Text(TFormatter.formatStringDate(purchaseController.dateController.text),
-                            style: TextStyle(color: TColors.linkColor),
+                          Text(AppFormatter.formatStringDate(purchaseController.dateController.text),
+                            style: TextStyle(color: AppColors.linkColor),
                           ),
                         ],
                       ),
@@ -79,7 +79,7 @@ class AddNewPurchase extends StatelessWidget {
 
             // Vendor
             Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,8 +101,8 @@ class AddNewPurchase extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                          Icon(Icons.add, color: AppColors.linkColor),
+                          Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                         ],
                       ),
                     ),
@@ -151,7 +151,7 @@ class AddNewPurchase extends StatelessWidget {
             // Products
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,8 +170,8 @@ class AddNewPurchase extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                          Icon(Icons.add, color: AppColors.linkColor),
+                          Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                         ],
                       ),
                     ),
@@ -286,7 +286,7 @@ class AddNewPurchase extends StatelessWidget {
 
             // Image of Invoice
             Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Upload Invoice Image'),
@@ -307,7 +307,7 @@ class AddNewPurchase extends StatelessWidget {
                         );
                       } else {
                         return Obx(() => Padding(
-                              padding: EdgeInsets.only(right: Sizes.sm),
+                              padding: EdgeInsets.only(right: AppSizes.sm),
                               child: Stack(
                                 children: [
                                   TRoundedImage(
@@ -342,7 +342,7 @@ class AddNewPurchase extends StatelessWidget {
                                                     child: !purchaseController.isUploadingImage.value
                                                         ? Row(
                                                             mainAxisSize: MainAxisSize.min, // Ensures row takes only required space
-                                                            spacing: Sizes.xs,
+                                                            spacing: AppSizes.xs,
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
                                                               Text('Upload'),
@@ -363,7 +363,7 @@ class AddNewPurchase extends StatelessWidget {
                                                     child: !purchaseController.isDeletingImage.value
                                                         ? Row(
                                                       mainAxisSize: MainAxisSize.min, // Ensures row takes only required space
-                                                      spacing: Sizes.xs,
+                                                      spacing: AppSizes.xs,
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text('Delete', style: TextStyle(color: Colors.white),),

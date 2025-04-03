@@ -8,8 +8,8 @@ class TOutlinedButtonTheme {
   static final lightOutlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       elevation: 0,
-      foregroundColor: TColors.buttonSecondary,
-      side: const BorderSide(color: TColors.buttonBorder),
+      foregroundColor: AppColors.buttonSecondary,
+      side: const BorderSide(color: AppColors.buttonBorder),
       alignment: Alignment.center,
       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),

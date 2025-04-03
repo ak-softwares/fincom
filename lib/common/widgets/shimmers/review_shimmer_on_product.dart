@@ -19,7 +19,7 @@ class ReviewShimmerOnProduct extends StatelessWidget {
       radius: 10,
       backgroundColor: Colors.grey.shade100,
       child: Padding(
-        padding: const EdgeInsets.all(Sizes.defaultSpace),
+        padding: const EdgeInsets.all(AppSizes.defaultSpace),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -29,7 +29,7 @@ class ReviewShimmerOnProduct extends StatelessWidget {
                 ShimmerEffect(width: 50, height: 13),
               ],
             ),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             SizedBox(
               height: height,
               child: Row(
@@ -42,7 +42,7 @@ class ReviewShimmerOnProduct extends StatelessWidget {
                     borderRadius: 50,
                     isNetworkImage: false,
                   ),
-                  const SizedBox(width: Sizes.spaceBtwItems,),
+                  const SizedBox(width: AppSizes.spaceBtwItems,),
                   SizedBox(
                     width: 210,
                     child: Column(
@@ -50,7 +50,7 @@ class ReviewShimmerOnProduct extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ShimmerEffect(width: 200, height: 13),
-                        const SizedBox(height: Sizes.xs),
+                        const SizedBox(height: AppSizes.xs),
                         ShimmerEffect(width: 50, height: 13),
                       ],
                     ),

@@ -10,7 +10,7 @@ class TSwitchTheme {
       if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Active color (blue)
       }
-      return TColors.buttonSecondary; // Inactive color
+      return AppColors.buttonSecondary; // Inactive color
     }),
     trackColor: WidgetStateProperty.resolveWith<Color>((states) {
       if (states.contains(WidgetState.selected)) {

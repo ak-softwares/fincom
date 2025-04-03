@@ -32,10 +32,10 @@ class TSuccessScreen extends StatelessWidget {
 
               //Title and SubTitle
               Text(title, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
 
               Text(subTitle, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
 
               //Button
               SizedBox(
@@ -46,13 +46,13 @@ class TSuccessScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(TIcons.bottomNavigationCart),
-                      const SizedBox(width: Sizes.spaceBtwInputFields),
+                      const SizedBox(width: AppSizes.spaceBtwInputFields),
                       const Text('Go to My Orders'),
                     ],
                   )
                 ),
               ),
-              const SizedBox(height: Sizes.spaceBtwInputFields),
+              const SizedBox(height: AppSizes.spaceBtwInputFields),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -61,7 +61,7 @@ class TSuccessScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(TIcons.home),
-                      const SizedBox(width: Sizes.spaceBtwInputFields),
+                      const SizedBox(width: AppSizes.spaceBtwInputFields),
                       const Text('Go to Home'),
                     ],
                   )

@@ -35,10 +35,10 @@ class TSingleAddress extends StatelessWidget {
                       right: 5,
                       top: 0,
                       child: Row(
-                        spacing: Sizes.sm,
+                        spacing: AppSizes.sm,
                         children: [
-                          Icon(Icons.edit, size: 20, color: TColors.linkColor),
-                          Text('Edit', style: TextStyle(color: TColors.linkColor),)
+                          Icon(Icons.edit, size: 20, color: AppColors.linkColor),
+                          Text('Edit', style: TextStyle(color: AppColors.linkColor),)
                         ],
                       )
                   )
@@ -55,7 +55,7 @@ class TSingleAddress extends StatelessWidget {
                     : Text(address.email ?? '', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15), overflow: TextOverflow.ellipsis),
                 Text(address.toString(), style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis, maxLines: 4,
                 ),
-                const SizedBox(height: Sizes.sm),
+                const SizedBox(height: AppSizes.sm),
               ],
             )
           ],

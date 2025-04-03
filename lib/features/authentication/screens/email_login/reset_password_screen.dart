@@ -26,21 +26,21 @@ class ResetPasswordScreen extends StatelessWidget {
       appBar: const AppAppBar2(titleText: "Reset Password Link"),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           child: Column(
             children: [
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
               Image(
                   image: const AssetImage(Images.deliveredEmailIllustration),
                   width: THelperFunctions.screenWidth(context) * 0.6,
               ),
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
               Text(email, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
               Text(TTexts.confirmEmail, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
               Text(TTexts.confirmEmailSubtitle, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
-              const SizedBox(height: Sizes.spaceBtwItems),
+              const SizedBox(height: AppSizes.spaceBtwItems),
               //Buttons
               SizedBox(
                   width: double.infinity,
@@ -49,7 +49,7 @@ class ResetPasswordScreen extends StatelessWidget {
                       child: const Text(TTexts.tContinue)
                   )
               ),
-              const SizedBox(height: Sizes.spaceBtwInputFields),
+              const SizedBox(height: AppSizes.spaceBtwInputFields),
               Countdown(
                 seconds: seconds,
                 interval: const Duration(milliseconds: 1000),
@@ -66,7 +66,7 @@ class ResetPasswordScreen extends StatelessWidget {
                               ForgetPasswordController.instance.sendPasswordResetEmail(email);
                             },
                             child: Text(TTexts.resendEmail,
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: TColors.linkColor))
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.linkColor))
                         ),
                       ],
                     );

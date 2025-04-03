@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../features/settings/app_settings.dart';
 
-class TColors{
-  TColors._();
+class AppColors{
+  AppColors._();
 
   // App Basic Colors
   static const Color primaryColor = AppSettings.primaryColor;
@@ -31,24 +31,24 @@ class TColors{
   static const Color linkColor2 = Color(0xFF1A0DAB);
   static const Color refreshIndicator = AppSettings.primaryColor;
 
-  //Text Colors
+  // Text Colors
   static const Color textPrimary = Color(0xFF2d2d2d);
   static const Color textGray = Color(0xFFc1c8d9);
   static const Color textWhite = Colors.white;
 
-  //Background Colors
+  // Background Colors
   static const Color light = Color(0xFFF6F6F6);
   static const Color dark = Color(0xFF272727);
 
-  //Background Container Colors
+  // Background Container Colors
   static const Color lightContainer = Color(0xFFF6F6F6);
   static const Color darkContainer = Colors.white;
 
-  //Border Colors
-  static const Color borderPrimary = Color(0xFFD9D9D9);
-  static const Color borderSecondary = Color(0xFFE6E6E6);
+  // Border Colors
+  static const Color borderLight = Color(0xFFD9D9D9);
+  static const Color borderDark = Color(0xFFE6E6E6);
 
-  //Error and Validation Colors
+  // Error and Validation Colors
   static const Color error = Color(0xFFD32F2F);
   static const Color success = Color(0xFF388E3C);
   static const Color warning = Color(0xFFF57C00);

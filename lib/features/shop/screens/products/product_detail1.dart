@@ -86,14 +86,14 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
     } catch (e) {
       rethrow;
     } finally {
-      quantityInCart.value = cartController.getCartQuantity(_product.value.id);
+      quantityInCart.value = cartController.getCartQuantity(_product.value.productId);
       _isLoading(false); // Set loading state to false
     }
   }
 
   //Get products by Refresh page
   Future<void> _refreshProduct() async {
-    final productId = _product.value.id;
+    final productId = _product.value.productId;
     try {
       _product.value = ProductModel.empty();
       await _fetchProduct(productId: productId.toString());
@@ -108,8 +108,8 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
 
     // Adding the product to recently viewed outside Obx's reactive context
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_product.value.id != 0) {
-        RecentlyViewedController.instance.addRecentProduct(_product.value.id.toString());
+      if (_product.value.productId != 0) {
+        RecentlyViewedController.instance.addRecentProduct(_product.value.productId.toString());
       }
     });
 
@@ -117,7 +117,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
       appBar: AppAppBar2(titleText: widget.product?.name ?? 'Product Details', showCartIcon: true),
       bottomNavigationBar: Obx(() => TBottomAddToCart(product: _product.value, quantity: quantityInCart.value, pageSource: 'product_detail1',)),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshProduct(),
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
@@ -127,7 +127,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
               if (_isLoading.value){
                 return const SingleProductShimmer();
               }
-              if(_product.value.id == 0) {
+              if(_product.value.productId == 0) {
                 return const TAnimationLoaderWidgets(
                   text: 'Whoops! No Product Found...',
                   animation: Images.pencilAnimation,
@@ -142,7 +142,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
 
                   //product images
                   TProductImageSlider(product: _product.value),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   const Divider(),
 
                   //Breadcrumb
@@ -156,9 +156,9 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                       child: Row(
                         children: [
                           Text(_product.value.categories?[0].name ?? '',
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor)
+                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor)
                           ),
-                          SizedBox(width: Sizes.sm,),
+                          SizedBox(width: AppSizes.sm,),
 
                           GestureDetector(
                             onTap: () => AppShare.shareUrl(
@@ -169,8 +169,8 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                             ),
                             child: Icon(
                               TIcons.share,
-                              size: Sizes.md,
-                              color: TColors.linkColor,
+                              size: AppSizes.md,
+                              color: AppColors.linkColor,
                             ),
                           )
                         ],
@@ -178,11 +178,11 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                   ),
 
                   //Product detail page Title description
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   Text(_product.value.name ?? '', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500),),
 
                   //Star Rating
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   ProductStarRating(
                       averageRating: _product.value.averageRating ?? 0.0,
                       ratingCount: _product.value.ratingCount ?? 0,
@@ -191,11 +191,11 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                   ),
 
                   //Price
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   Row(
                     children: [
                       TOfferWidget(label: '${_product.value.calculateSalePercentage()}% off'),
-                      const SizedBox(width: Sizes.spaceBtwItems),
+                      const SizedBox(width: AppSizes.spaceBtwItems),
                       ProductPrice(salePrice: _product.value.salePrice,
                           regularPrice: _product.value.regularPrice ?? 0.0,
                           orientation: OrientationType.horizontal
@@ -208,36 +208,36 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                   //Free Delivery
                   _product.value.getPrice() >= 999
                       ? TRoundedContainer(
-                          radius: Sizes.productImageRadius,
+                          radius: AppSizes.productImageRadius,
                           backgroundColor: Colors.blue.shade50,
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Free Delivery', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: TColors.linkColor)),
-                              const SizedBox(width: Sizes.spaceBtwItems),
-                              Icon(TIcons.truck, color: TColors.linkColor, size: 15),
+                              Text('Free Delivery', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.linkColor)),
+                              const SizedBox(width: AppSizes.spaceBtwItems),
+                              Icon(TIcons.truck, color: AppColors.linkColor, size: 15),
                               const SizedBox(width: 5),
                             ],
                           )
                         )
                       : TRoundedContainer(
-                            radius: Sizes.productImageRadius,
+                            radius: AppSizes.productImageRadius,
                             backgroundColor: Colors.blue.shade50,
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text('Free delivery over ₹999', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: TColors.linkColor)),
-                                const SizedBox(width: Sizes.spaceBtwItems),
-                                Icon(TIcons.truck, color: TColors.linkColor, size: 15),
+                                Text('Free delivery over ₹999', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.linkColor)),
+                                const SizedBox(width: AppSizes.spaceBtwItems),
+                                Icon(TIcons.truck, color: AppColors.linkColor, size: 15),
                                 const SizedBox(width: 5),
                               ],
                             )
                         ),
 
                   //Stock Status
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
                   InStock(isProductAvailable: _product.value.isProductAvailable()),
 
                   // const SizedBox(height: TSizes.sm),
@@ -255,20 +255,20 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                         );
                   }),
 
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   ProductsScrollingByItemID(
                       itemName: 'Frequently Bought together',
-                      itemID: _product.value.id.toString(),
+                      itemID: _product.value.productId.toString(),
                       futureMethod: productController.getFBTProducts
                   ),
 
-                  const SizedBox(height: Sizes.spaceBtwSections),
+                  const SizedBox(height: AppSizes.spaceBtwSection),
                   _product.value.description != ''
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const TSectionHeading(title: 'Description'),
-                            const SizedBox(height: Sizes.sm),
+                            const SizedBox(height: AppSizes.sm),
                             // Text(product.description ?? ''),
                             Html(data: _product.value.description)
                           ],
@@ -281,7 +281,7 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                       itemID: _product.value.categories?[0].id ?? '',
                       futureMethod: productController.getProductsByCategoryId
                   ),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
 
                   //Shown products by related products, up sale,cross sale
                   ProductsScrollingByItemID(
@@ -289,11 +289,11 @@ class _ProductDetailScreenState1 extends State<ProductDetailScreen1> {
                       itemID: _product.value.getAllRelatedProductsIdsAsString(),
                       futureMethod: productController.getProductsByIds
                   ),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   const Divider(),
 
                   //Review
-                  const SizedBox(height: Sizes.spaceBtwItems),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -326,6 +326,6 @@ class TOfferWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(label,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: TColors.offerColor, fontWeight: FontWeight.w600));
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.offerColor, fontWeight: FontWeight.w600));
   }
 }

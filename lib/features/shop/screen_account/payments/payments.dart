@@ -22,7 +22,7 @@ class Payments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double paymentTileHeight = Sizes.paymentTileHeight;
+    const double paymentTileHeight = AppSizes.paymentTileHeight;
 
     final ScrollController scrollController = ScrollController();
     final paymentController = Get.put(PaymentMethodController());
@@ -61,7 +61,7 @@ class Payments extends StatelessWidget {
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async => paymentController.refreshPaymentMethods(),
           child: ListView(
             controller: scrollController,

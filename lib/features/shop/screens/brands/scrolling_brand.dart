@@ -20,8 +20,8 @@ class ScrollingBrandsImage extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
     final productBrandController = Get.put(BrandController());
 
-    final double brandImageHeight = Sizes.brandImageHeight;
-    final double brandTileHeight = Sizes.brandTileHeight;
+    final double brandImageHeight = AppSizes.brandImageHeight;
+    final double brandTileHeight = AppSizes.brandTileHeight;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -45,7 +45,7 @@ class ScrollingBrandsImage extends StatelessWidget {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(title: 'Brands Loading...', seeActionButton: true, onPressed: () => Get.to(() => const AllBrandScreen())),
             ),
             BrandTileShimmer(itemCount: 4, orientation: OrientationType.horizontal),
@@ -59,7 +59,7 @@ class ScrollingBrandsImage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: TSectionHeading(title: 'Shop by Brands', seeActionButton: true, onPressed: () => Get.to(() => const AllBrandScreen())),
             ),
             ListLayout(
@@ -70,7 +70,7 @@ class ScrollingBrandsImage extends StatelessWidget {
                 if (index < brands.length) {
                   final brand = brands[index];
                   return Padding(
-                    padding: const EdgeInsets.only(left: Sizes.defaultBtwTiles, top: Sizes.defaultBtwTiles),
+                    padding: const EdgeInsets.only(left: AppSizes.defaultBtwTiles, top: AppSizes.defaultBtwTiles),
                     child: SingleBrandTile(
                         title: brand.name ?? '',
                         image: brand.image ?? '',

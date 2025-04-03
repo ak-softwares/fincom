@@ -21,13 +21,13 @@ class OrdersByStatus extends StatelessWidget {
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: Sizes.sm,
+          spacing: AppSizes.sm,
           children: [
             Text(orderStatus.map((e) => e.prettyName).join(', ') ?? '',),
             GridLayout(
               itemCount: orders.length,
               crossAxisCount: 1,
-              mainAxisExtent: Sizes.orderTileHeight,
+              mainAxisExtent: AppSizes.orderTileHeight,
               itemBuilder: (context, index) {
                 return SingleOrderTile(order: orders[index]);
               },

@@ -141,7 +141,7 @@ class UpdatePurchaseController extends GetxController {
 
     for (var product in getSelectedProducts) {
       // Check if the product already exists in the selected products list
-      bool alreadyExists = selectedProducts.any((item) => item.productId == product.id);
+      bool alreadyExists = selectedProducts.any((item) => item.productId == product.productId);
 
       if (!alreadyExists) {
         // Convert each product to a cart item with default quantity, variationId, and pageSource
@@ -230,7 +230,7 @@ class UpdatePurchaseController extends GetxController {
     return CartModel(
       id: 1,
       name: product.name,
-      productId: product.id,
+      productId: product.productId,
       variationId: variationId,
       quantity: quantity,
       category: product.categories?[0].name,
@@ -296,7 +296,7 @@ class UpdatePurchaseController extends GetxController {
       await transactionController.updateTransactionByPurchaseId(purchaseId: purchase.purchaseID!, transaction: transaction);
 
       // Update product quantities
-      await updateProductQuantity(isAddition: true);
+      await updateProductQuantity(products: purchase.purchasedItems ?? [], isAddition: true);
 
       // Refresh the purchase list
       await purchaseController.refreshPurchases();
@@ -340,16 +340,21 @@ class UpdatePurchaseController extends GetxController {
     }
   }
 
-  Future<void> updateProductQuantity({required bool isAddition}) async {
+  Future<void> updateProductQuantity({required List<CartModel> products, required bool isAddition}) async {
     try {
-      // Convert selectedProducts to product-quantity pairs
-      List<Map<String, dynamic>> productQuantityPairs = selectedProducts
-          .map((cartItem) => {
-            'productId': cartItem.productId,
-            'quantity': cartItem.quantity,
-          }).toList();
-      // true for addition, false for subtraction
-      await mongoProductRepo.updateProductQuantities(productQuantityPairs: productQuantityPairs, isAddition: isAddition);
+      if (products.isEmpty) {
+        throw Exception("Product list is empty. Cannot update quantity.");
+      }
+      // Convert CartModel list to PurchaseHistory list
+      List<ProductPurchaseHistory> purchaseHistoryList = products.map((product) {
+        return ProductPurchaseHistory(
+          productId: product.product_id, // Assuming purchaseId can be productId
+          quantity: product.quantity,
+          price: (product.price ?? 0).toDouble(),
+          purchaseDate: DateTime.now().toIso8601String(),
+        );
+      }).toList();
+      await mongoProductRepo.updateProductQuantities(purchaseHistoryList: purchaseHistoryList, isAddition: isAddition);
     } catch(e) {
       rethrow;
     }

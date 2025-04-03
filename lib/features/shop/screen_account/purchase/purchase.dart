@@ -21,7 +21,7 @@ class Purchase extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     final purchaseController = Get.put(PurchaseController());
-    final double purchaseTileHeight = Sizes.purchaseTileHeight;
+    final double purchaseTileHeight = AppSizes.purchaseTileHeight;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -53,11 +53,11 @@ class Purchase extends StatelessWidget {
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
-          color: TColors.refreshIndicator,
+          color: AppColors.refreshIndicator,
           onRefresh: () async => purchaseController.refreshPurchases(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPageVertical,
+            padding: TSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {

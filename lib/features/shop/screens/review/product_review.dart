@@ -27,7 +27,7 @@ class ProductReviewScreen extends StatelessWidget {
     final productReviewController = Get.put(ProductReviewController());
     final ScrollController scrollController = ScrollController();
 
-    productReviewController.refreshReviews(product.id.toString());
+    productReviewController.refreshReviews(product.productId.toString());
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -40,7 +40,7 @@ class ProductReviewScreen extends StatelessWidget {
           }
           productReviewController.isLoadingMore(true);
           productReviewController.currentPage++; // Increment current page
-          await productReviewController.getReviewsByProductId(product.id.toString());
+          await productReviewController.getReviewsByProductId(product.productId.toString());
           productReviewController.isLoadingMore(false);
         }
       }
@@ -49,37 +49,37 @@ class ProductReviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: const AppAppBar2(titleText: 'Reviews & Ratings', showBackArrow: true, showCartIcon: true,),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(Sizes.md),
+        padding: const EdgeInsets.all(AppSizes.md),
         child: OutlinedButton(
-            onPressed: () => Get.to(() => CreateReviewScreen(productId: product.id,)),
+            onPressed: () => Get.to(() => CreateReviewScreen(productId: product.productId,)),
             child: const Text('Add product review')
         ),
       ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
-        onRefresh: () async => productReviewController.refreshReviews(product.id.toString()),
+        color: AppColors.refreshIndicator,
+        onRefresh: () async => productReviewController.refreshReviews(product.productId.toString()),
         child: ListView(
           controller: scrollController,
           padding: TSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             //Section 1
-            const SizedBox(height: Sizes.lg),
+            const SizedBox(height: AppSizes.lg),
             Center(child: Text('Overall Rating', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey))),
-            const SizedBox(height: Sizes.md),
+            const SizedBox(height: AppSizes.md),
             Center(child: Text(product.averageRating!.toStringAsFixed(1), style: Theme.of(context).textTheme.displayMedium)),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             Center(
               child: RatingBarIndicator(
                 rating: product.averageRating ?? 0.0,
                 itemSize: 40,
                 unratedColor: Colors.grey[300],
-                itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: TColors.ratingStar),
+                itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: AppColors.ratingStar),
               ),
             ),
-            const SizedBox(height: Sizes.sm),
+            const SizedBox(height: AppSizes.sm),
             Center(child: Text('Based on ${product.ratingCount} reviews', style: Theme.of(context).textTheme.labelLarge)),
-            const SizedBox(height: Sizes.lg),
+            const SizedBox(height: AppSizes.lg),
 
             //Section 2
             // user review list
@@ -118,9 +118,9 @@ class ProductReviewScreen extends StatelessWidget {
                         TRatingProgressIndicator(text: 'Average', value: averagePercentage,color: Colors.yellow),
                         TRatingProgressIndicator(text: 'Below Average', value: belowAveragePercentage,color: Colors.orangeAccent),
                         TRatingProgressIndicator(text: 'Poor', value: poorPercentage,color: Colors.redAccent),
-                        const SizedBox(height: Sizes.lg),
-                        const Divider(color: TColors.borderSecondary,),
-                        const SizedBox(height: Sizes.sm),
+                        const SizedBox(height: AppSizes.lg),
+                        const Divider(color: AppColors.borderDark,),
+                        const SizedBox(height: AppSizes.sm),
                         ListView.separated(
                           shrinkWrap: true,
                           itemCount: productReviewController.isLoadingMore.value ? reviews.length + 1 : reviews.length,
@@ -128,7 +128,7 @@ class ProductReviewScreen extends StatelessWidget {
                           separatorBuilder: (_, __) => const Column(
                             children: [
                               SizedBox(height: 10,),
-                              Divider(color: TColors.borderSecondary),
+                              Divider(color: AppColors.borderDark),
                             ],
                           ),
                           itemBuilder: (_, index) {

@@ -17,20 +17,20 @@ class ProductVoucherShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double productVoucherTileHeight = Sizes.productVoucherTileHeight;
-    const double productVoucherTileWidth = Sizes.productVoucherTileWidth;
-    const double productVoucherTileRadius = Sizes.productVoucherTileRadius;
-    const double productVoucherImageHeight = Sizes.productVoucherImageHeight;
-    const double productVoucherImageWidth = Sizes.productVoucherImageWidth;
+    const double productVoucherTileHeight = AppSizes.productVoucherTileHeight;
+    const double productVoucherTileWidth = AppSizes.productVoucherTileWidth;
+    const double productVoucherTileRadius = AppSizes.productVoucherTileRadius;
+    const double productVoucherImageHeight = AppSizes.productVoucherImageHeight;
+    const double productVoucherImageWidth = AppSizes.productVoucherImageWidth;
 
     return GridLayout(
         itemCount: itemCount,
         crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-        mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : productVoucherTileHeight,
+        mainAxisExtent: orientation == OrientationType.vertical ? AppSizes.productCardVerticalHeight : productVoucherTileHeight,
         itemBuilder: (context, index) {
           return Container(
             width: productVoucherTileWidth,
-            padding: const EdgeInsets.all(Sizes.xs),
+            padding: const EdgeInsets.all(AppSizes.xs),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(productVoucherTileRadius),
               color: Theme.of(context).colorScheme.surface,
@@ -42,15 +42,15 @@ class ProductVoucherShimmer extends StatelessWidget {
                 // Title, Rating and price
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: Sizes.sm),
+                    padding: const EdgeInsets.only(left: AppSizes.sm),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const ShimmerEffect(width: 250, height: 12),
-                        const SizedBox(height: Sizes.xs),
+                        const SizedBox(height: AppSizes.xs),
                         const ShimmerEffect(width: 150, height: 12),
-                        const SizedBox(height: Sizes.defaultSpace),
+                        const SizedBox(height: AppSizes.defaultSpace),
                         // Price and Stock
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

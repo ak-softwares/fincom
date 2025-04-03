@@ -1,7 +1,7 @@
 flutter_native_splash:
 
   # Light theme
-  color: "#FFC61A"
+  color: "#FFFFFF"
   image: assets/logos/ara_accounts_splash.png
 
   # Dark theme
@@ -9,7 +9,7 @@ flutter_native_splash:
   image_dark: assets/logos/ara_accounts_splash.png
 
   android_12:
-    color: "#FFC61A"
+    color: "#FFFFFF"
     image: assets/logos/ara_accounts_splash.png
 
     color_dark: "#0B1014"

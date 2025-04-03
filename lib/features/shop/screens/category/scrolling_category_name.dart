@@ -17,7 +17,7 @@ class ScrollingCategoryName extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
     final categoryController = Get.put(CategoryController());
     const double imageDimension = 40;
-    const double imageRadius = Sizes.defaultRadius;
+    const double imageRadius = AppSizes.defaultRadius;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -44,7 +44,7 @@ class ScrollingCategoryName extends StatelessWidget {
             Row(
               children: [
                 ShimmerEffect(height: imageDimension, width: 100, radius: imageRadius),
-                SizedBox(width: Sizes.spaceBtwItems),
+                SizedBox(width: AppSizes.spaceBtwItems),
                 ShimmerEffect(height: imageDimension, width: 150, radius: imageRadius),
               ],
             ),
@@ -55,7 +55,7 @@ class ScrollingCategoryName extends StatelessWidget {
       } else {
         final categories = categoryController.categories;
         return Padding(
-          padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+          padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,12 +67,12 @@ class ScrollingCategoryName extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: categoryController.isLoadingMore.value ? categories.length + 1 : categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: Sizes.spaceBtwItems),
+                  separatorBuilder: (_, __) => const SizedBox(width: AppSizes.spaceBtwItems),
                   itemBuilder: (context, index) {
                     if (index < categories.length) {
                       final category = categories[index];
                       return Container(
-                        padding: const EdgeInsets.all(Sizes.spaceBtwItems),
+                        padding: const EdgeInsets.all(AppSizes.spaceBtwItems),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.black, // Change to your desired border color

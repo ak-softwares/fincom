@@ -38,7 +38,7 @@ class CheckoutScreen extends StatelessWidget {
       bottomNavigationBar: Obx((){
         if (authenticationRepository.isUserLogin.value && cartController.cartItems.isNotEmpty){
           return Padding(
-              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
               child: ElevatedButton(
                   onPressed: () => checkoutController.initiateCheckout(),
                   // onPressed: () {},
@@ -53,7 +53,7 @@ class CheckoutScreen extends StatelessWidget {
       body: !authenticationRepository.isUserLogin.value
           ? const CheckLoginScreen(text: 'Please Login! before Checkout!')
           : SingleChildScrollView(
-            padding: const EdgeInsets.all(Sizes.defaultSpace),
+            padding: const EdgeInsets.all(AppSizes.defaultSpace),
             child: Column(
               children: [
                 Obx(
@@ -63,42 +63,42 @@ class CheckoutScreen extends StatelessWidget {
                     itemCount: cartController.cartItems.length,
                     itemBuilder: (_, index) => Stack(
                         children:[
-                          CartTile(cartItem: cartController.cartItems[index]),
+                          ProductCardForCart(cartItem: cartController.cartItems[index]),
                         ]
                     ),
                   ),
                 ),
-                const SizedBox(height: Sizes.spaceBtwSections,),
+                const SizedBox(height: AppSizes.spaceBtwSection,),
 
                 /// -- coupon TextField
                 const TCouponCode(),
-                const SizedBox(height: Sizes.spaceBtwSections,),
+                const SizedBox(height: AppSizes.spaceBtwSection,),
 
                 /// -- Billing Sections
                 const TRoundedContainer(
                   showBorder: true,
-                  padding: EdgeInsets.all(Sizes.md),
+                  padding: EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       /// pricing
                       TBillingAmountSection(),
-                      SizedBox(height: Sizes.spaceBtwItems,),
+                      SizedBox(height: AppSizes.spaceBtwItems,),
 
                       /// Divider
                       Divider(),
-                      SizedBox(height: Sizes.spaceBtwItems),
+                      SizedBox(height: AppSizes.spaceBtwItems),
 
                       /// payment method
                       TBillingPaymentSection(),
-                      SizedBox(height: Sizes.spaceBtwItems),
+                      SizedBox(height: AppSizes.spaceBtwItems),
 
                       /// Divider
                       Divider(),
-                      SizedBox(height: Sizes.spaceBtwItems),
+                      SizedBox(height: AppSizes.spaceBtwItems),
 
                       /// address
                       TBillingAddressSection(),
-                      SizedBox(height: Sizes.spaceBtwItems),
+                      SizedBox(height: AppSizes.spaceBtwItems),
                     ],
                   ),
                 ),///

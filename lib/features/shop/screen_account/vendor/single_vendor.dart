@@ -52,11 +52,11 @@ class _SingleVendorState extends State<SingleVendor> {
           titleText: vendor.company ?? 'Vendor',
           widget: TextButton(
               onPressed: () => Get.to(() => AddVendorPage(vendor: vendor)),
-              child: Text('Edit', style: TextStyle(color: TColors.linkColor),)
+              child: Text('Edit', style: TextStyle(color: AppColors.linkColor),)
           )
         ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshVendor(),
         child: ListView(
           padding: TSpacingStyle.defaultPagePadding,
@@ -98,7 +98,7 @@ class _SingleVendorState extends State<SingleVendor> {
               ],
             ),
             Text('Address'),
-            SizedBox(height: Sizes.xs),
+            SizedBox(height: AppSizes.xs),
             TSingleAddress(
               address: vendor.billing ?? AddressModel.empty(),
               onTap: () {},
@@ -106,9 +106,9 @@ class _SingleVendorState extends State<SingleVendor> {
             ),
 
             // Transaction
-            SizedBox(height: Sizes.spaceBtwItems),
+            SizedBox(height: AppSizes.spaceBtwItems),
             Heading(title: 'Transaction'),
-            SizedBox(height: Sizes.spaceBtwItems),
+            SizedBox(height: AppSizes.spaceBtwItems),
             SizedBox(
               height: 350,
               child: TransactionsByEntity(entityType: EntityType.vendor, entityId: vendor.vendorId ?? 0)

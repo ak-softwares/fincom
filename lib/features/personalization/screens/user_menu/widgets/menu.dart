@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../utils/constants/icons.dart';
-import '../../../../shop/screen_account/customers/customers_voucher.dart';
+import '../../../../shop/screen_account/customers/customers.dart';
+import '../../../../shop/screen_account/expenses/expenses.dart';
 import '../../../../shop/screen_account/payments/payments.dart';
-import '../../../../shop/screen_account/products/products_voucher.dart';
+import '../../../../shop/screen_account/products/products.dart';
 import '../../../../shop/screen_account/purchase/purchase.dart';
 import '../../../../shop/screen_account/purchase_list/purchase_list.dart';
 import '../../../../shop/screen_account/sales/sales.dart';
@@ -56,6 +57,13 @@ class Menu extends StatelessWidget {
           leading: Icon(Icons.money,size: 20),
           title: Text('Payments'),
           subtitle: Text('All Payments list'),
+          trailing: Icon(Icons.arrow_forward_ios, size: 20,),
+        ),
+        ListTile(
+          onTap: () => Get.to(() => const ExpensesScreen()),
+          leading: Icon(Icons.money,size: 20),
+          title: Text('Expenses'),
+          subtitle: Text('All Expenses list'),
           trailing: Icon(Icons.arrow_forward_ios, size: 20,),
         ),
         ListTile(

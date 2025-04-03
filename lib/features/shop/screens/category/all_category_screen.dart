@@ -24,7 +24,7 @@ class CategoryScreen extends StatelessWidget {
     FBAnalytics.logPageView('category_screen');
     final categoryController = Get.put(CategoryController());
     final ScrollController scrollController = ScrollController();
-    final double categoryTileHeight = Sizes.categoryTileHeight;
+    final double categoryTileHeight = AppSizes.categoryTileHeight;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -46,7 +46,7 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: 'Categories', showCartIcon: true, sharePageLink: APIConstant.allCategoryUrl,),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => categoryController.refreshCategories(),
         child: ListView(
           controller: scrollController,

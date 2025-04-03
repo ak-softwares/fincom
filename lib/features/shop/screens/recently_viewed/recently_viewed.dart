@@ -49,14 +49,14 @@ class RecentlyViewed extends StatelessWidget {
       animation: Images.pencilAnimation,
       showAction: true,
       actionText: 'Let\'s add some',
-      onActionPress: () => NavigationHelper.navigateToBottomNavigation(),
+      onActionPressed: () => NavigationHelper.navigateToBottomNavigation(),
     );
     return Obx(() => Scaffold(
         appBar: const AppAppBar2(titleText: 'Recently viewed', showCartIcon: true),
         body: !authenticationRepository.isUserLogin.value
             ? const CheckLoginScreen()
             : RefreshIndicator(
-                color: TColors.refreshIndicator,
+                color: AppColors.refreshIndicator,
                 onRefresh: () async => recentlyViewedController.refreshRecentProducts(),
                 child: ListView(
                   controller: scrollController,
@@ -66,12 +66,12 @@ class RecentlyViewed extends StatelessWidget {
                     InkWell(
                       onTap: recentlyViewedController.clearHistory,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Sizes.sm),
+                        padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text('Clear history', style: Theme.of(context).textTheme.bodyMedium!,),
-                            const SizedBox(width: Sizes.sm),
+                            const SizedBox(width: AppSizes.sm),
                             const Icon(Icons.delete, size: 18, color: Colors.pink),
                           ],
                         ),

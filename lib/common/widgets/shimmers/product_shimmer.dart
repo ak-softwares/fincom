@@ -20,11 +20,11 @@ class ProductShimmer extends StatelessWidget {
   final bool isLoading;
   final OrientationType orientation;
 
-  static const double productCardVerticalHeight = Sizes.productCardVerticalHeight;
-  static const double productCardVerticalWidth = Sizes.productCardVerticalWidth;
+  static const double productCardVerticalHeight = AppSizes.productCardVerticalHeight;
+  static const double productCardVerticalWidth = AppSizes.productCardVerticalWidth;
 
-  static const double productCardHorizontalHeight = Sizes.productCardHorizontalHeight;
-  static const double productCardHorizontalWidth = Sizes.productCardHorizontalWidth;
+  static const double productCardHorizontalHeight = AppSizes.productCardHorizontalHeight;
+  static const double productCardHorizontalWidth = AppSizes.productCardHorizontalWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +49,8 @@ class ProductShimmer extends StatelessWidget {
       itemCount: itemCount,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: Sizes.defaultSpaceBWTCard,
-        mainAxisSpacing: Sizes.defaultSpaceBWTCard,
+        crossAxisSpacing: AppSizes.defaultSpaceBWTCard,
+        mainAxisSpacing: AppSizes.defaultSpaceBWTCard,
         mainAxisExtent: orientation == OrientationType.vertical
             ? productCardVerticalHeight
             : productCardHorizontalHeight,
@@ -62,13 +62,13 @@ class ProductShimmer extends StatelessWidget {
   }
 
   Container verticalProductShimmer() {
-    const double productImageSizeVertical = Sizes.productImageSizeVertical;
-    const double productCardVerticalHeight = Sizes.productCardVerticalHeight;
-    const double productCardVerticalWidth = Sizes.productCardVerticalWidth;
-    const double productImageRadius = Sizes.productImageRadius;
+    const double productImageSizeVertical = AppSizes.productImageSizeVertical;
+    const double productCardVerticalHeight = AppSizes.productCardVerticalHeight;
+    const double productCardVerticalWidth = AppSizes.productCardVerticalWidth;
+    const double productImageRadius = AppSizes.productImageRadius;
     return Container(
       width: productCardVerticalWidth,
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         boxShadow: [TShadowStyle.verticalProductShadow],
         borderRadius: BorderRadius.circular(productImageRadius),
@@ -89,17 +89,17 @@ class ProductShimmer extends StatelessWidget {
               ),
 
               // Title and Star rating
-              const SizedBox(height: Sizes.xs),
+              const SizedBox(height: AppSizes.xs),
               Padding(
-                  padding: const EdgeInsets.only(left: Sizes.sm, top: Sizes.xs),
+                  padding: const EdgeInsets.only(left: AppSizes.sm, top: AppSizes.xs),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
                       ShimmerEffect(width: 200, height: 15),
-                      const SizedBox(height: Sizes.spaceBtwItems / 2),
+                      const SizedBox(height: AppSizes.spaceBtwItems / 2),
                       ShimmerEffect(width: 100, height: 15),
-                      const SizedBox(height: Sizes.spaceBtwItems / 2),
+                      const SizedBox(height: AppSizes.spaceBtwItems / 2),
 
                       //Star rating
                       ProductStarRating(averageRating: 5, ratingCount: 0, size: 12,),
@@ -127,13 +127,13 @@ class ProductShimmer extends StatelessWidget {
   }
 
   Container horizontalProductShimmer() {
-    const double productImageSizeHorizontal = Sizes.productImageSizeHorizontal;
-    const double productImageRadius = Sizes.productImageRadius;
+    const double productImageSizeHorizontal = AppSizes.productImageSizeHorizontal;
+    const double productImageRadius = AppSizes.productImageRadius;
     return Container(
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         boxShadow: [TShadowStyle.verticalProductShadow],
-        borderRadius: BorderRadius.circular(Sizes.productImageRadius),
+        borderRadius: BorderRadius.circular(AppSizes.productImageRadius),
         color: Colors.white,
       ),
       child: Row(
@@ -146,7 +146,7 @@ class ProductShimmer extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: Sizes.sm, top: Sizes.xs),
+              padding: const EdgeInsets.only(left: AppSizes.sm, top: AppSizes.xs),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -156,9 +156,9 @@ class ProductShimmer extends StatelessWidget {
                     children: [
                       // Title
                       ShimmerEffect(width: 200, height: 15),
-                      const SizedBox(height: Sizes.spaceBtwItems / 2),
+                      const SizedBox(height: AppSizes.spaceBtwItems / 2),
                       ShimmerEffect(width: 100, height: 15),
-                      const SizedBox(height: Sizes.spaceBtwItems / 2),
+                      const SizedBox(height: AppSizes.spaceBtwItems / 2),
 
                       //Star rating
                       ProductStarRating(averageRating: 5, ratingCount: 0, size: 12,),

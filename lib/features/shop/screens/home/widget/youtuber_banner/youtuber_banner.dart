@@ -110,7 +110,7 @@ class YouTuberBanner extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: Sizes.sm),
+          padding: const EdgeInsets.only(left: AppSizes.sm),
           child: TSectionHeading(title: title),
         ),
         CarouselSlider(
@@ -125,7 +125,7 @@ class YouTuberBanner extends StatelessWidget {
           ),
           items: assetImagePaths.map((map) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.sm),
+              padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
               child: YouTuberSingleBanner(
                 thumbnail: map['thumbnail'] ?? '',
                 profilePic: map['profilePic'] ?? '',

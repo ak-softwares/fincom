@@ -168,7 +168,7 @@ class PurchaseController extends GetxController {
 
     for (var product in getSelectedProducts) {
       // Check if the product already exists in the selected products list
-      bool alreadyExists = selectedProducts.any((item) => item.productId == product.id);
+      bool alreadyExists = selectedProducts.any((item) => item.productId == product.productId);
 
       if (!alreadyExists) {
         // Convert each product to a cart item with default quantity, variationId, and pageSource
@@ -257,7 +257,8 @@ class PurchaseController extends GetxController {
     return CartModel(
       id: 1,
       name: product.name,
-      productId: product.id,
+      product_id: product.id,
+      productId: product.productId,
       variationId: variationId,
       quantity: quantity,
       category: product.categories?[0].name,
@@ -309,21 +310,6 @@ class PurchaseController extends GetxController {
     }
   }
 
-  Future<void> updateProductQuantity({required bool isAddition}) async {
-    try {
-      // Convert selectedProducts to product-quantity pairs
-      List<Map<String, dynamic>> productQuantityPairs = selectedProducts
-          .map((cartItem) => {
-            'productId': cartItem.productId,
-            'quantity': cartItem.quantity,
-          }).toList();
-      // true for addition, false for subtraction
-      await mongoProductRepo.updateProductQuantities(productQuantityPairs: productQuantityPairs, isAddition: isAddition);
-    } catch(e) {
-      rethrow;
-    }
-  }
-
   Future<void> savePurchase() async {
     // Validate purchase fields
     if (!validatePurchaseFields()) {
@@ -371,7 +357,7 @@ class PurchaseController extends GetxController {
 
       Future<void> updateTransaction = transactionController.processTransaction(transaction: transaction);
 
-      Future<void> updateProductQuantities = updateProductQuantity(isAddition: true);
+      Future<void> updateProductQuantities = updateProductQuantity(purchaseId: purchase.purchaseID ?? 0,products: purchase.purchasedItems ?? [], isAddition: true);
 
       Future<void> uploadPurchase = mongoPurchasesRepo.pushPurchase(purchase: purchase); // Use batch insert function
 
@@ -390,6 +376,27 @@ class PurchaseController extends GetxController {
     }
   }
 
+  Future<void> updateProductQuantity({required List<CartModel> products, required int purchaseId, required bool isAddition,}) async {
+    try {
+      if (products.isEmpty) {
+        throw Exception("Product list is empty. Cannot update quantity.");
+      }
+      // Convert CartModel list to PurchaseHistory list
+      List<ProductPurchaseHistory> purchaseHistoryList = products.map((product) {
+        return ProductPurchaseHistory(
+          purchaseId: purchaseId,
+          productId: product.product_id, // Assuming purchaseId can be productId
+          quantity: product.quantity,
+          price: (product.price ?? 0).toDouble(),
+          purchaseDate: DateTime.now().toIso8601String(),
+        );
+      }).toList();
+      await mongoProductRepo.updateProductQuantities(purchaseHistoryList: purchaseHistoryList, isAddition: isAddition);
+    } catch (e) {
+      rethrow; // Preserve original exception
+    }
+  }
+
   Future<void> deletePurchase ({required PurchaseModel purchase, required BuildContext context}) async {
     try {
       DialogHelper.showDialog(
@@ -398,7 +405,7 @@ class PurchaseController extends GetxController {
           message: 'Are you sure to delete this Purchase',
           function: () async {
             // Reverse product quantities before deleting the purchase
-            await updateProductQuantity(isAddition: false);
+            await updateProductQuantity(purchaseId: purchase.purchaseID ?? 0, products: purchase.purchasedItems ?? [], isAddition: false);
             // Delete the associated transaction (if any)
             await transactionController.deleteTransactionByPurchaseId(purchaseId: purchase.purchaseID ?? 0);
             // Delete purchase record

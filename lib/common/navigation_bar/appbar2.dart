@@ -39,8 +39,8 @@ class AppAppBar2 extends StatelessWidget implements PreferredSizeWidget{
 
   @override
   Widget build(BuildContext context) {
-    const Color color = TColors.secondaryColor;
-    const Color backgroundColor = TColors.primaryBackground;
+    const Color color = AppColors.secondaryColor;
+    const Color backgroundColor = AppColors.primaryBackground;
     return AppBar(
       centerTitle: false,
       title: Text(titleText, style: TextStyle(fontSize: 18)),
@@ -65,9 +65,9 @@ class AppAppBar2 extends StatelessWidget implements PreferredSizeWidget{
                     child: Row(
                       children: [
                         const Text('Logout'),
-                        const SizedBox(width: Sizes.sm),
+                        const SizedBox(width: AppSizes.sm),
                         Icon(TIcons.logout, size: 20),
-                        const SizedBox(width: Sizes.sm),
+                        const SizedBox(width: AppSizes.sm),
                       ],
                     )
                   )

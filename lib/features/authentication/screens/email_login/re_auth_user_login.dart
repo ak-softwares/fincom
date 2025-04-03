@@ -20,7 +20,7 @@ class ReAuthLoginForm extends StatelessWidget {
       appBar: const AppAppBar2(titleText: "Re-Authentication User", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,7 +38,7 @@ class ReAuthLoginForm extends StatelessWidget {
                             )
                         ),
                         //Password
-                        const SizedBox(height: Sizes.spaceBtwInputFields),
+                        const SizedBox(height: AppSizes.spaceBtwInputFields),
                         Obx(
                               () => TextFormField(
                                 controller: controller.verifyPassword,
@@ -54,7 +54,7 @@ class ReAuthLoginForm extends StatelessWidget {
                                 )
                             )),
                         // Login button
-                        const SizedBox(height: Sizes.spaceBtwSections),
+                        const SizedBox(height: AppSizes.spaceBtwSection),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

@@ -41,10 +41,10 @@ class EnterOTPScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('Enter OTP', style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: Sizes.sm),
+                const SizedBox(height: AppSizes.sm),
                 Text('Please Enter $otpLength Digit OTP to verify your phone number',
                     style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-                const SizedBox(height: Sizes.spaceBtwItems),
+                const SizedBox(height: AppSizes.spaceBtwItems),
 
                 //Phone number
                 Row(
@@ -53,23 +53,23 @@ class EnterOTPScreen extends StatelessWidget {
                     Text(otpController.countryCode.value + otpController.phoneNumber.value,
                         style: Theme.of(context).textTheme.labelLarge, textAlign: TextAlign.center
                     ),
-                    const SizedBox(width: Sizes.spaceBtwItems),
+                    const SizedBox(width: AppSizes.spaceBtwItems),
                     InkWell(
                       onTap: () => NavigationHelper.navigateToMobileLogin(),
                       child: Row(
                         children: [
                           Text('Edit',
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: TColors.linkColor),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.linkColor),
                               textAlign: TextAlign.center
                           ),
-                          const SizedBox(width: Sizes.xs),
-                          Icon(TIcons.edit, color: TColors.linkColor,size: 15,)
+                          const SizedBox(width: AppSizes.xs),
+                          Icon(TIcons.edit, color: AppColors.linkColor,size: 15,)
                         ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
 
                 //Otp Input field
                 SizedBox(
@@ -98,7 +98,7 @@ class EnterOTPScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: Sizes.spaceBtwSections),
+                const SizedBox(height: AppSizes.spaceBtwSection),
 
                 //Button Verify OTP
                 SizedBox(
@@ -114,7 +114,7 @@ class EnterOTPScreen extends StatelessWidget {
                       child:  const Text('Verify OTP')
                   ),
                 ),
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
 
                 //Countdown
                 Countdown(
@@ -133,7 +133,7 @@ class EnterOTPScreen extends StatelessWidget {
                                   // otpController.phoneAuthentication(otpController.selectedCountry1.value, otpController.phone.text.trim());
                                 },
                                 child: Text('Resend OTP',
-                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: TColors.linkColor))
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.linkColor))
                               ),
                             ],
                           );

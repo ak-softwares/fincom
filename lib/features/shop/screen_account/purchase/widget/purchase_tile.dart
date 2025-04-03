@@ -26,11 +26,11 @@ class PurchaseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double purchaseTileHeight = Sizes.purchaseTileHeight;
-    final double purchaseTileWidth = Sizes.purchaseTileWidth;
-    final double purchaseTileRadius = Sizes.purchaseTileRadius;
-    final double purchaseImageHeight = Sizes.purchaseImageHeight;
-    final double purchaseImageWidth = Sizes.purchaseImageWidth;
+    final double purchaseTileHeight = AppSizes.purchaseTileHeight;
+    final double purchaseTileWidth = AppSizes.purchaseTileWidth;
+    final double purchaseTileRadius = AppSizes.purchaseTileRadius;
+    final double purchaseImageHeight = AppSizes.purchaseImageHeight;
+    final double purchaseImageWidth = AppSizes.purchaseImageWidth;
     final List<CartModel> cartItems = purchase.purchasedItems ?? [];
 
     return InkWell(
@@ -42,7 +42,7 @@ class PurchaseTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(purchaseTileRadius),
         ),
         child: Column(
-          spacing: Sizes.xs,
+          spacing: AppSizes.xs,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -56,7 +56,7 @@ class PurchaseTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Date'),
-                Text(TFormatter.formatStringDate(purchase.date.toString())),
+                Text(AppFormatter.formatStringDate(purchase.date.toString())),
               ],
             ),
             Row(
@@ -78,7 +78,7 @@ class PurchaseTile extends StatelessWidget {
             ),
             Container(
               height: 1,
-              color: TColors.borderSecondary,
+              color: AppColors.borderDark,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -86,22 +86,22 @@ class PurchaseTile extends StatelessWidget {
               children: [
                 Flexible(
                     child: OrderImageGallery(cartItems: cartItems, galleryImageHeight: 40)),
-                SizedBox(width: Sizes.sm),
-                Container(height: 40, width: 1, color: TColors.borderSecondary,),
-                SizedBox(width: Sizes.sm),
+                SizedBox(width: AppSizes.sm),
+                Container(height: 40, width: 1, color: AppColors.borderDark,),
+                SizedBox(width: AppSizes.sm),
                 purchase.purchaseInvoiceImages != null
                     ? Expanded(
                         child: ListLayout(
                             height: 40,
                             itemCount: purchase.purchaseInvoiceImages!.length,
                             itemBuilder: (_, index) => Padding(
-                              padding: const EdgeInsets.only(right: Sizes.sm),
+                              padding: const EdgeInsets.only(right: AppSizes.sm),
                               child: TRoundedImage(
                                 height: 40,
                                 width: 40,
-                                borderRadius: Sizes.sm,
+                                borderRadius: AppSizes.sm,
                                 backgroundColor: Colors.white,
-                                padding: Sizes.xs,
+                                padding: AppSizes.xs,
                                 isNetworkImage: true,
                                 isTapToEnlarge: true,
                                 image: purchase.purchaseInvoiceImages?[index].imageUrl ?? '',

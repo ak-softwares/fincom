@@ -1,3 +1,4 @@
+import 'package:fincom/utils/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,10 +20,10 @@ class SingleOrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double orderImageHeight = Sizes.orderImageHeight;
-    final double orderImageWidth = Sizes.orderImageWidth;
-    final double orderTileHeight = Sizes.orderTileHeight;
-    final double orderTileRadius = Sizes.orderTileRadius;
+    final double orderImageHeight = AppSizes.orderImageHeight;
+    final double orderImageWidth = AppSizes.orderImageWidth;
+    final double orderTileHeight = AppSizes.orderTileHeight;
+    final double orderTileRadius = AppSizes.orderTileRadius;
     final List<CartModel> cartItems = order.lineItems ?? [];
 
     return InkWell(
@@ -40,13 +41,13 @@ class SingleOrderTile extends StatelessWidget {
               )
             ),
             child: Column(
-              spacing: Sizes.xs,
+              spacing: AppSizes.xs,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OrderImageGallery(cartItems: cartItems, galleryImageHeight: 60),
                 Container(
                   height: 1,
-                  color: TColors.borderSecondary,
+                  color: AppColors.borderDark,
                 ),
                 SizedBox(
                   height: 30,
@@ -69,13 +70,13 @@ class SingleOrderTile extends StatelessWidget {
                         ],
                       ),
                       Row(
-                        spacing: Sizes.xs,
+                        spacing: AppSizes.xs,
                         children: [
                           // Icon(Icons.money, size: 17),
                           Text(order.paymentMethod?.capitalizeFirst ?? '', style: TextStyle(fontSize: 12),),
                         ],
                       ),
-                      TOrderHelper.mapOrderStatus(order.status ?? '',)
+                      OrderHelper.mapOrderStatus(order.status ?? OrderStatus.unknown,)
                     ],
                   ),
                 ),
@@ -86,7 +87,7 @@ class SingleOrderTile extends StatelessWidget {
               top: 1,
               right: 1,
               child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: Sizes.sm, vertical: Sizes.xs),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.xs),
                   decoration: BoxDecoration(
                     color: Colors.red.shade50,
                     borderRadius: BorderRadius.only(

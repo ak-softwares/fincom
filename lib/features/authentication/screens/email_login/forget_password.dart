@@ -35,12 +35,12 @@ class ForgetPasswordScreen extends StatelessWidget {
               Column(
                 children: [
                   Text('Forget password', style: Theme.of(context).textTheme.headlineMedium),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   Text('Do not worry sometime people can forget too, Enter your email and we will send you password reset link',
                       style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                 ],
               ),
-              const SizedBox(height: Sizes.spaceBtwSections),
+              const SizedBox(height: AppSizes.spaceBtwSection),
               //Form Field
               Form(
                 key: controller.forgetPasswordFormKey,
@@ -56,7 +56,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                             )
                         ),
                         // Forget password button
-                        const SizedBox(height: Sizes.spaceBtwSections),
+                        const SizedBox(height: AppSizes.spaceBtwSection),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

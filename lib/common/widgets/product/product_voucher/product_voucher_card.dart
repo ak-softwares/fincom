@@ -40,7 +40,7 @@ class ProductVoucherCard extends StatelessWidget {
       onTap: onTap ?? () {
         // Default navigation when onTap is not provided
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailScreen(
+          builder: (context) => ProductScreen(
             product: product,
             pageSource: pageSource,
           ),
@@ -53,14 +53,14 @@ class ProductVoucherCard extends StatelessWidget {
   }
 
   Container productCardVertical({required BuildContext context}) {
-    const double productImageSizeVertical = Sizes.productImageSizeVertical;
-    const double productCardVerticalHeight = Sizes.productCardVerticalHeight;
-    const double productCardVerticalWidth = Sizes.productCardVerticalWidth;
-    const double productImageRadius = Sizes.productImageRadius;
+    const double productImageSizeVertical = AppSizes.productImageSizeVertical;
+    const double productCardVerticalHeight = AppSizes.productCardVerticalHeight;
+    const double productCardVerticalWidth = AppSizes.productCardVerticalWidth;
+    const double productImageRadius = AppSizes.productImageRadius;
     final salePercentage = product.calculateSalePercentage();
     return Container(
       width: productCardVerticalWidth,
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(productImageRadius),
         color: Theme.of(context).colorScheme.surface,
@@ -125,7 +125,7 @@ class ProductVoucherCard extends StatelessWidget {
                       child: product.isProductAvailable()
                           ? const SizedBox.shrink()
                           : Container(
-                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: Sizes.sm),
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: AppSizes.sm),
                                 // color: Colors.grey.withOpacity(0.6),
                                 color: Colors.transparent,
                                 child: const Text('Out of Stock',
@@ -146,9 +146,9 @@ class ProductVoucherCard extends StatelessWidget {
                 ],
               ),
               // Title and Star rating
-              const SizedBox(height: Sizes.xs),
+              const SizedBox(height: AppSizes.xs),
               Padding(
-                  padding: const EdgeInsets.only(left: Sizes.sm),
+                  padding: const EdgeInsets.only(left: AppSizes.sm),
                   child: Column(
                     children: [
                       ProductTitle(title: product.name ?? ''),
@@ -170,7 +170,7 @@ class ProductVoucherCard extends StatelessWidget {
             children: [
               // Price
               Container(
-                padding: const EdgeInsets.only(left: Sizes.sm, bottom: 5),
+                padding: const EdgeInsets.only(left: AppSizes.sm, bottom: 5),
                 child: ProductPrice(
                   salePrice: product.salePrice,
                   regularPrice: product.regularPrice ?? 0.0,
@@ -184,15 +184,15 @@ class ProductVoucherCard extends StatelessWidget {
                   width: 45,
                   height: 35,
                   decoration: const BoxDecoration(
-                      color: TColors.primaryColor,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.only(
                         // topLeft: Radius.circular(TSizes.cardRadiusMd),
                         bottomRight: Radius.circular(productImageRadius),
                       )
                   ),
                   child: SizedBox(
-                      width: Sizes.iconLg * 1.2,
-                      height: Sizes.iconLg * 1.2,
+                      width: AppSizes.iconLg * 1.2,
+                      height: AppSizes.iconLg * 1.2,
                       child: Center(child: CartIcon(product: product, sourcePage: pageSource))
                   ),
               )
@@ -204,15 +204,15 @@ class ProductVoucherCard extends StatelessWidget {
   }
 
   Container productCardHorizontal({required BuildContext context}) {
-    const double productVoucherTileHeight = Sizes.productVoucherTileHeight;
-    const double productVoucherTileWidth = Sizes.productVoucherTileWidth;
-    const double productVoucherTileRadius = Sizes.productVoucherTileRadius;
-    const double productVoucherImageHeight = Sizes.productVoucherImageHeight;
-    const double productVoucherImageWidth = Sizes.productVoucherImageWidth;
+    const double productVoucherTileHeight = AppSizes.productVoucherTileHeight;
+    const double productVoucherTileWidth = AppSizes.productVoucherTileWidth;
+    const double productVoucherTileRadius = AppSizes.productVoucherTileRadius;
+    const double productVoucherImageHeight = AppSizes.productVoucherImageHeight;
+    const double productVoucherImageWidth = AppSizes.productVoucherImageWidth;
 
     return Container(
       width: productVoucherTileWidth,
-      padding: const EdgeInsets.all(Sizes.xs),
+      padding: const EdgeInsets.all(AppSizes.xs),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(productVoucherTileRadius),
         color: Theme.of(context).colorScheme.surface,
@@ -232,7 +232,7 @@ class ProductVoucherCard extends StatelessWidget {
           // Title, Rating and price
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: Sizes.sm),
+              padding: const EdgeInsets.only(left: AppSizes.sm),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,

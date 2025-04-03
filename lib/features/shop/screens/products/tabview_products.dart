@@ -91,7 +91,7 @@ class _TabviewProductsState extends State<TabviewProducts> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: TColors.refreshIndicator,
+      color: AppColors.refreshIndicator,
       onRefresh: () async => _refreshAllProducts(),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -111,19 +111,19 @@ class _TabviewProductsState extends State<TabviewProducts> {
                 mainAxisSize: MainAxisSize.min, // Shrink-wrap the Row's width to its content
                 children: [
                   Text('Share',
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor)
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor)
                   ),
-                  SizedBox(width: Sizes.sm),
+                  SizedBox(width: AppSizes.sm),
                   Icon(
                     TIcons.share,
-                    size: Sizes.md,
-                    color: TColors.linkColor,
+                    size: AppSizes.md,
+                    color: AppColors.linkColor,
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(height: Sizes.sm),
+          SizedBox(height: AppSizes.sm),
           ProductGridLayout(controller: this, sourcePage: 'Tab_${widget.itemName}'),
         ],
       ),

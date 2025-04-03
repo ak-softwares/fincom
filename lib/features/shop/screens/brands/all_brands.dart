@@ -24,7 +24,7 @@ class AllBrandScreen extends StatelessWidget {
     FBAnalytics.logPageView('all_brand_screen');
     final brandController = Get.put(BrandController());
     final ScrollController scrollController = ScrollController();
-    final double brandTileHeight = Sizes.brandTileHeight;
+    final double brandTileHeight = AppSizes.brandTileHeight;
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -46,7 +46,7 @@ class AllBrandScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: 'All Brands', showCartIcon: true, showSearchIcon: true,),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => brandController.refreshBrands(),
         child: ListView(
           controller: scrollController,

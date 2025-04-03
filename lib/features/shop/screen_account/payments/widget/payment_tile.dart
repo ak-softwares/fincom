@@ -18,17 +18,17 @@ class PaymentMethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double paymentTileHeight = Sizes.paymentTileHeight;
-    const double paymentTileWidth = Sizes.paymentTileWidth;
-    const double paymentTileRadius = Sizes.paymentTileRadius;
-    const double paymentImageHeight = Sizes.paymentImageHeight;
-    const double paymentImageWidth = Sizes.paymentImageWidth;
+    const double paymentTileHeight = AppSizes.paymentTileHeight;
+    const double paymentTileWidth = AppSizes.paymentTileWidth;
+    const double paymentTileRadius = AppSizes.paymentTileRadius;
+    const double paymentImageHeight = AppSizes.paymentImageHeight;
+    const double paymentImageWidth = AppSizes.paymentImageWidth;
 
     return InkWell(
       onTap: onTap,
       child: Container(
           width: paymentTileWidth,
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(paymentTileRadius),
             color: Theme.of(context).colorScheme.surface,

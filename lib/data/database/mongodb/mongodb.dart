@@ -1,6 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../../../features/shop/models/product_model.dart';
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/constants/enums.dart';
 
@@ -29,6 +30,15 @@ class MongoDatabase {
     }
   }
 
+  Future<void> insertDocuments(String collectionName, List<Map<String, dynamic>> dataList) async {
+    try {
+      var collection = _db?.collection(collectionName);
+      await collection?.insertMany(dataList); // Insert multiple documents
+    } catch (e) {
+      throw Exception('Error inserting documents: $e');
+    }
+  }
+
   Future<void> updateDocumentById({
     required String collectionName,
     required String id,
@@ -48,88 +58,42 @@ class MongoDatabase {
     }
   }
 
-  Future<Map<String, dynamic>?> fetchDocumentById({required String collectionName, required String id}) async {
-    try {
-      // Ensure _db is not null
-      if (_db == null) {
-        throw Exception('Database connection is not established.');
-      }
-
-      // Get the collection
-      var collection = _db!.collection(collectionName);
-
-      // Parse the string ID into ObjectId
-      var objectId = ObjectId.fromHexString(id);
-
-      // Fetch the document
-      var document = await collection.findOne(
-        {'_id': objectId}, // Use the parsed ObjectId
-      );
-
-      return document; // Return the fetched document (or null if not found)
-    } catch (e) {
-      rethrow; // Rethrow the error if you want the caller to handle it
-    }
-  }
-
-  Future<void> deleteDocumentById({required String collectionName, required String id,}) async {
-    try {
-      // Ensure the database connection is established
-      if (_db == null) {
-        throw Exception('Database connection is not established.');
-      }
-
-      // Validate ID format
-      if (id.isEmpty || id.length != 24) {
-        throw Exception("Invalid ID format: Expected a 24-character hexadecimal string. $id");
-      }
-
-      // Get the collection
-      var collection = _db!.collection(collectionName);
-
-      // Convert the ID to ObjectId
-      ObjectId objectId;
-      try {
-        objectId = ObjectId.fromHexString(id);
-      } catch (_) {
-        throw Exception("Invalid ObjectId: ID must be a valid 24-character hex string. $id");
-      }
-
-      // Delete the document
-      var result = await collection.deleteOne({'_id': objectId});
-
-      // Check if a document was actually deleted
-      if (result.nRemoved == 0) {
-        throw Exception("No document found with the given ID.");
-      }
-
-    } catch (e) {
-      rethrow; // Rethrow to let the caller handle the exception
-    }
-  }
-
-
-  // Insert multiple documents into a collection
-  Future<void> insertDocuments(String collectionName, List<Map<String, dynamic>> dataList) async {
-    try {
-      var collection = _db?.collection(collectionName);
-      await collection?.insertMany(dataList); // Insert multiple documents
-    } catch (e) {
-      throw Exception('Error inserting documents: $e');
-    }
-  }
-
-  // Update a document in a collection
   Future<void> updateDocument({
-      required String collectionName,
-      required Map<String, dynamic> filter,
-      required Map<String, dynamic> updatedData
+    required String collectionName,
+    required Map<String, dynamic> filter,
+    required Map<String, dynamic> updatedData
   }) async {
     try {
       var collection = _db?.collection(collectionName);
       await collection?.update(filter, {'\$set': updatedData}, upsert: true);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> updateProductsStock(String collectionName, List<Map<String, dynamic>> dataList) async {
+    try {
+      var collection = _db?.collection(collectionName);
+
+      if (collection == null || dataList.isEmpty) return;
+
+      var bulkOps = dataList.map((data) {
+        // Parse the string ID into ObjectId
+        var objectId = ObjectId.fromHexString(data[PurchaseHistoryFieldName.productId]);
+        return {
+          'updateOne': {
+            'filter': {ProductFieldName.id: objectId}, // Match by _id
+            'update': {
+              '\$push': {ProductFieldName.purchaseHistory: data}, // Append data inside purchase_history array
+            },
+            'upsert': true, // Insert if not found
+          }
+        };
+      }).toList();
+
+      await collection.bulkWrite(bulkOps);
+    } catch (e) {
+      throw Exception('Error updating documents: $e');
     }
   }
 
@@ -175,28 +139,30 @@ class MongoDatabase {
     }
   }
 
-  Future<int> getNextId({required String collectionName, required String fieldName}) async {
-    var collection = _db!.collection(collectionName);
-
+  Future<Map<String, dynamic>?> fetchDocumentById({required String collectionName, required String id}) async {
     try {
-      // Fetch the last document sorted by 'id' in descending order
-      var lastDocument = await collection
-          .find(where.sortBy(fieldName, descending: true).limit(1)) // Get the last document
-          .toList();
-
-      if (lastDocument.isEmpty) {
-        // If no documents exist, start with ID 1
-        return 1;
-      } else {
-        // Increment the last ID by 1
-        return lastDocument[0][fieldName] + 1;
+      // Ensure _db is not null
+      if (_db == null) {
+        throw Exception('Database connection is not established.');
       }
+
+      // Get the collection
+      var collection = _db!.collection(collectionName);
+
+      // Parse the string ID into ObjectId
+      var objectId = ObjectId.fromHexString(id);
+
+      // Fetch the document
+      var document = await collection.findOne(
+        {'_id': objectId}, // Use the parsed ObjectId
+      );
+
+      return document; // Return the fetched document (or null if not found)
     } catch (e) {
-      throw Exception('Error fetching the next ID: $e');
+      rethrow; // Rethrow the error if you want the caller to handle it
     }
   }
 
-  // Fetch documents from a collection
   Future<List<Map<String, dynamic>>> fetchDocuments({required String collectionName, int page = 1, int itemsPerPage = 10}) async {
     var collection = _db!.collection(collectionName);
     // Calculate the number of documents to skip
@@ -211,7 +177,32 @@ class MongoDatabase {
     }
   }
 
-  // Fetch documents by IDs from a collection
+  Future<List<Map<String, dynamic>>> fetchProducts({required String collectionName, int page = 1, int itemsPerPage = 10,}) async {
+    var collection = _db!.collection(collectionName);
+    int skip = (page - 1) * itemsPerPage;
+
+    try {
+      var pipeline = [
+        {
+          "\$addFields": {
+            "totalStock": { "\$sum": "\$purchase_history.quantity" }
+          }
+        },
+        { "\$sort": { "totalStock": -1, "_id": -1 } },
+        { "\$skip": skip },
+        { "\$limit": itemsPerPage }
+      ];
+
+      // Use `collection.find()` with `aggregationPipeline` instead of `aggregate()`
+      var cursor = collection.aggregateToStream(pipeline); // Returns a stream of documents
+      List<Map<String, dynamic>> documents = await cursor.toList();
+
+      return documents;
+    } catch (e) {
+      throw Exception('Error fetching documents: $e');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchDocumentsByIds(String collectionName, List<int> documentIds) async {
     try {
       var collection = _db!.collection(collectionName);
@@ -224,71 +215,6 @@ class MongoDatabase {
       return documents;
     } catch (e) {
       throw Exception('Error fetching documents by IDs: $e');
-    }
-  }
-
-  Future<void> updateProductQuantitiesWithPairs({
-    required String collectionName,
-    required List<Map<String, dynamic>> productQuantityPairs,
-    required bool isAddition, // true for addition, false for subtraction
-  }) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized');
-    }
-
-    try {
-      var collection = _db!.collection(collectionName);
-
-      // Create a list of update operations
-      List<Future<void>> updateOperations = [];
-
-      for (var pair in productQuantityPairs) {
-        int productId = pair['productId'];
-        int quantityChange = pair['quantity'];
-
-        // Determine the update operation based on isAddition
-        var updateModifier = isAddition
-            ? modify.inc('quantity', quantityChange) // Add quantity
-            : modify.inc('quantity', -quantityChange); // Subtract quantity
-
-        // Add update operation to the list
-        updateOperations.add(
-          collection.update(
-            where.eq('id', productId),
-            updateModifier,
-          ),
-        );
-      }
-
-      // Execute all update operations concurrently
-      await Future.wait(updateOperations);
-    } catch (e) {
-      throw Exception('Failed to update product quantities: $e');
-    }
-  }
-
-  Future<void> updateBalance({
-    required String collectionName,
-    required Map<String, dynamic> entityBalancePair,
-    required bool isAddition,
-  }) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized');
-    }
-    try {
-      var collection = _db!.collection(collectionName);
-
-      String entityIdFieldName = entityBalancePair['entityIdFieldName'];
-      int entityId = entityBalancePair['entityId'];
-      double balanceChange = entityBalancePair['balance'];
-
-      await collection.update(
-        where.eq(entityIdFieldName, entityId),
-        {'\$inc': {'balance': isAddition ? balanceChange : -balanceChange}},
-      );
-
-    } catch (e) {
-      throw Exception('Failed to update entity balance: $e');
     }
   }
 
@@ -327,7 +253,87 @@ class MongoDatabase {
     }
   }
 
+  Future<void> deleteDocumentById({required String collectionName, required String id,}) async {
+    try {
+      // Ensure the database connection is established
+      if (_db == null) {
+        throw Exception('Database connection is not established.');
+      }
 
+      // Validate ID format
+      if (id.isEmpty || id.length != 24) {
+        throw Exception("Invalid ID format: Expected a 24-character hexadecimal string. $id");
+      }
+
+      // Get the collection
+      var collection = _db!.collection(collectionName);
+
+      // Convert the ID to ObjectId
+      ObjectId objectId;
+      try {
+        objectId = ObjectId.fromHexString(id);
+      } catch (_) {
+        throw Exception("Invalid ObjectId: ID must be a valid 24-character hex string. $id");
+      }
+
+      // Delete the document
+      var result = await collection.deleteOne({'_id': objectId});
+
+      // Check if a document was actually deleted
+      if (result.nRemoved == 0) {
+        throw Exception("No document found with the given ID.");
+      }
+
+    } catch (e) {
+      rethrow; // Rethrow to let the caller handle the exception
+    }
+  }
+
+  Future<int> getNextId({required String collectionName, required String fieldName}) async {
+    var collection = _db!.collection(collectionName);
+
+    try {
+      // Fetch the last document sorted by 'id' in descending order
+      var lastDocument = await collection
+          .find(where.sortBy(fieldName, descending: true).limit(1)) // Get the last document
+          .toList();
+
+      if (lastDocument.isEmpty) {
+        // If no documents exist, start with ID 1
+        return 1;
+      } else {
+        // Increment the last ID by 1
+        return lastDocument[0][fieldName] + 1;
+      }
+    } catch (e) {
+      throw Exception('Error fetching the next ID: $e');
+    }
+  }
+
+  Future<void> updateBalance({
+    required String collectionName,
+    required Map<String, dynamic> entityBalancePair,
+    required bool isAddition,
+  }) async {
+    if (_db == null) {
+      throw Exception('Database connection is not initialized');
+    }
+    try {
+      var collection = _db!.collection(collectionName);
+
+      String entityIdFieldName = entityBalancePair['entityIdFieldName'];
+      int entityId = entityBalancePair['entityId'];
+      double balanceChange = entityBalancePair['balance'];
+
+      await collection.update(
+        where.eq(entityIdFieldName, entityId),
+        {'\$inc': {'balance': isAddition ? balanceChange : -balanceChange}},
+      );
+
+    } catch (e) {
+      throw Exception('Failed to update entity balance: $e');
+    }
+  }
 
   // Fetch Collection All IDs
   Future<Set<int>> fetchCollectionIds(String collectionName) async {
@@ -442,8 +448,6 @@ class MongoDatabase {
       throw Exception('Error finding documents: $e');
     }
   }
-
-
 
   // Close the connection
   void close() {

@@ -71,7 +71,7 @@ class SearchScreen3 extends StatelessWidget {
 
     return Scaffold(
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
         child: ElevatedButton(
             onPressed: () => searchVoucherController.confirmSelection(context: context, searchType: searchType),
             child: Obx(() => Row(
@@ -84,7 +84,7 @@ class SearchScreen3 extends StatelessWidget {
         ),
       ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
         child: ListView(
           controller: scrollController,
@@ -101,7 +101,7 @@ class SearchScreen3 extends StatelessWidget {
                         return GridLayout(
                           itemCount: searchVoucherController.selectedProducts.length,
                           crossAxisCount: 1,
-                          mainAxisExtent: Sizes.productVoucherTileHeight,
+                          mainAxisExtent: AppSizes.productVoucherTileHeight,
                           itemBuilder: (context, index) {
                             if (index < products.length) {
                               return Obx(() {
@@ -140,7 +140,7 @@ class SearchScreen3 extends StatelessWidget {
                       return GridLayout(
                           itemCount: searchVoucherController.isLoadingMore.value ? products.length + 2 : products.length,
                           crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-                          mainAxisExtent: orientation == OrientationType.vertical ? Sizes.productCardVerticalHeight : Sizes.productVoucherTileHeight,
+                          mainAxisExtent: orientation == OrientationType.vertical ? AppSizes.productCardVerticalHeight : AppSizes.productVoucherTileHeight,
                           itemBuilder: (context, index) {
                             if (index < products.length) {
                               return Obx(() {
@@ -183,7 +183,7 @@ class SearchScreen3 extends StatelessWidget {
                 sourcePage: 'Search',
               ),
               SearchType.vendor => Obx(() {
-                const double vendorTileHeight = Sizes.vendorTileHeight; // Updated constant
+                const double vendorTileHeight = AppSizes.vendorTileHeight; // Updated constant
                 if (searchVoucherController.isLoading.value) {
                   return VendorTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
@@ -253,7 +253,7 @@ class SearchScreen3 extends StatelessWidget {
                 }
               }),
               SearchType.paymentMethod => Obx(() {
-                const double paymentTileHeight = Sizes.paymentTileHeight; // Updated constant
+                const double paymentTileHeight = AppSizes.paymentTileHeight; // Updated constant
                 if (searchVoucherController.isLoading.value) {
                   return  PaymentTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {

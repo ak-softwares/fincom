@@ -28,7 +28,7 @@ class TUserReviewCard extends StatelessWidget {
     final imagesController = Get.put(ImagesController());
 
     // Using Html widget to parse HTML text
-    final String reviewerName = TValidator.isEmail(review.reviewer ?? '') ? TFormatter.maskEmail(review.reviewer ?? '') : review.reviewer ?? '';
+    final String reviewerName = TValidator.isEmail(review.reviewer ?? '') ? AppFormatter.maskEmail(review.reviewer ?? '') : review.reviewer ?? '';
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +45,7 @@ class TUserReviewCard extends StatelessWidget {
                   borderRadius: 50,
                   isNetworkImage: true,
                 ),
-                const SizedBox(width: Sizes.spaceBtwItems,),
+                const SizedBox(width: AppSizes.spaceBtwItems,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +56,7 @@ class TUserReviewCard extends StatelessWidget {
                       rating: review.rating!.toDouble(),
                       itemSize: 16,
                       unratedColor: Colors.grey[300],
-                      itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: TColors.ratingStar),
+                      itemBuilder: (_, __) =>  Icon(TIcons.starRating, color: AppColors.ratingStar),
                     ),
                   ],
                 ),
@@ -81,7 +81,7 @@ class TUserReviewCard extends StatelessWidget {
                         child: Text('Delete'),
                       ),
                     ],
-                    icon: const Icon(Icons.more_vert, color: TColors.linkColor),
+                    icon: const Icon(Icons.more_vert, color: AppColors.linkColor),
                   )
                 : PopupMenuButton<String>(
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -96,7 +96,7 @@ class TUserReviewCard extends StatelessWidget {
         ),
 
         //Review
-        const SizedBox(height: Sizes.sm),
+        const SizedBox(height: AppSizes.sm),
         Row(
           children: [
             Expanded(
@@ -113,7 +113,7 @@ class TUserReviewCard extends StatelessWidget {
                     moreStyle: const TextStyle(fontSize: 14, color: Colors.blue),
                     lessStyle: const TextStyle(fontSize: 14, color: Colors.blue),
                   ),
-                  Text(TFormatter.formatStringDate(review.dateCreated ?? ''), style: Theme.of(context).textTheme.labelMedium)
+                  Text(AppFormatter.formatStringDate(review.dateCreated ?? ''), style: Theme.of(context).textTheme.labelMedium)
                 ],
               ),
             ),

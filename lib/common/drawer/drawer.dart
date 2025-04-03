@@ -22,7 +22,7 @@ class MyDrawer extends StatelessWidget {
     final authenticationRepository = Get.put(AuthenticationRepository());
 
     return Drawer(
-      backgroundColor: TColors.secondaryBackground,
+      backgroundColor: AppColors.secondaryBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
       ),
@@ -32,8 +32,8 @@ class MyDrawer extends StatelessWidget {
             Container(
               height: 100,
               width: double.infinity,
-              color: TColors.primaryBackground,
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace),
+              color: AppColors.primaryBackground,
+              padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
               child: Align(alignment: Alignment.bottomRight,child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close),)),
             ),
 
@@ -41,8 +41,8 @@ class MyDrawer extends StatelessWidget {
             Obx(() => authenticationRepository.isUserLogin.value
                 ? Container(
                     width: double.infinity,
-                    color: TColors.primaryBackground,
-                    padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace),
+                    color: AppColors.primaryBackground,
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
                     child: CustomerProfileCard(userController: userController),
                   )
                 : const SizedBox.shrink(),
@@ -53,13 +53,13 @@ class MyDrawer extends StatelessWidget {
 
             //Support
             Container(
-              color: TColors.primaryBackground,
+              color: AppColors.primaryBackground,
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace),
+              padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
               child: Column(
                 children: [
                   const TSectionHeading(title: 'Contact us', verticalPadding: false),
-                  const Divider(color: TColors.primaryColor, thickness: 2),
+                  const Divider(color: AppColors.primaryColor, thickness: 2),
                   ExpansionTile(
                     title: Text('Support', style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500)),
                     // initiallyExpanded: true,
@@ -74,9 +74,9 @@ class MyDrawer extends StatelessWidget {
             ),
 
             //Follow us
-            const SizedBox(height: Sizes.spaceBtwInputFields),
+            const SizedBox(height: AppSizes.spaceBtwInputFields),
             const FollowUs(),
-            const SizedBox(height: Sizes.spaceBtwInputFields),
+            const SizedBox(height: AppSizes.spaceBtwInputFields),
           ],
         ),
       ),

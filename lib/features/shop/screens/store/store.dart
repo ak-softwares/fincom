@@ -39,7 +39,7 @@ class StoreScreen extends StatelessWidget {
                 backgroundColor: Colors.white,
                 expandedHeight: 440,
                 flexibleSpace: Container(
-                  padding: const EdgeInsets.all(Sizes.defaultSpace / 2),
+                  padding: const EdgeInsets.all(AppSizes.defaultSpace / 2),
                   child: ListView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -83,66 +83,66 @@ class StoreScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(Sizes.md),
+                  padding: const EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       ///-Brands
                       const TBrandShowcase(images: [Images.defaultWooPlaceholder, Images.defaultWooPlaceholder, Images.defaultWooPlaceholder],),
                       ///-Products
                       const TSectionHeading(title: 'You might like'),
-                      const SizedBox(height: Sizes.spaceBtwItems,),
+                      const SizedBox(height: AppSizes.spaceBtwItems,),
                       GridLayout(mainAxisExtent: 290,itemCount: 6, itemBuilder: (context, index) => ProductCard(product: controller.featuredProducts[index], pageSource: '',))
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(Sizes.md),
+                  padding: const EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       ///-Brands
                       const TBrandShowcase(images: [Images.defaultWooPlaceholder, Images.defaultWooPlaceholder, Images.defaultWooPlaceholder],),
                       ///-Products
                       const TSectionHeading(title: 'You might like'),
-                      const SizedBox(height: Sizes.spaceBtwItems,),
+                      const SizedBox(height: AppSizes.spaceBtwItems,),
                       GridLayout(mainAxisExtent: 290, itemCount: 6, itemBuilder: (context, index) => ProductCard(product: controller.featuredProducts[index], pageSource: '',))
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(Sizes.md),
+                  padding: const EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       ///-Brands
                       const TBrandShowcase(images: [Images.defaultWooPlaceholder, Images.defaultWooPlaceholder, Images.defaultWooPlaceholder],),
                       ///-Products
                       const TSectionHeading(title: 'You might like'),
-                      const SizedBox(height: Sizes.spaceBtwItems,),
+                      const SizedBox(height: AppSizes.spaceBtwItems,),
                       GridLayout(mainAxisExtent: 290, itemCount: 6, itemBuilder: (context, index) => ProductCard(product: controller.featuredProducts[index], pageSource: '',))
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(Sizes.md),
+                  padding: const EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       ///-Brands
                       const TBrandShowcase(images: [Images.defaultWooPlaceholder, Images.defaultWooPlaceholder, Images.defaultWooPlaceholder],),
                       ///-Products
                       const TSectionHeading(title: 'You might like'),
-                      const SizedBox(height: Sizes.spaceBtwItems,),
+                      const SizedBox(height: AppSizes.spaceBtwItems,),
                       GridLayout( mainAxisExtent: 290, itemCount: 6, itemBuilder: (context, index) => ProductCard(product: controller.featuredProducts[index], pageSource: '',))
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(Sizes.md),
+                  padding: const EdgeInsets.all(AppSizes.md),
                   child: Column(
                     children: [
                       ///-Brands
                       const TBrandShowcase(images: [Images.defaultWooPlaceholder, Images.defaultWooPlaceholder, Images.defaultWooPlaceholder],),
                       ///-Products
                       const TSectionHeading(title: 'You might like'),
-                      const SizedBox(height: Sizes.spaceBtwItems,),
+                      const SizedBox(height: AppSizes.spaceBtwItems,),
                       GridLayout(mainAxisExtent: 290, itemCount: 6, itemBuilder: (context, index) => ProductCard(product: controller.featuredProducts[index], pageSource: '',))
                     ],
                   ),

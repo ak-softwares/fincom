@@ -16,11 +16,11 @@ class VendorTileSimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double vendorTileHeight = Sizes.vendorTileHeight;
-    const double vendorTileWidth = Sizes.vendorTileWidth;
-    const double vendorTileRadius = Sizes.vendorTileRadius;
-    const double vendorImageHeight = Sizes.vendorImageHeight;
-    const double vendorImageWidth = Sizes.vendorImageWidth;
+    const double vendorTileHeight = AppSizes.vendorTileHeight;
+    const double vendorTileWidth = AppSizes.vendorTileWidth;
+    const double vendorTileRadius = AppSizes.vendorTileRadius;
+    const double vendorImageHeight = AppSizes.vendorImageHeight;
+    const double vendorImageWidth = AppSizes.vendorImageWidth;
 
     return GridLayout(
         itemCount: itemCount,
@@ -29,7 +29,7 @@ class VendorTileSimmer extends StatelessWidget {
         itemBuilder: (context, index) {
           return Container(
               width: vendorTileWidth,
-              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(vendorTileRadius),
                 color: Theme.of(context).colorScheme.surface,

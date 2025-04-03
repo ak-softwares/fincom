@@ -29,7 +29,7 @@ class IsFirstRunController extends GetxController {
 
   static Future<void> activation(CustomerModel customer) async {
     try {
-      final userId = customer.id.toString();
+      final userId = customer.customerId.toString();
 
       // update fcm token to user meta in wordpress
       final fCMToken = await FirebaseMessaging.instance.getToken() ?? '';

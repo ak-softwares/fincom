@@ -34,7 +34,7 @@ class ProductCarousalByCategory extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: categoryController.isLoadingMore.value ? categories.length + 1 : categories.length,
-          separatorBuilder: (_, __) => const SizedBox(width: Sizes.spaceBtwItems),
+          separatorBuilder: (_, __) => const SizedBox(width: AppSizes.spaceBtwItems),
           itemBuilder: (context, index) {
             if (index < categories.length) {
               final category = categories[index];
@@ -47,7 +47,7 @@ class ProductCarousalByCategory extends StatelessWidget {
               // Return your loading indicator widget here
               return const Column(
                 children: [
-                  SizedBox(height: Sizes.sm,),
+                  SizedBox(height: AppSizes.sm,),
                   TSectionHeading(title: 'Products Loading..'),
                   ProductShimmer(itemCount: 2),
                 ],

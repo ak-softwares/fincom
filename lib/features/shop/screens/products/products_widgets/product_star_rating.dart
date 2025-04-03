@@ -27,13 +27,13 @@ class ProductStarRating extends StatelessWidget {
               rating: averageRating,
               itemSize: size*1.3,
               unratedColor: Colors.grey[300],
-              itemBuilder: (_, __) => const Icon(Iconsax.star1, color: TColors.ratingStar),
+              itemBuilder: (_, __) => const Icon(Iconsax.star1, color: AppColors.ratingStar),
             ),
             Text(
               ' ${averageRating.toStringAsFixed(1)}($ratingCount)',
               style: Theme.of(context).textTheme.labelMedium!
                   .copyWith(fontSize: size)),
-            const SizedBox(width: Sizes.spaceBtwItems / 2),
+            const SizedBox(width: AppSizes.spaceBtwItems / 2),
             //Brand
             // TBrandWithVerifiedIcon(brandName: "Ultium"),
           ],

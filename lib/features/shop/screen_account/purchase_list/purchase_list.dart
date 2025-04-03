@@ -5,6 +5,7 @@ import 'package:fincom/features/shop/models/purchase_item_model.dart';
 import 'package:fincom/utils/formatters/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 import '../../../../common/styles/shadows.dart';
 import '../../../../common/styles/spacing_style.dart';
@@ -31,12 +32,12 @@ class PurchaseList extends StatelessWidget {
       appBar: AppAppBar2(
         titleText: 'Purchase Product List',
         widget: Obx(() => Padding(
-            padding: const EdgeInsets.only(right: Sizes.xl),
+            padding: const EdgeInsets.only(right: AppSizes.xl),
             child: !controller.isFetching.value
                 ? InkWell(
                     onTap: () => controller.showDialogForSelectOrderStatus(),
                     child: Row(
-                      spacing: Sizes.xs,
+                      spacing: AppSizes.xs,
                       children: [
                         Icon(Icons.refresh, color: Colors.blue, size: 17),
                         Text('Sync', style: TextStyle(color: Colors.blue)),
@@ -59,7 +60,7 @@ class PurchaseList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                  'Last Sync - ${TFormatter.formatStringDate(controller.purchaseListMetaData.value.lastSyncDate.toString())}',
+                  'Last Sync - ${AppFormatter.formatStringDate(controller.purchaseListMetaData.value.lastSyncDate.toString())}',
                   style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               Text('Total - ${controller.products.length}',
@@ -70,7 +71,7 @@ class PurchaseList extends StatelessWidget {
           ),
       )),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async {
           controller.refreshOrders();
         },
@@ -105,7 +106,7 @@ class PurchaseList extends StatelessWidget {
                   animation: Images.pencilAnimation,
                   showAction: true,
                   actionText: 'Sync Products',
-                  onActionPress: () => controller.showDialogForSelectOrderStatus(),
+                  onActionPressed: () => controller.showDialogForSelectOrderStatus(),
                 );
               } else {
                 return Column(
@@ -134,9 +135,16 @@ class PurchaseList extends StatelessWidget {
                         final allVendorProducts = controller.filterProductsByVendor(vendorName: companyName);
                         // Initialize expanded states if not already present
                         controller.initializeExpansionState(companyName); // Ensure companyName exists
+                        final purchasedProductIds = controller.purchaseListMetaData.value.purchasedProductIds ?? [];
+                        final notAvailableProductIds = controller.purchaseListMetaData.value.notAvailableProductIds ?? [];
+                        final purchasableProducts = allVendorProducts.where((product) =>
+                        !purchasedProductIds.contains(product.id) &&
+                            !notAvailableProductIds.contains(product.id)
+                        ).toList();
+
                         return allVendorProducts.isNotEmpty
                             ? Padding(
-                                padding: const EdgeInsets.only(top: Sizes.sm),
+                                padding: const EdgeInsets.only(top: AppSizes.sm),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -150,22 +158,39 @@ class PurchaseList extends StatelessWidget {
                                         // Refresh the UI
                                         controller.expandedSections.refresh();
                                       },
-                                      child: Container(
-                                        padding: const EdgeInsets.all(Sizes.defaultSpace),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).colorScheme.surface, // Use surface for a neutral background
-                                          borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: Theme.of(context).colorScheme.outline, // `outline` works well for borders in flex_color_scheme
-                                          ),                                    ),
-                                        child: Obx(() => Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('$companyName ${allVendorProducts.length}'),
-                                            Icon((controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                                          ],
-                                        )),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(AppSizes.defaultSpace),
+                                            decoration: BoxDecoration(
+                                              color: purchasableProducts.isNotEmpty
+                                                  ? Theme.of(context).colorScheme.surface
+                                                  : Colors.grey,
+                                              borderRadius: BorderRadius.circular(AppSizes.purchaseItemTileRadius),
+                                              border: Border.all(
+                                                width: 1,
+                                                color: Theme.of(context).colorScheme.outline,
+                                              ),
+                                            ),
+                                            child: Obx(() => Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text('$companyName ${allVendorProducts.length}'),
+                                                Icon((controller.expandedSections[companyName]?[PurchaseListType.vendors] ?? false) ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                                              ],
+                                            )),
+                                          ),
+                                          if(purchasableProducts.isEmpty)
+                                            Positioned(
+                                            top: 25,
+                                            // bottom: 4,
+                                            left: 0,
+                                            right: 0,
+                                            child: Container(height: 1,
+                                              color: Theme.of(context).colorScheme.outline,
+                                            )
+                                          )
+                                        ],
                                       ),
                                     ),
 
@@ -214,6 +239,49 @@ class PurchaseList extends StatelessWidget {
                             : SizedBox.shrink();
                       },
                     ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: controller.extraNoteController,
+                      // initialValue: controller.purchaseListMetaData.value.extraNote ?? '',
+                      maxLines: 3, // Allows text input to expand
+                      decoration: InputDecoration(
+                        hintText: 'Extra Notes...',
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant), // Ensure hint is visible
+                        // isDense: true, // Prevent excessive padding
+                        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12), // Prevent squeezing
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.defaultRadius), // Set border radius
+                          borderSide: BorderSide(color: Colors.transparent), // Transparent border
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.defaultRadius),
+                          borderSide: BorderSide(
+                              color:Theme.of(context).colorScheme.outlineVariant,
+                              width: AppSizes.defaultBorderWidth
+                          ), // Light grey border when not focused
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.defaultRadius),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
+                              width: AppSizes.defaultBorderWidth), // Blue border when focused
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          controller.saveExtraNote(controller.extraNoteController.text);
+                        },
+                        child: Obx(() => controller.isExtraTextUpdating.value
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.linkColor),
+                              )
+                            : Text('Save', style: TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w500)))
+                    ),
                     SizedBox(height: 50),
                   ],
                 );
@@ -235,7 +303,7 @@ class PurchaseList extends StatelessWidget {
   }) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = Get.put(PurchaseListController());
-    final double purchaseItemTileRadius = Sizes.purchaseItemTileRadius;
+    final double purchaseItemTileRadius = AppSizes.purchaseItemTileRadius;
 
     final allVendorProducts = controller.filterProductsByVendor(vendorName: companyName);
     final filteredProducts = allVendorProducts.where(filterCondition).toList();
@@ -247,17 +315,17 @@ class PurchaseList extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: Sizes.spaceBtwItems),
+          padding: const EdgeInsets.only(top: AppSizes.spaceBtwItems),
           child: InkWell(
             onTap: () {
               controller.expandedSections[companyName]?[purchaseListType] = !isExpanded.value;
               isExpanded.value = !isExpanded.value; // Ensure UI updates
             },
             child: Container(
-              padding: const EdgeInsets.all(Sizes.defaultSpace),
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
               decoration: BoxDecoration(
                 color: isDark ? Theme.of(context).colorScheme.surface : backgroundColor is MaterialColor ? backgroundColor.shade50 : backgroundColor.withOpacity(0.3), // Use surface for a neutral background
-                borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
+                borderRadius: BorderRadius.circular(AppSizes.purchaseItemTileRadius),
                 border: Border.all(
                   width: 1,
                   color: backgroundColor is MaterialColor ? backgroundColor.shade200 : backgroundColor.withOpacity(0.5), // Border color
@@ -296,7 +364,7 @@ class PurchaseList extends StatelessWidget {
                   );
                 },
                 background: Padding(
-                  padding: const EdgeInsets.only(top: Sizes.sm),
+                  padding: const EdgeInsets.only(top: AppSizes.sm),
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerRight,
@@ -312,25 +380,25 @@ class PurchaseList extends StatelessWidget {
                     ),
                     child: purchaseListType == PurchaseListType.purchasable
                         ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Not Available'),
-                        Text('Purchased'),
-                        // Icon(Icons.delete, color: Colors.white),
-                      ],
-                    )
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Not Available'),
+                              Text('Purchased'),
+                              // Icon(Icons.delete, color: Colors.white),
+                            ],
+                          )
                         : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // SizedBox.shrink(),
-                        Text('Restore'),
-                        Icon(Icons.restore, color: Theme.of(context).colorScheme.onSurface),
-                      ],
-                    )
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // SizedBox.shrink(),
+                              Text('Restore'),
+                              Icon(Icons.restore, color: Theme.of(context).colorScheme.onSurface),
+                            ],
+                          )
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: Sizes.sm),
+                  padding: const EdgeInsets.only(top: AppSizes.sm),
                   child: InkWell(
                     onTap: () => _showRelatedOrders(context: context, productId: product.id),
                     child: PurchaseListItem(product: product, isDeleted: purchaseListType != PurchaseListType.purchasable),
@@ -364,7 +432,7 @@ class PurchaseList extends StatelessWidget {
                 child: GridLayout(
                   itemCount: relatedOrders.length,
                   crossAxisCount: 1,
-                  mainAxisExtent: Sizes.orderTileHeight,
+                  mainAxisExtent: AppSizes.orderTileHeight,
                   itemBuilder: (context, index) {
                     return SingleOrderTile(order: relatedOrders[index]);
                   },

@@ -91,16 +91,16 @@ class _ProductsScrollingByItemIDState extends State<ProductsScrollingByItemID> {
 
   @override
   Widget build(BuildContext context) {
-    final double productCardVerticalHeight = Sizes.productCardVerticalHeight;
-    final double productCardHorizontalHeight = Sizes.productCardHorizontalHeight;
-    final double defaultSpaceBWTCard = Sizes.defaultSpaceBWTCard;
+    final double productCardVerticalHeight = AppSizes.productCardVerticalHeight;
+    final double productCardHorizontalHeight = AppSizes.productCardHorizontalHeight;
+    final double defaultSpaceBWTCard = AppSizes.defaultSpaceBWTCard;
     return Obx(() {
       if (_isLoading.value){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+              padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
               child: widget.itemName != null ? const TSectionHeading(title: 'Products Loading..') : const SizedBox.shrink(),
             ),
             Padding(
@@ -121,7 +121,7 @@ class _ProductsScrollingByItemIDState extends State<ProductsScrollingByItemID> {
           children: [
             widget.itemName != null
               ? Padding(
-                padding: const EdgeInsets.only(left: Sizes.spaceBtwItems),
+                padding: const EdgeInsets.only(left: AppSizes.spaceBtwItems),
                 child: TSectionHeading(
                     title: widget.itemName!,
                     seeActionButton: true,

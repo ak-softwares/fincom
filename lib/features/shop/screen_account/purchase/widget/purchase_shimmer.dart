@@ -16,11 +16,11 @@ class PurchaseShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double purchaseTileHeight = Sizes.purchaseTileHeight;
-    final double purchaseTileWidth = Sizes.purchaseTileWidth;
-    final double purchaseTileRadius = Sizes.purchaseTileRadius;
-    final double purchaseImageHeight = Sizes.purchaseImageHeight;
-    final double purchaseImageWidth = Sizes.purchaseImageWidth;
+    final double purchaseTileHeight = AppSizes.purchaseTileHeight;
+    final double purchaseTileWidth = AppSizes.purchaseTileWidth;
+    final double purchaseTileRadius = AppSizes.purchaseTileRadius;
+    final double purchaseImageHeight = AppSizes.purchaseImageHeight;
+    final double purchaseImageWidth = AppSizes.purchaseImageWidth;
 
     return GridLayout(
         mainAxisExtent: purchaseTileHeight,
@@ -35,7 +35,7 @@ class PurchaseShimmer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(purchaseTileRadius),
               ),
               child: Column(
-                spacing: Sizes.xs,
+                spacing: AppSizes.xs,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -68,16 +68,16 @@ class PurchaseShimmer extends StatelessWidget {
                   ),
                   Container(
                     height: 1,
-                    color: TColors.borderSecondary,
+                    color: AppColors.borderDark,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
-                    spacing: Sizes.spaceBtwItems,
+                    spacing: AppSizes.spaceBtwItems,
                     children: [
-                      ShimmerEffect(width: 40, height: 40, radius: Sizes.sm),
-                      ShimmerEffect(width: 40, height: 40, radius: Sizes.sm),
-                      ShimmerEffect(width: 40, height: 40, radius: Sizes.sm),
+                      ShimmerEffect(width: 40, height: 40, radius: AppSizes.sm),
+                      ShimmerEffect(width: 40, height: 40, radius: AppSizes.sm),
+                      ShimmerEffect(width: 40, height: 40, radius: AppSizes.sm),
                     ],
                   ),
                 ],

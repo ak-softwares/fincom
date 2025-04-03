@@ -16,10 +16,10 @@ class TBrandItemCount extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(Sizes.sm),
+        padding: const EdgeInsets.all(AppSizes.sm),
         decoration: BoxDecoration(
           border: isBorderShow! ? Border.all(color: Colors.grey) : null,
-          borderRadius: BorderRadius.circular(Sizes.productImageRadius),
+          borderRadius: BorderRadius.circular(AppSizes.productImageRadius),
           // color: Colors.yellow,
         ),
         child: const Column(

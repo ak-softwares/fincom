@@ -16,7 +16,7 @@ class EmptySearchScreen extends StatelessWidget {
       child: Column(
         children: [
           const ScrollingCategoryName(),
-          const SizedBox(height: Sizes.sm),
+          const SizedBox(height: AppSizes.sm),
           ScrollingProducts(title: 'Popular Products',  futureMethod: productController.getAllProducts),
           // const SizedBox(height: TSizes.sm),
           // ProductsScrollingByCategory(title: 'Soldering Irons', parameter: '61', futureMethod: productController.getProductsByCategoryId,),

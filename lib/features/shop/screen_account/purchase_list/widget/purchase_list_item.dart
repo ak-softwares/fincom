@@ -16,16 +16,16 @@ class PurchaseListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double purchaseItemTileHeight = Sizes.purchaseItemTileHeight;
-    final double purchaseItemTileWidth = Sizes.purchaseItemTileWidth;
-    final double purchaseItemTileRadius = Sizes.purchaseItemTileRadius;
-    final double purchaseItemImageHeight = Sizes.purchaseItemImageHeight;
-    final double purchaseItemImageWidth = Sizes.purchaseItemImageWidth;
+    final double purchaseItemTileHeight = AppSizes.purchaseItemTileHeight;
+    final double purchaseItemTileWidth = AppSizes.purchaseItemTileWidth;
+    final double purchaseItemTileRadius = AppSizes.purchaseItemTileRadius;
+    final double purchaseItemImageHeight = AppSizes.purchaseItemImageHeight;
+    final double purchaseItemImageWidth = AppSizes.purchaseItemImageWidth;
 
     return Stack(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(purchaseItemTileRadius),
@@ -34,10 +34,10 @@ class PurchaseListItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.outline
             ),          ),
           child: Row(
-            spacing: Sizes.sm,
+            spacing: AppSizes.sm,
             children: [
               InkWell(
-                onLongPress: () => Get.to(() => ProductDetailScreen(productId: product.id.toString())),
+                onLongPress: () => Get.to(() => ProductScreen(productId: product.id.toString())),
                 child: TRoundedImage(
                     height: purchaseItemImageHeight,
                     width: purchaseItemImageWidth,
@@ -50,7 +50,7 @@ class PurchaseListItem extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace, vertical: Sizes.sm),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace, vertical: AppSizes.sm),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +102,7 @@ class PurchaseListItem extends StatelessWidget {
                 top: 1,
                 right: 1,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: Sizes.sm, vertical: Sizes.xs),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.xs),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
                       borderRadius: BorderRadius.only(
@@ -124,7 +124,7 @@ class PurchaseListItem extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: Sizes.defaultSpace),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
                     decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(purchaseItemTileRadius),

@@ -39,14 +39,14 @@ class UpdateAddressScreen extends StatelessWidget {
       appBar: AppAppBar2(titleText: title, showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           child: Form(
             key: addressController.addressFormKey,
             child: Column(
               children: [
 
                 // Name
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 Row(
                   children: [
                     Expanded(
@@ -56,7 +56,7 @@ class UpdateAddressScreen extends StatelessWidget {
                           decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: 'First Name*'),
                         )
                     ),
-                    const SizedBox(width: Sizes.spaceBtwInputFields),
+                    const SizedBox(width: AppSizes.spaceBtwInputFields),
                     // Last Name
                     Expanded(
                         child: TextFormField(
@@ -68,7 +68,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // Address1
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 TextFormField(
                     controller: addressController.address1,
                     validator: (value) => TValidator.validateEmptyText('Street address', value),
@@ -76,14 +76,14 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // Address2
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 TextFormField(
                     controller: addressController.address2,
                     decoration: const InputDecoration(prefixIcon: Icon(Iconsax.buildings), labelText: 'Land Mark')
                 ),
 
                 // City
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 Row(
                   children: [
                     Expanded(
@@ -93,7 +93,7 @@ class UpdateAddressScreen extends StatelessWidget {
                           decoration: const InputDecoration(prefixIcon: Icon(Iconsax.building), labelText: 'City*'),
                         )
                     ),
-                    const SizedBox(width: Sizes.spaceBtwInputFields),
+                    const SizedBox(width: AppSizes.spaceBtwInputFields),
                     // Pincode
                     Expanded(
                         child: TextFormField(
@@ -106,7 +106,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // State
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 DropdownButtonFormField<String>(
                   isExpanded: true,
                   items: StateData.indianStates.map((state) {
@@ -122,7 +122,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // Country
-                const SizedBox(height: Sizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.spaceBtwInputFields),
                 TextFormField(
                     enabled: false,
                     controller: addressController.country,
@@ -142,17 +142,17 @@ class UpdateAddressScreen extends StatelessWidget {
                 //   decoration: const InputDecoration(prefixIcon: Icon(Iconsax.global), labelText: 'Country*'),
                 // ),
 
-                const SizedBox(height: Sizes.spaceBtwItems),
+                const SizedBox(height: AppSizes.spaceBtwItems),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('To Edit Phone and Email', style: Theme.of(context).textTheme.labelLarge),
                       TextButton(
                           onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));},
-                          child: Text('Click here', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor)))
+                          child: Text('Click here', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor)))
                     ]
                 ),
-                const SizedBox(height: Sizes.spaceBtwItems),
+                const SizedBox(height: AppSizes.spaceBtwItems),
                 SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

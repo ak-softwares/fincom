@@ -1,4 +1,5 @@
 import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/enums.dart';
 import '../../../utils/helpers/order_helper.dart';
 import '../../layout_models/product_grid_layout.dart';
 import '../../styles/shadows.dart';
@@ -17,8 +18,8 @@ class OrderShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double orderTileRadius = Sizes.orderTileRadius;
-    final double orderTileHeight = Sizes.orderTileHeight;
+    final double orderTileRadius = AppSizes.orderTileRadius;
+    final double orderTileHeight = AppSizes.orderTileHeight;
 
     return GridLayout(
         mainAxisExtent: orderTileHeight,
@@ -34,13 +35,13 @@ class OrderShimmer extends StatelessWidget {
           child: Stack(
             children: [
               Column(
-                spacing: Sizes.xs,
+                spacing: AppSizes.xs,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ShimmerEffect(width: 60, height: 60),
                   Container(
                     height: 1,
-                    color: TColors.borderSecondary,
+                    color: AppColors.borderDark,
                   ),
                   SizedBox(
                     height: 30,
@@ -58,7 +59,7 @@ class OrderShimmer extends StatelessWidget {
                   ),
                 ],
               ),
-              Positioned(top: 0, right: 0, child: TOrderHelper.mapOrderStatus('Loading...' ?? '')),
+              Positioned(top: 0, right: 0, child: OrderHelper.mapOrderStatus(OrderStatus.unknown)),
             ],
           ),
         );

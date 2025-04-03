@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../../../common/widgets/loaders/loader.dart';
 import '../../../../data/repositories/firebase/orders/order_repository.dart';
 import '../../../../data/repositories/woocommerce_repositories/orders/woo_orders_repository.dart';
+import '../../../../utils/constants/enums.dart';
 import '../../../personalization/controllers/address_controller.dart';
 import '../../../personalization/controllers/customers_controller.dart';
 import '../../../settings/app_settings.dart';
@@ -64,7 +65,7 @@ class OrderController extends GetxController {
   //Fetch orders
   Future<void> fetchOrders() async {
     try {
-      final customerId = userController.customer.value.id.toString();
+      final customerId = userController.customer.value.customerId.toString();
       final customerEmail = userController.customer.value.email.toString();
 
       final List<OrderModel> ordersByCustomerId =
@@ -103,10 +104,10 @@ class OrderController extends GetxController {
   //Get user order by customer id
   Future<void> getOrdersByCustomerId() async {
     try {
-      var customerId = userController.customer.value.id;
+      var customerId = userController.customer.value.customerId;
       if(customerId == null){
         await userController.refreshCustomer();
-        customerId = userController.customer.value.id;
+        customerId = userController.customer.value.customerId;
       }
       final newOrders = await wooOrdersRepository.fetchOrdersByCustomerId(customerId: customerId.toString(), page: currentPage.toString());
       orders.addAll(newOrders);
@@ -151,14 +152,14 @@ class OrderController extends GetxController {
       //Add Details
       final appVersion = await AppSettings.getAppVersion();
       final order = OrderModel(
-        customerId: userController.customer.value.id,
+        customerId: userController.customer.value.customerId,
         paymentMethod: checkoutController.selectedPaymentMethod.value.id,
         paymentMethodTitle: checkoutController.selectedPaymentMethod.value.title,
         // paymentMethod: 'Paytm Payment Gateway', //Payment method ID. 'Paytm Payment Gateway'
         // paymentMethodTitle: 'razorpay', //Payment method title.  // 'UPI/QR/Card/NetBanking' 'Paytm Payment Gateway'
         transactionId: transactionId,
         setPaid: true,
-        status: "processing",
+        status: OrderStatus.processing,
         billing:   userController.customer.value.billing,
         shipping:   userController.customer.value.billing, //if shipping address is different then use shipping instead billing
         lineItems:  cartController.cartItems,

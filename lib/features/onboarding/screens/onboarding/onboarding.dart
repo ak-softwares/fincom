@@ -61,7 +61,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           // Skip button
           Positioned(
             top: TDeviceUtils.getAppBarHeight(),
-            right: Sizes.defaultSpace,
+            right: AppSizes.defaultSpace,
             child: TextButton(
               onPressed: skip,
               child: const Text('Skip'),
@@ -71,7 +71,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           // Dot navigation smoothPageIndicator
           Positioned(
             bottom: TDeviceUtils.getBottomNavigationBarHeight() + 25,
-            left: Sizes.defaultSpace,
+            left: AppSizes.defaultSpace,
             child: Row(
               children: List<Widget>.generate(
                 3, (index) {
@@ -93,7 +93,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           // Circular Next Button
           Positioned(
             bottom: TDeviceUtils.getBottomNavigationBarHeight(),
-            right: Sizes.defaultSpace,
+            right: AppSizes.defaultSpace,
             child: ElevatedButton(
               onPressed: () {
                 if(currentPage == 2){
@@ -110,7 +110,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                backgroundColor: TColors.buttonPrimary,
+                backgroundColor: AppColors.buttonPrimary,
                 side: BorderSide.none,
               ),
               child: Icon(LineAwesomeIcons.arrow_right_solid),

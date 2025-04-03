@@ -14,22 +14,22 @@ class PurchaseListShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double purchaseTileHeight = Sizes.purchaseTileHeight;
-    final double purchaseTileWidth = Sizes.purchaseTileWidth;
-    final double purchaseTileRadius = Sizes.purchaseTileRadius;
-    final double purchaseImageHeight = Sizes.purchaseImageHeight;
-    final double purchaseImageWidth = Sizes.purchaseImageWidth;
+    final double purchaseTileHeight = AppSizes.purchaseTileHeight;
+    final double purchaseTileWidth = AppSizes.purchaseTileWidth;
+    final double purchaseTileRadius = AppSizes.purchaseTileRadius;
+    final double purchaseImageHeight = AppSizes.purchaseImageHeight;
+    final double purchaseImageWidth = AppSizes.purchaseImageWidth;
 
     return Padding(
-      padding: const EdgeInsets.only(top: Sizes.sm),
+      padding: const EdgeInsets.only(top: AppSizes.sm),
       child: Column(
-        spacing: Sizes.sm,
+        spacing: AppSizes.sm,
         children: [
           Container(
-            padding: const EdgeInsets.all(Sizes.defaultSpace),
+            padding: const EdgeInsets.all(AppSizes.defaultSpace),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface, // Use surface for a neutral background
-              borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
+              borderRadius: BorderRadius.circular(AppSizes.purchaseItemTileRadius),
               border: Border.all(
                 width: 1,
                 color: Theme.of(context).colorScheme.outline, // `outline` works well for borders in flex_color_scheme
@@ -43,10 +43,10 @@ class PurchaseListShimmer extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(Sizes.defaultSpace),
+            padding: const EdgeInsets.all(AppSizes.defaultSpace),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface, // Use surface for a neutral background
-              borderRadius: BorderRadius.circular(Sizes.purchaseItemTileRadius),
+              borderRadius: BorderRadius.circular(AppSizes.purchaseItemTileRadius),
               border: Border.all(
                 width: 1,
                 color: Theme.of(context).colorScheme.outline, // `outline` works well for borders in flex_color_scheme

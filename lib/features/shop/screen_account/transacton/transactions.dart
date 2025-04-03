@@ -19,7 +19,7 @@ class Transactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double transactionTileHeight = Sizes.transactionTileHeight; // Updated constant
+    final double transactionTileHeight = AppSizes.transactionTileHeight; // Updated constant
 
     final ScrollController scrollController = ScrollController();
     final transactionController = Get.put(TransactionController()); // Updated controller
@@ -58,7 +58,7 @@ class Transactions extends StatelessWidget {
         child: const Icon(LineIcons.plus, size: 30, color: Colors.white),
       ),
       body: RefreshIndicator(
-        color: TColors.refreshIndicator,
+        color: AppColors.refreshIndicator,
         onRefresh: () async => transactionController.refreshTransactions(), // Updated method
         child: ListView(
           controller: scrollController,

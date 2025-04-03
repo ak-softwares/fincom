@@ -27,7 +27,7 @@ Widget build(BuildContext context) {
     body: !authenticationRepository.isUserLogin.value
       ? const CheckLoginScreen()
       : Obx(() => SingleChildScrollView(
-          padding: const EdgeInsets.all(Sizes.defaultSpace),
+          padding: const EdgeInsets.all(AppSizes.defaultSpace),
           child: Column(
             children: [
               const TSectionHeading(title: 'Billing Address'),

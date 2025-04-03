@@ -32,7 +32,7 @@ class UpdatePurchase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double purchaseProductTileHeight = Sizes.purchaseProductTileHeight;
+    const double purchaseProductTileHeight = AppSizes.purchaseProductTileHeight;
     final updatePurchaseController = Get.put(UpdatePurchaseController());
 
     updatePurchaseController.resetValue(purchase);
@@ -40,7 +40,7 @@ class UpdatePurchase extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: 'Edit purchase'),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.md),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
         child: ElevatedButton(
           onPressed: () => updatePurchaseController.updatePurchase(previousPurchase: purchase),
           child: Text('Update Purchase')
@@ -49,7 +49,7 @@ class UpdatePurchase extends StatelessWidget {
       body: SingleChildScrollView(
         padding: TSpacingStyle.defaultPagePadding,
         child: Column(
-          spacing: Sizes.spaceBtwSections,
+          spacing: AppSizes.spaceBtwSection,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date and Voucher number
@@ -70,8 +70,8 @@ class UpdatePurchase extends StatelessWidget {
                       child: Row(
                         children: [
                           Text('Date - '),
-                          Text(TFormatter.formatStringDate(updatePurchaseController.dateController.text),
-                            style: TextStyle(color: TColors.linkColor),
+                          Text(AppFormatter.formatStringDate(updatePurchaseController.dateController.text),
+                            style: TextStyle(color: AppColors.linkColor),
                           ),
                         ],
                       ),
@@ -83,7 +83,7 @@ class UpdatePurchase extends StatelessWidget {
 
             // Vendor
             Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,8 +105,8 @@ class UpdatePurchase extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                          Icon(Icons.add, color: AppColors.linkColor),
+                          Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                         ],
                       ),
                     ),
@@ -155,7 +155,7 @@ class UpdatePurchase extends StatelessWidget {
             // Products
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,8 +174,8 @@ class UpdatePurchase extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.add, color: TColors.linkColor),
-                          Text('Add', style:  TextStyle(color: TColors.linkColor),)
+                          Icon(Icons.add, color: AppColors.linkColor),
+                          Text('Add', style:  TextStyle(color: AppColors.linkColor),)
                         ],
                       ),
                     ),
@@ -222,7 +222,7 @@ class UpdatePurchase extends StatelessWidget {
 
             // Image of Invoice
             Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Upload Invoice Image'),
@@ -243,7 +243,7 @@ class UpdatePurchase extends StatelessWidget {
                         );
                       } else {
                         return Obx(() => Padding(
-                              padding: EdgeInsets.only(right: Sizes.sm),
+                              padding: EdgeInsets.only(right: AppSizes.sm),
                               child: Stack(
                                 children: [
                                   TRoundedImage(
@@ -280,7 +280,7 @@ class UpdatePurchase extends StatelessWidget {
                                                     child: !updatePurchaseController.isUploadingImage.value
                                                         ? Row(
                                                             mainAxisSize: MainAxisSize.min, // Ensures row takes only required space
-                                                            spacing: Sizes.xs,
+                                                            spacing: AppSizes.xs,
                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                             children: [
                                                               Text('Upload'),
@@ -301,7 +301,7 @@ class UpdatePurchase extends StatelessWidget {
                                                     child: !updatePurchaseController.isDeletingImage.value
                                                         ? Row(
                                                       mainAxisSize: MainAxisSize.min, // Ensures row takes only required space
-                                                      spacing: Sizes.xs,
+                                                      spacing: AppSizes.xs,
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text('Delete', style: TextStyle(color: Colors.white),),

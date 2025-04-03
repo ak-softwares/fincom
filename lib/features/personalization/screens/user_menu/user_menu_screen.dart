@@ -40,7 +40,7 @@ class UserMenuScreen extends StatelessWidget {
         body: !AuthenticationRepository.instance.isUserLogin.value
             ? const CheckLoginScreen()
             : RefreshIndicator(
-                color: TColors.refreshIndicator,
+                color: AppColors.refreshIndicator,
                 onRefresh: () async => userController.refreshCustomer(),
                 child: SingleChildScrollView(
                   padding: TSpacingStyle.defaultPageVertical,
@@ -48,11 +48,11 @@ class UserMenuScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //User profile
-                      Heading(title: 'Your profile', paddingLeft: Sizes.defaultSpace),
+                      Heading(title: 'Your profile', paddingLeft: AppSizes.defaultSpace),
                       CustomerProfileCard(userController: userController, showHeading: true),
 
                       //Menu
-                      Heading(title: 'Menu', paddingLeft: Sizes.defaultSpace),
+                      Heading(title: 'Menu', paddingLeft: AppSizes.defaultSpace),
                       const Menu(),
 
                       // Not a Member? register
@@ -62,7 +62,7 @@ class UserMenuScreen extends StatelessWidget {
                             Text('Not a member?'),
                             TextButton(
                                 onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
-                                child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: TColors.linkColor )))
+                                child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor )))
                           ]
                       ),
 
@@ -81,7 +81,7 @@ class UserMenuScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: Sizes.md),
+                      const SizedBox(height: AppSizes.md),
                     ],
                   ),
                 ),

@@ -20,7 +20,7 @@ class TAppBar3 extends StatelessWidget implements PreferredSizeWidget{
 
   @override
   Widget build(BuildContext context) {
-    const Color color = TColors.secondaryColor;
+    const Color color = AppColors.secondaryColor;
     const Color backgroundColor = Colors.transparent;
     return AppBar(
       centerTitle: false,

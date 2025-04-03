@@ -40,7 +40,7 @@ class OrdersGridLayout extends StatelessWidget {
         return GridLayout(
             itemCount: controller.isLoadingMore.value ? orders.length + 2 : orders.length,
             crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-            mainAxisExtent: Sizes.orderTileHeight,
+            mainAxisExtent: AppSizes.orderTileHeight,
             itemBuilder: (context, index) {
               if (index < orders.length) {
                 return SingleOrderTile(order: orders[index]);

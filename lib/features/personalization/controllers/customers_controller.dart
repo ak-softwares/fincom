@@ -118,7 +118,7 @@ class CustomersController extends GetxController {
       //First update Rx user and then check if user data is already stored. if not store new data.
       await fetchCustomerData();
 
-      if(customer.value.id != null) {
+      if(customer.value.customerId != null) {
         if (userCredentials != null) {
           // Map data
           final newUser = UserModel(
@@ -200,7 +200,7 @@ class CustomersController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {TFullScreenLoader.stopLoading(); return;}
 
-      await wooCustomersRepository.deleteCustomerById(customer.value.id.toString());
+      await wooCustomersRepository.deleteCustomerById(customer.value.customerId.toString());
 
       authenticationRepository.logout();
       //save to local storage

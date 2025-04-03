@@ -52,7 +52,7 @@ class FavouriteScreen extends StatelessWidget {
       animation: Images.pencilAnimation,
       showAction: true,
       actionText: 'Let\'s add some',
-      onActionPress: () => NavigationHelper.navigateToBottomNavigation(),
+      onActionPressed: () => NavigationHelper.navigateToBottomNavigation(),
     );
 
     return Obx(() => Scaffold(
@@ -60,7 +60,7 @@ class FavouriteScreen extends StatelessWidget {
           body: !authenticationRepository.isUserLogin.value
             ? const CheckLoginScreen(text: 'Please Login! before Add to ❤️ favorite!')
             : RefreshIndicator(
-              color: TColors.refreshIndicator,
+              color: AppColors.refreshIndicator,
               onRefresh: () async => favoriteController.refreshFavorites(),
               child: ListView(
                 controller: scrollController,

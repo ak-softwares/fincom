@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fincom/utils/constants/enums.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/constants/db_constants.dart';
@@ -11,7 +12,7 @@ import 'coupon_model.dart';
 
 class OrderModel {
   final int? id;
-  final String? status;
+  final OrderStatus? status;
   final String? currency;
   final bool? pricesIncludeTax;
   final String? dateCreated;
@@ -78,8 +79,8 @@ class OrderModel {
   });
 
   DateTime get parsedCreatedDate => DateTime.parse(dateCreated!);
-  String get formattedOrderDate => TFormatter.formatStringDate(dateCreated!);
-  String get formattedOrderCompleted => TFormatter.formatStringDate(dateCompleted!);
+  String get formattedOrderDate => AppFormatter.formatStringDate(dateCreated!);
+  String get formattedOrderCompleted => AppFormatter.formatStringDate(dateCompleted!);
 
   int get getDaysDelayed {
     final now = DateTime.now();
@@ -98,7 +99,7 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       id: json[OrderFieldName.id],
-      status: json[OrderFieldName.status] ?? '',
+      status: OrderStatusExtension.fromString(json[OrderFieldName.status]),
       currency: json[OrderFieldName.currency] ?? '',
       pricesIncludeTax: json[OrderFieldName.pricesIncludeTax] ?? false,
       dateCreated: json[OrderFieldName.dateCreated] ?? '',
@@ -131,7 +132,7 @@ class OrderModel {
   Map<String, dynamic> toMap() {
     return {
       OrderFieldName.id: id,
-      OrderFieldName.status: status,
+      OrderFieldName.status: status?.name ?? '',
       OrderFieldName.currency: currency,
       OrderFieldName.pricesIncludeTax: pricesIncludeTax,
       OrderFieldName.dateCreated: dateCreated,
@@ -165,7 +166,7 @@ class OrderModel {
   Map<String, dynamic> toJson() {
     return {
       OrderFieldName.id: id,
-      OrderFieldName.status: status,
+      OrderFieldName.status: status?.name ?? '',
       OrderFieldName.currency: currency,
       OrderFieldName.pricesIncludeTax: pricesIncludeTax,
       OrderFieldName.dateCreated: dateCreated,

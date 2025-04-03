@@ -129,7 +129,7 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                           ),
                           child: TFavouriteIcon(product: widget.product),
                         ),
-                        const SizedBox(height: Sizes.sm),
+                        const SizedBox(height: AppSizes.sm),
                         Container(
                             height: 40,
                             width: 40,
@@ -142,7 +142,7 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                                     url: widget.product.permalink ?? '',
                                     contentType: 'Product',
                                     itemName: widget.product.name ?? '',
-                                    itemId: widget.product.id.toString()
+                                    itemId: widget.product.productId.toString()
                                 ),
                                 icon: const Icon(Icons.share)
                             )
@@ -183,15 +183,15 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  separatorBuilder: (_,__) => const SizedBox(width: Sizes.spaceBtwItems),
+                  separatorBuilder: (_,__) => const SizedBox(width: AppSizes.spaceBtwItems),
                   itemBuilder: (_, index) => Obx(() {
                     final imageSelected = _selectedProductImage.value == images[index];
                     return TRoundedImage(
                       width: galleryImageHeight,
-                      border: Border.all(color: imageSelected ? TColors.primaryColor : Colors.transparent),
-                      borderRadius: Sizes.sm,
+                      border: Border.all(color: imageSelected ? AppColors.primaryColor : Colors.transparent),
+                      borderRadius: AppSizes.sm,
                       backgroundColor: Colors.white,
-                      padding: Sizes.sm / 2,
+                      padding: AppSizes.sm / 2,
                       isNetworkImage: true,
                       onTap: () => _carouselController.animateToPage(index),
                       image: images[index],

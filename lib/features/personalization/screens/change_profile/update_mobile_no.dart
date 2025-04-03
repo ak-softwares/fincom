@@ -38,8 +38,8 @@ class UpdateMobileNo extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               decoration: const BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: TColors.borderSecondary),
-                  bottom: BorderSide(color: TColors.borderSecondary),
+                  top: BorderSide(color: AppColors.borderDark),
+                  bottom: BorderSide(color: AppColors.borderDark),
                 ),
               ),
               child: Column(
@@ -50,7 +50,7 @@ class UpdateMobileNo extends StatelessWidget {
                   phone == ''
                       ? Text('Please update your phone number.', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold))
                       : Text('Please provide a valid phone number', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: Sizes.sm),
+                  const SizedBox(height: AppSizes.sm),
                   Row(
                     children: [
                       Expanded(
@@ -70,7 +70,7 @@ class UpdateMobileNo extends StatelessWidget {
                                 child: Obx(() => TextButton(
                                   onPressed: () => changeProfileController.wooUpdatePhoneNo(),
                                   child: changeProfileController.isPhoneUpdating.value
-                                      ? const SizedBox(width: 25, height: 25, child: CircularProgressIndicator(color: TColors.linkColor))
+                                      ? const SizedBox(width: 25, height: 25, child: CircularProgressIndicator(color: AppColors.linkColor))
                                       : const Text('Update', style: TextStyle(color: Colors.blueAccent)),
                                 )),
                               ),

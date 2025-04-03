@@ -22,11 +22,11 @@ class RepeatOrderWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               cartController.isLoading.value
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: TColors.linkColor))
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: AppColors.linkColor))
                 : Row(
                   children: [
                     Text('Repeat Order', style: Theme.of(context).textTheme.bodyMedium!,),
-                    const SizedBox(width: Sizes.sm),
+                    const SizedBox(width: AppSizes.sm),
                     const Icon(Icons.refresh, size: 18, color: Colors.green),
                   ],
               )

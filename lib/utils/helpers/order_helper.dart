@@ -2,48 +2,55 @@ import 'package:flutter/material.dart';
 
 import '../../common/widgets/custom_shape/containers/rounded_container.dart';
 import '../constants/db_constants.dart';
+import '../constants/enums.dart';
 import '../constants/sizes.dart';
 
-class TOrderHelper {
+class OrderHelper {
 
-  static bool checkOrderStatusForInTransit(String orderStatus) {
-    return orderStatus == OrderStatusName.processing ||
-        orderStatus == OrderStatusName.readyToShip ||
-        orderStatus == OrderStatusName.inTransit ||
-        orderStatus == OrderStatusName.pendingPickup ||
-        orderStatus == OrderStatusName.returnInTransit ||
-        orderStatus == OrderStatusName.returnPending ||
-        orderStatus == OrderStatusName.returnInTransit;
+  static bool checkOrderStatusForInTransit(OrderStatus orderStatus) {
+    return orderStatus == OrderStatus.processing ||
+        orderStatus == OrderStatus.readyToShip ||
+        orderStatus == OrderStatus.inTransit ||
+        orderStatus == OrderStatus.pendingPickup ||
+        orderStatus == OrderStatus.returnInTransit ||
+        orderStatus == OrderStatus.returnPending ||
+        orderStatus == OrderStatus.returnInTransit;
   }
 
-  static bool checkOrderStatusForReturn(String orderStatus) {
-    return orderStatus == OrderStatusName.processing;
+  static bool checkOrderStatusForReturn(OrderStatus orderStatus) {
+    return orderStatus == OrderStatus.processing;
+  }
+
+  static bool checkOrderStatusForPayment(OrderStatus orderStatus) {
+    return orderStatus == OrderStatus.pendingPayment;
   }
 
   static bool giveOrderStatus(String orderStatus) {
     return orderStatus == OrderStatusName.processing;
   }
 
-  static Widget mapOrderStatus(String orderStatus) {
+  static Widget mapOrderStatus(OrderStatus orderStatus) {
     switch (orderStatus) {
-      case OrderStatusName.cancelled:
+      case OrderStatus.cancelled:
         return statusWidget(status: OrderStatusPritiName.cancelled, color: Colors.red);
-      case OrderStatusName.processing:
+      case OrderStatus.processing:
         return statusWidget(status: OrderStatusPritiName.processing, color: Colors.green);
-      case OrderStatusName.readyToShip:
+      case OrderStatus.readyToShip:
         return statusWidget(status: OrderStatusPritiName.readyToShip, color: Colors.orange);
-      case OrderStatusName.pendingPickup:
+      case OrderStatus.pendingPickup:
         return statusWidget(status: OrderStatusPritiName.pendingPickup, color: Colors.orange);
-      case OrderStatusName.inTransit:
+      case OrderStatus.pendingPayment:
+        return statusWidget(status: OrderStatusPritiName.pendingPayment, color: Colors.redAccent);
+      case OrderStatus.inTransit:
         return statusWidget(status: OrderStatusPritiName.inTransit, color: Colors.orange);
-      case OrderStatusName.completed:
+      case OrderStatus.completed:
         return statusWidget(status: OrderStatusPritiName.completed, color: Colors.blue);
-      case OrderStatusName.returnInTransit:
+      case OrderStatus.returnInTransit:
         return statusWidget(status: OrderStatusPritiName.returnInTransit, color: Colors.grey);
-      case OrderStatusName.returnPending:
+      case OrderStatus.returnPending:
         return statusWidget(status: OrderStatusPritiName.returnPending, color: Colors.grey);
       default:
-        return statusWidget(status: orderStatus, color: Colors.grey);
+        return statusWidget(status: OrderStatus.unknown.prettyName, color: Colors.grey);
     }
   }
 

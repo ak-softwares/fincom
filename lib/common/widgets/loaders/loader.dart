@@ -37,7 +37,7 @@ class TLoaders  extends GetxController {
                   onTap != null
                       ? InkWell(
                     onTap: onTap,
-                    child: Text(urlTitle, style: const TextStyle(color: TColors.linkColor, fontSize: 14, fontWeight: FontWeight.w500),),
+                    child: Text(urlTitle, style: const TextStyle(color: AppColors.linkColor, fontSize: 14, fontWeight: FontWeight.w500),),
                   )
                       : SizedBox.shrink()
                 ],
@@ -59,7 +59,7 @@ class TLoaders  extends GetxController {
         content: Container(
           padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Sizes.md),
+            borderRadius: BorderRadius.circular(AppSizes.md),
             color: Colors.green.shade600,
           ),
           child: Column(
@@ -86,7 +86,7 @@ class TLoaders  extends GetxController {
         content: Container(
           padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Sizes.md),
+            borderRadius: BorderRadius.circular(AppSizes.md),
             color: Colors.orange.shade600,
           ),
           child: Column(
@@ -113,7 +113,7 @@ class TLoaders  extends GetxController {
         content: Container(
           padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Sizes.md),
+            borderRadius: BorderRadius.circular(AppSizes.md),
             color: Colors.red.shade600,
           ),
           child: Column(

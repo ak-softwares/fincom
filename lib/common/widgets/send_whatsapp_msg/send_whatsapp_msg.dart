@@ -12,7 +12,7 @@ class SendWhatsappScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const FloatingActionButton(
       shape: CircleBorder(),
-      backgroundColor: TColors.whatsAppColor,
+      backgroundColor: AppColors.whatsAppColor,
       onPressed: SendMSG.sendWhatsAppMessage,
       tooltip: 'Send WhatsApp Message',
       child: Icon(LineIcons.whatSApp, size: 30, color: Colors.white,),

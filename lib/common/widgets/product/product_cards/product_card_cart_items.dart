@@ -13,44 +13,40 @@ import '../../custom_shape/containers/rounded_container.dart';
 import '../../custom_shape/image/circular_image.dart';
 import '../quantity_add_buttons/quantity_add_buttons.dart';
 
-class CartTile extends StatelessWidget {
-  const CartTile({super.key, required this.cartItem, this.showBottomBar = false});
+class ProductCardForCart extends StatelessWidget {
+  const ProductCardForCart({super.key, required this.cartItem, this.showBottomBar = false});
 
   final CartModel cartItem;
   final bool showBottomBar;
   @override
   Widget build(BuildContext context) {
 
-    const double cartTileHeight = Sizes.cartTileHeight;
-    const double cartTileWidth = Sizes.cartTileWidth;
-    const double cartTileRadius = Sizes.cartTileRadius;
-    const double cartImageHeight = Sizes.cartImageHeight;
-    const double cartImageWidth = Sizes.cartImageWidth;
-
+    const double imageHeight = 80;
+    const double cardRadius = AppSizes.productImageRadius;
     final cartController = CartController.instance;
 
     return InkWell(
-      onTap: () => Get.to(() => ProductDetailScreen(productId: cartItem.productId.toString(), pageSource: 'ProductCardForCart',)),
+      onTap: () => Get.to(() => ProductScreen(productId: cartItem.productId.toString(), pageSource: 'ProductCardForCart',)),
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.only(left: Sizes.xs),
+            padding: EdgeInsets.only(left: AppSizes.defaultSpace),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Sizes.productImageRadius),
               color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppSizes.productImageRadius),
             ),
             child: Column(
               children: [
                 Row(
                   children: [
-                    // Main Image
+                    //Main Image
                     TRoundedImage(
                         image: cartItem.image ?? '',
-                        height: cartImageHeight,
-                        width: cartImageWidth,
-                        borderRadius: cartTileRadius,
+                        height: imageHeight,
+                        width: imageHeight,
+                        borderRadius: cardRadius,
                         isNetworkImage: true,
-                        padding: Sizes.sm
+                        padding: 0
                     ),
 
                     //Title, Rating and price
@@ -58,14 +54,14 @@ class CartTile extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(Sizes.sm,),
+                            padding: const EdgeInsets.all(AppSizes.sm,),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 //Title
                                 ProductTitle(title: cartItem.name ?? ''),
-                                const SizedBox(height: Sizes.spaceBtwItems),
+                                const SizedBox(height: AppSizes.spaceBtwItems),
 
                                 //Star rating
                                 // ProductStarRating(averageRating: product.averageRating ?? 0.0, ratingCount: product.ratingCount ?? 0),
@@ -80,7 +76,7 @@ class CartTile extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyMedium
                                     ),
                                     // Text('Subtotal ', style: Theme.of(context).textTheme.labelLarge),
-                                    Text(AppSettings.appCurrencySymbol + cartItem.total!, style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600)),
+                                    Text(AppSettings.appCurrencySymbol + cartItem.subtotal!, style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600)),
                                     if (showBottomBar)
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +84,7 @@ class CartTile extends StatelessWidget {
                                           QuantityAddButtons(
                                             quantity: cartItem.quantity, // Accessing value of RxInt
                                             add: () => cartController.addOneToCart(cartItem), // Incrementing value
-                                            remove: () => cartController.removeOneToCart(cartItem),
+                                            remove: () => cartController.removeOneToCart(cartItem: cartItem, context: context),
                                             size: 27,
                                           ),
                                         ],
@@ -108,22 +104,24 @@ class CartTile extends StatelessWidget {
           ),
           showBottomBar
               ? Positioned(
-                  top: 3,
-                  left: 3,
-                  child: TRoundedContainer(
-                    width: 25,
-                    height: 25,
-                    radius: 25,
-                    padding: const EdgeInsets.all(0),
-                    backgroundColor: Colors.grey.withOpacity(0.2),
-                    child: IconButton(
-                      color: Colors.grey,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => cartController.removeFromCartDialog(cartItem),
-                      icon: const Icon(Icons.close, size: 15),
-                    ),
-                  ),
-                )
+            top: 3,
+            left: 3,
+            child: TRoundedContainer(
+              width: 25,
+              height: 25,
+              radius: 25,
+              padding: const EdgeInsets.all(0),
+              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.withOpacity(0.7)  // Dark grey for night mode
+                  : Colors.grey.shade300, // Light grey for day mode,
+              child: IconButton(
+                color: Colors.grey.shade900,
+                padding: EdgeInsets.zero,
+                onPressed: () => cartController.removeFromCartDialog(cartItem: cartItem, context: context),
+                icon: const Icon(Icons.close, size: 15),
+              ),
+            ),
+          )
               : const SizedBox.shrink()
         ],
       ),

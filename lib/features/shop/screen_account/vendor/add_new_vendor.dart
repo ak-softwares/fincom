@@ -24,20 +24,20 @@ class AddVendorPage extends StatelessWidget {
     return Scaffold(
       appBar: AppAppBar2(titleText: vendor != null ? 'Update Vendor' : 'Add Vendor'),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(Sizes.defaultSpace),
+        padding: const EdgeInsets.all(AppSizes.defaultSpace),
         child: ElevatedButton(
           onPressed: () => vendor != null ? controller.saveUpdatedVendor(previousVendor: vendor!) : controller.saveVendor(),
           child: Text(vendor != null ? 'Update Vendor' : 'Add Vendor', style: TextStyle(fontSize: 16)),
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: Sizes.sm),
+        padding: EdgeInsets.only(top: AppSizes.sm),
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Form(
             key: controller.vendorFormKey,
             child: Column(
-              spacing: Sizes.spaceBtwItems,
+              spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

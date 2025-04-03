@@ -87,12 +87,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
             tabMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             haptic: true, // haptic feedback
             tabBorderRadius: 5,
-            tabActiveBorder: Border.all(color: TColors.primaryColor, width: 1), // tab button border
+            tabActiveBorder: Border.all(color: AppColors.primaryColor, width: 1), // tab button border
             curve: Curves.easeOutExpo, // tab animation curves
             duration: const Duration(milliseconds: 100), // tab animation duration
             gap: 8, // the tab button gap between icon and text
             // color: Colors.grey[800], // unselected icon color
-            activeColor: TColors.primaryColor, // selected icon and text color
+            activeColor: AppColors.primaryColor, // selected icon and text color
             iconSize: 25, // tab button icon size
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // navigation bar padding
             tabs: [
