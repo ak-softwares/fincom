@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/shop/screens/products/scrolling_products.dart';
+import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../layout_models/product_grid_layout.dart';
 import '../../styles/shadows.dart';
 import 'shimmer_effect.dart';
+
 class CustomersVoucherShimmer extends StatelessWidget {
-  const CustomersVoucherShimmer({
-    super.key,
-    this.itemCount = 1,
-    this.orientation = OrientationType.vertical
-  });
+  const CustomersVoucherShimmer(
+      {super.key, this.itemCount = 1});
 
   final int itemCount;
-  final OrientationType orientation;
 
   @override
   Widget build(BuildContext context) {
     const double customerVoucherTileHeight = AppSizes.customerVoucherTileHeight;
     const double customerVoucherTileWidth = AppSizes.customerVoucherTileWidth;
     const double customerVoucherTileRadius = AppSizes.customerVoucherTileRadius;
-    const double customerVoucherImageHeight = AppSizes.customerVoucherImageHeight;
+    const double customerVoucherImageHeight =
+        AppSizes.customerVoucherImageHeight;
     const double customerVoucherImageWidth = AppSizes.customerVoucherImageWidth;
 
     return GridLayout(
         itemCount: itemCount,
-        crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
+        crossAxisCount: 1,
         mainAxisExtent: customerVoucherTileHeight,
         itemBuilder: (context, index) {
           return Container(
@@ -45,7 +43,11 @@ class CustomersVoucherShimmer extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const ShimmerEffect(height: customerVoucherImageHeight, width: customerVoucherImageWidth, radius: customerVoucherImageHeight,),
+                      const ShimmerEffect(
+                        height: customerVoucherImageHeight,
+                        width: customerVoucherImageWidth,
+                        radius: customerVoucherImageHeight,
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: 15),
                         child: Column(
@@ -54,18 +56,22 @@ class CustomersVoucherShimmer extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const ShimmerEffect(width: 150, height: 14),
-                            const ShimmerEffect(width: 75, height: 12), // Paying status
+                            const ShimmerEffect(
+                                width: 75, height: 12), // Paying status
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const ShimmerEffect(height: 20, width: 20, radius: 50,),
+                  const ShimmerEffect(
+                    height: 20,
+                    width: 20,
+                    radius: 50,
+                  ),
                 ],
               ),
             ),
           );
-      }
-    );
+        });
   }
 }

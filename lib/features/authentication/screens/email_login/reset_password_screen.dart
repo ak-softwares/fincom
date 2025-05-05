@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
@@ -19,11 +18,10 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('reset_password_screen');
 
     int seconds  = 60;
     return Scaffold(
-      appBar: const AppAppBar2(titleText: "Reset Password Link"),
+      appBar: const AppAppBar(title: "Reset Password Link"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.defaultSpace),
@@ -37,19 +35,19 @@ class ResetPasswordScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwSection),
               Text(email, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSizes.spaceBtwItems),
-              Text(TTexts.confirmEmail, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+              Text(AppTexts.confirmEmail, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSizes.spaceBtwItems),
-              Text(TTexts.confirmEmailSubtitle, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
+              Text(AppTexts.confirmEmailSubtitle, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
               const SizedBox(height: AppSizes.spaceBtwItems),
               //Buttons
               SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                       onPressed: () => Get.to(() => const EmailLoginScreen()),
-                      child: const Text(TTexts.tContinue)
+                      child: const Text(AppTexts.tContinue)
                   )
               ),
-              const SizedBox(height: AppSizes.spaceBtwInputFields),
+              const SizedBox(height: AppSizes.inputFieldSpace),
               Countdown(
                 seconds: seconds,
                 interval: const Duration(milliseconds: 1000),
@@ -65,7 +63,7 @@ class ResetPasswordScreen extends StatelessWidget {
                               currentRemainingTime = seconds.toDouble();
                               ForgetPasswordController.instance.sendPasswordResetEmail(email);
                             },
-                            child: Text(TTexts.resendEmail,
+                            child: Text(AppTexts.resendEmail,
                                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.linkColor))
                         ),
                       ],

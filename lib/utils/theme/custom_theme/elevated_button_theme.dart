@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
-class TElevatedButtonTheme {
-  TElevatedButtonTheme._();
+import '../../constants/sizes.dart';
+class AppElevatedButtonTheme {
+  AppElevatedButtonTheme._();
   static final lightElevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      elevation: 0,
-      foregroundColor: AppColors.buttonText,
-      backgroundColor: AppColors.buttonBackground,
-      disabledForegroundColor: Colors.grey,
-      disabledBackgroundColor: Colors.grey,
-      side: const BorderSide(color: AppColors.buttonBorder),
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      textStyle: const TextStyle(color: AppColors.buttonText, fontSize: 16, fontWeight: FontWeight.w400),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-    )
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        foregroundColor: AppColors.elevatedButtonTextColor,
+        backgroundColor: AppColors.buttonBackgroundColor,
+        disabledForegroundColor: Colors.grey,
+        disabledBackgroundColor: Colors.grey,
+        padding: EdgeInsets.symmetric(vertical: AppSizes.buttonPadding),
+        textStyle: TextStyle(fontSize: AppSizes.buttonTextSize, fontWeight: AppSizes.buttonTextWeight),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.buttonRadius)),
+      )
   );
   static final darkElevatedButtonTheme = ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blue,
+        foregroundColor: AppColors.elevatedButtonTextColor,
+        backgroundColor: AppColors.buttonBackgroundColor,
         disabledForegroundColor: Colors.grey,
         disabledBackgroundColor: Colors.grey,
-        side: const BorderSide(color: Colors.blue),
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        textStyle: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: EdgeInsets.symmetric(vertical: AppSizes.buttonPadding),
+        textStyle: TextStyle(fontSize: AppSizes.buttonTextSize, fontWeight: AppSizes.buttonTextWeight),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.buttonRadius)),
       )
   );
 }

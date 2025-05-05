@@ -1,7 +1,7 @@
 
 import 'dart:math';
 
-class TValidator {
+class Validator {
 
   static bool isEmail(String value) {
     // Regular expression for validating an email address
@@ -11,6 +11,38 @@ class TValidator {
         multiLine: false
     );
     return regex.hasMatch(value);
+  }
+
+  static String formatPhoneNumberForWhatsAppOTP({required String countryCode,required String phoneNumber}) {
+    // Remove all non-digit characters from both inputs
+    final cleanedCountryCode = countryCode.replaceAll(RegExp(r'[^0-9]'), '');
+    final cleanedPhoneNumber = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Validate inputs
+    if (cleanedCountryCode.isEmpty) {
+      throw FormatException('Country code is required');
+    }
+
+    if (cleanedPhoneNumber.isEmpty) {
+      throw FormatException('Phone number is required');
+    }
+
+    // Check if phone number starts with 0 (common in some countries)
+    String finalPhoneNumber = cleanedPhoneNumber;
+    if (finalPhoneNumber.startsWith('0')) {
+      finalPhoneNumber = finalPhoneNumber.substring(1);
+    }
+
+    // Combine country code and phone number
+    final formattedNumber = cleanedCountryCode + finalPhoneNumber;
+
+    // Basic validation for minimum length
+    // WhatsApp requires numbers in E.164 format (min length varies by country)
+    if (formattedNumber.length < 8 || formattedNumber.length > 15) {
+      throw FormatException('Invalid phone number length');
+    }
+
+    return formattedNumber;
   }
 
   static String? getFormattedTenDigitNumber(String phone) {

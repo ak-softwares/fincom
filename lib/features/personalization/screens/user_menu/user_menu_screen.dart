@@ -1,47 +1,38 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fincom/common/widgets/custom_shape/image/circular_image.dart';
 import 'package:fincom/features/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/styles/spacing_style.dart';
 import '../../../../common/text/section_heading.dart';
-import '../../../../common/widgets/shimmers/shimmer_effect.dart';
 import '../../../../common/widgets/shimmers/user_shimmer.dart';
-import '../../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../authentication/screens/check_login_screen/check_login_screen.dart';
 import '../../../authentication/screens/create_account/signup.dart';
-import '../../controllers/customers_controller.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../user_profile/user_profile.dart';
-import 'widgets/contact_widget.dart';
-import 'widgets/follow_us.dart';
 import 'widgets/menu.dart';
-import 'widgets/policy_widget.dart';
-import 'widgets/favourite_with_cart.dart';
 
 class UserMenuScreen extends StatelessWidget {
   const UserMenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('user_menu_screen');
 
-    final userController = Get.put(CustomersController());
-    userController.refreshCustomer();
+    final userController = Get.put(AuthenticationController());
+    userController.refreshAdmin();
 
     return  Obx(() => Scaffold(
-        appBar: const AppAppBar2(titleText: 'Profile Setting', seeLogoutButton: true,),
-        body: !AuthenticationRepository.instance.isUserLogin.value
+        appBar: const AppAppBar(title: 'Profile Setting', seeLogoutButton: true, seeSettingButton: true,),
+        body: !userController.isAdminLogin.value
             ? const CheckLoginScreen()
             : RefreshIndicator(
                 color: AppColors.refreshIndicator,
-                onRefresh: () async => userController.refreshCustomer(),
+                onRefresh: () async => userController.refreshAdmin(),
                 child: SingleChildScrollView(
                   padding: TSpacingStyle.defaultPageVertical,
                   child: Column(
@@ -62,7 +53,7 @@ class UserMenuScreen extends StatelessWidget {
                             Text('Not a member?'),
                             TextButton(
                                 onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
-                                child: Text(TTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor )))
+                                child: Text(AppTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor )))
                           ]
                       ),
 
@@ -77,7 +68,7 @@ class UserMenuScreen extends StatelessWidget {
                             //     padding: 0,
                             //     image: AppSettings.lightAppLogo
                             // ),
-                            Obx(() => Text('v${userController.appVersion.value}', style: TextStyle(fontSize: 12),))
+                            Text('v${AppSettings.appVersion}', style: TextStyle(fontSize: 12),)
                           ],
                         ),
                       ),
@@ -98,7 +89,7 @@ class CustomerProfileCard extends StatelessWidget {
   });
 
   final bool showHeading;
-  final CustomersController userController;
+  final AuthenticationController userController;
 
   @override
   Widget build(BuildContext context) {
@@ -110,16 +101,16 @@ class CustomerProfileCard extends StatelessWidget {
           } else {
              return ListTile(
                onTap: () => Get.to(() => const UserProfileScreen()),
-                leading: TRoundedImage(
+                leading: RoundedImage(
                   padding: 0,
                   height: 40,
                   width: 40,
                   borderRadius: 100,
-                  isNetworkImage: userController.user.value.avatarUrl != null ? true : false,
-                  image: userController.user.value.avatarUrl ?? Images.tProfileImage
+                  isNetworkImage: userController.admin.value.avatarUrl != null ? true : false,
+                  image: userController.admin.value.avatarUrl ?? Images.tProfileImage
                 ),
-                title: Text((userController.user.value.name?.isNotEmpty ?? false) ? userController.user.value.name! : "User",),
-                subtitle: Text(userController.user.value.email?.isNotEmpty ?? false ? userController.user.value.email! : 'Email',),
+                title: Text((userController.admin.value.name?.isNotEmpty ?? false) ? userController.admin.value.name! : "User",),
+                subtitle: Text(userController.admin.value.email?.isNotEmpty ?? false ? userController.admin.value.email! : 'Email',),
                 trailing: Icon(Icons.arrow_forward_ios, size: 20,),
              );
           }

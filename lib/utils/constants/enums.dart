@@ -1,7 +1,17 @@
 import 'db_constants.dart';
 
 enum TextSizes { small, medium, large }
+
+enum UserType { customer, vendor, admin, }
+enum OrderType { purchase, sale, }
+
+enum OrientationType {horizontal, vertical}
+
+// Enum to specify search type
+enum SearchType { products, customers, orders, vendor, paymentMethod}
+
 enum TransactionType { payment, refund, transfer, purchase}
+
 extension TransactionTypeExtension on TransactionType {
 
   String get name {
@@ -56,7 +66,7 @@ extension EntityTypeExtension on EntityType {
       case EntityType.payment:
         return PaymentMethodFieldName.paymentId;
       case EntityType.customer:
-        return CustomerFieldName.customerId;
+        return UserFieldConstants.userId;
       case EntityType.expense:
         // TODO: Handle this case.
         throw UnimplementedError();

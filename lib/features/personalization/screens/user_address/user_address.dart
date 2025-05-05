@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/text/section_heading.dart';
-import '../../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../authentication/screens/check_login_screen/check_login_screen.dart';
-import '../../controllers/customers_controller.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/address_model.dart';
 import 'update_user_address.dart';
 import 'address_widgets/single_address.dart';
@@ -17,14 +15,12 @@ class UserAddressScreen extends StatelessWidget {
 
 @override
 Widget build(BuildContext context) {
-  FBAnalytics.logPageView('user_address_screen');
 
-  final userController = Get.put(CustomersController());
-  final authenticationRepository = Get.put(AuthenticationRepository());
+  final userController = Get.put(AuthenticationController());
 
   return Scaffold(
-    appBar: const AppAppBar2(titleText: "Address", showBackArrow: true, showCartIcon: true),
-    body: !authenticationRepository.isUserLogin.value
+    appBar: const AppAppBar(title: "Address", showBackArrow: true),
+    body: !userController.isAdminLogin.value
       ? const CheckLoginScreen()
       : Obx(() => SingleChildScrollView(
           padding: const EdgeInsets.all(AppSizes.defaultSpace),
@@ -32,10 +28,10 @@ Widget build(BuildContext context) {
             children: [
               const TSectionHeading(title: 'Billing Address'),
               TSingleAddress(
-                  address: userController.customer.value.billing ?? AddressModel.empty(),
+                  address: userController.admin.value.billing ?? AddressModel.empty(),
                   onTap: () => Get.to(() => UpdateAddressScreen(
                       title: 'Update Billing Address',
-                      address: userController.customer.value.billing ?? AddressModel.empty()
+                      address: userController.admin.value.billing ?? AddressModel.empty()
                     )),
                 // onTap: () => controller.selectAddress(addresses[index])
               ),

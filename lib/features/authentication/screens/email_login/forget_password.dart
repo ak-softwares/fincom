@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/styles/spacing_style.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/validators/validation.dart';
@@ -16,14 +15,13 @@ class ForgetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('forget_password_screen');
 
     final controller = Get.put(ForgetPasswordController());
     if (email?.isNotEmpty == true) {
       controller.email.text = email!;
     }
     return Scaffold(
-      appBar: const AppAppBar2(titleText: "Forget Password", showBackArrow: true),
+      appBar: const AppAppBar(title: "Forget Password", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -49,10 +47,10 @@ class ForgetPasswordScreen extends StatelessWidget {
                         //Email
                         TextFormField(
                             controller: controller.email,
-                            validator: (value) => TValidator.validateEmail(value),
+                            validator: (value) => Validator.validateEmail(value),
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Iconsax.direct_right),
-                                labelText: TTexts.email
+                                labelText: AppTexts.email
                             )
                         ),
                         // Forget password button

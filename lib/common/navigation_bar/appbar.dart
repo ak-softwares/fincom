@@ -1,71 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
+import '../../features/accounts/screen/search/search.dart';
+import '../../features/authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../features/settings/app_settings.dart';
-import '../../features/shop/screens/search/search.dart';
-import '../../utils/constants/colors.dart';
-import '../../utils/constants/image_strings.dart';
+import '../../features/settings/screen/setting_screen.dart';
+import '../../services/share/share.dart';
+import '../../utils/constants/enums.dart';
+import '../../utils/constants/icons.dart';
+import '../../utils/constants/sizes.dart';
 import '../../utils/device/device_utility.dart';
-import '../widgets/product/cart/cart_counter_icon.dart';
+import '../../utils/helpers/navigation_helper.dart';
 
-class TAppBar extends StatelessWidget implements PreferredSizeWidget{
-  const TAppBar({super.key});
+class AppAppBar extends StatelessWidget implements PreferredSizeWidget{
+  const AppAppBar({
+    super.key,
+    this.title = '',
+    this.isShowLogo = false,
+    this.showBackArrow = false,
+    this.showSearchIcon = false,
+    this.seeLogoutButton = false,
+    this.seeSettingButton = false,
+    this.sharePageLink = "",
+    this.searchType,
+    this.widgetInActions, // If null, search icon won't be shown
+    this.bottom, // If null, search icon won't be shown
+    this.toolbarHeight, // If null, search icon won't be shown
+  });
 
-  @override
-  Widget build(BuildContext context) {
-
-    return AppBar(
-      centerTitle: true,
-      title: Text('Accounts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-      // title: const Image(image: AssetImage(AppSettings.lightAppLogo), height: 25),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            showSearch(
-                context: context,
-                delegate: TSearchDelegate()
-            );
-          },
-        ),
-      ],
-      // leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-    );
-  }
-
-  @override
-  //implement preferredSize
-  Size get preferredSize => Size.fromHeight(TDeviceUtils.getAppBarHeight());
-}
-
-class TAppBar1 extends StatelessWidget implements PreferredSizeWidget{
-  const TAppBar1({super.key});
+  final String title;
+  final bool showBackArrow;
+  final bool isShowLogo;
+  final bool showSearchIcon;
+  final bool seeLogoutButton;
+  final bool seeSettingButton;
+  final String sharePageLink;
+  final SearchType? searchType; // Nullable search type
+  final Widget? widgetInActions; // Nullable search type
+  final PreferredSizeWidget? bottom; // Nullable search type
+  final double? toolbarHeight; // Nullable search type
 
   @override
   Widget build(BuildContext context) {
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
-      centerTitle: false,
-      // backgroundColor: TColors.primaryColor,
-
-      title: const Image(image: AssetImage(AppSettings.darkAppLogo), height: 40),
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      ),
+      title: isShowLogo
+          ? Image(image: AssetImage(isDark ? AppSettings.darkAppLogo : AppSettings.lightAppLogo), height: 34)
+          : Text(title),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.search),
-          color: AppColors.secondaryColor,
-          onPressed: () {
-            showSearch(
-                context: context,
-                delegate: TSearchDelegate()
-            );
-          },
-        ),
-        const TCartCounterIcon(iconColor: AppColors.secondaryColor),
+        searchType != null ? IconButton( icon: Icon(AppIcons.search), onPressed: () => showSearch(context: context, delegate: SearchVoucher(searchType: searchType ?? SearchType.products))) : const SizedBox.shrink(),
+        sharePageLink.isNotEmpty
+            ? IconButton(
+                icon: Icon(AppIcons.share),
+                onPressed: () => AppShare.shareUrl(
+                    url: sharePageLink,
+                    contentType: 'Category',
+                    itemName: title,
+                    itemId:  ''
+                ),
+              )
+            : const SizedBox.shrink(),
+        if(seeLogoutButton) ...[
+          Obx(() => AuthenticationController.instance.isAdminLogin.value
+              ? InkWell(
+              onTap: () => AuthenticationController.instance.logout(),
+              child: Row(
+                children: [
+                  Text('Logout'),
+                  const SizedBox(width: AppSizes.sm),
+                  Icon(AppIcons.logout, size: 20,),
+                  const SizedBox(width: AppSizes.sm),
+                ],
+              )
+          )
+              : InkWell(
+              onTap: () => NavigationHelper.navigateToLoginScreen(),
+              child: Row(
+                children: [
+                  Icon(Iconsax.user),
+                  const SizedBox(width: AppSizes.sm),
+                  Text('Login', style: TextStyle(fontSize: 15),),
+                  const SizedBox(width: AppSizes.md),
+                ],
+              )
+          )
+          ),
+        ],
+        seeSettingButton ? IconButton( icon: Icon(Icons.settings), onPressed: () => Get.to(() => SettingScreen())) : const SizedBox.shrink(),
+        widgetInActions != null
+            ? widgetInActions!
+            : SizedBox.shrink()
       ],
-      // leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+      leading: showBackArrow ? IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Iconsax.arrow_left)) :  null,
+      bottom: bottom,
+      // toolbarHeight: toolbarHeight,
     );
   }
-
   @override
-  //implement preferredSize
-  Size get preferredSize => Size.fromHeight(TDeviceUtils.getAppBarHeight());
+  // TODO: implement preferredSize
+  Size get preferredSize => Size.fromHeight(TDeviceUtils.getAppBarHeight() + (toolbarHeight ?? 0));
 }

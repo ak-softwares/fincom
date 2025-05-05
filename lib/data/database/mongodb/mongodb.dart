@@ -1,223 +1,328 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import '../../../features/shop/models/product_model.dart';
+import '../../../features/accounts/models/cart_item_model.dart';
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/constants/enums.dart';
 
 class MongoDatabase {
+  // Singleton implementation
+  static final MongoDatabase _instance = MongoDatabase._internal();
+  factory MongoDatabase() => _instance;
+  MongoDatabase._internal();
+
   static Db? _db;
-  static final String _host = dotenv.env['MONGODB_CONNECTION_STRING']!;
+  static String? _host;
 
-  static connect() async {
-    _db = await Db.create(_host);
-    await _db?.open();
+  // Initialize the database connection
+  static Future<void> initialize() async {
+    _host = dotenv.env['MONGODB_CONNECTION_STRING'];
+    if (_host == null || _host!.isEmpty) {
+      throw Exception('MongoDB connection string is not configured');
+    }
   }
 
-  Future<void> _ensureConnected() async {
+  // Connect to the database
+  static Future<void> connect() async {
+    if (_host == null) {
+      await initialize();
+    }
+
     if (_db == null || !_db!.isConnected) {
+      _db = await Db.create(_host!);
+      await _db!.open();
+    }
+  }
+
+  // Check if database is connected
+  static Future<void> _ensureConnected() async {
+    try {
       await connect();
+    } catch (e) {
+      throw Exception('Failed to connect to database: $e');
     }
   }
 
-  // Insert a document into a collection
+  // Insert a single document
   Future<void> insertDocument(String collectionName, Map<String, dynamic> data) async {
+    await _ensureConnected();
     try {
-      var collection = _db?.collection(collectionName);
-      await collection?.insert(data);
+      await _db!.collection(collectionName).insert(data);
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to insert document: $e');
     }
   }
 
+  // Insert multiple documents
   Future<void> insertDocuments(String collectionName, List<Map<String, dynamic>> dataList) async {
+    await _ensureConnected();
     try {
-      var collection = _db?.collection(collectionName);
-      await collection?.insertMany(dataList); // Insert multiple documents
+      await _db!.collection(collectionName).insertMany(dataList);
     } catch (e) {
-      throw Exception('Error inserting documents: $e');
+      throw Exception('Failed to insert documents: $e');
     }
   }
 
+  // Update document by ID
   Future<void> updateDocumentById({
     required String collectionName,
     required String id,
     required Map<String, dynamic> updatedData,
   }) async {
+    await _ensureConnected();
     try {
-      var collection = _db?.collection(collectionName);
-      // Parse the string ID into ObjectId
-      var objectId = ObjectId.fromHexString(id);
-
-      await collection?.updateOne(
-        {'_id': objectId},  // Correct filter key
+      final objectId = ObjectId.fromHexString(id);
+      final writeResult = await _db!.collection(collectionName).updateOne(
+        {'_id': objectId},
         {'\$set': updatedData},
       );
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to update document by ID: $e');
     }
   }
 
+  // Update document with custom filter
   Future<void> updateDocument({
     required String collectionName,
     required Map<String, dynamic> filter,
-    required Map<String, dynamic> updatedData
+    required Map<String, dynamic> updatedData,
+    bool upsert = false,
   }) async {
+    await _ensureConnected();
     try {
-      var collection = _db?.collection(collectionName);
-      await collection?.update(filter, {'\$set': updatedData}, upsert: true);
+      await _db!.collection(collectionName).update(
+        filter,
+        {'\$set': updatedData},
+        upsert: upsert,
+      );
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to update document: $e');
     }
   }
 
-  Future<void> updateProductsStock(String collectionName, List<Map<String, dynamic>> dataList) async {
+  Future<void> updateQuantities({
+    required String collectionName,
+    required List<CartModel> cartItems,
+    bool isAddition = false,
+    bool isPurchase = false,
+  }) async {
+    await _ensureConnected();
+    if (cartItems.isEmpty) return;
+
     try {
-      var collection = _db?.collection(collectionName);
+      final collection = _db!.collection(collectionName);
 
-      if (collection == null || dataList.isEmpty) return;
+      final bulkOps = cartItems.map((cartItem) {
+        final quantityChange = isAddition ? cartItem.quantity : -cartItem.quantity;
 
-      var bulkOps = dataList.map((data) {
-        // Parse the string ID into ObjectId
-        var objectId = ObjectId.fromHexString(data[PurchaseHistoryFieldName.productId]);
+        final updateMap = <String, Map<String, dynamic>> {
+          '\$inc': {ProductFieldName.stockQuantity: quantityChange}
+        };
+
+        // isPurchase to update purchase price
+        if (isPurchase && cartItem.purchasePrice != null) {
+          updateMap['\$set'] = {
+            ProductFieldName.purchasePrice: cartItem.purchasePrice!,
+          };
+        }
+
         return {
           'updateOne': {
-            'filter': {ProductFieldName.id: objectId}, // Match by _id
-            'update': {
-              '\$push': {ProductFieldName.purchaseHistory: data}, // Append data inside purchase_history array
-            },
-            'upsert': true, // Insert if not found
+            'filter': {ProductFieldName.productId: cartItem.productId},
+            'update': updateMap,
+            'upsert': true,
           }
         };
       }).toList();
 
       await collection.bulkWrite(bulkOps);
     } catch (e) {
-      throw Exception('Error updating documents: $e');
+      throw Exception('Failed to update product stock: $e');
     }
   }
 
-  // Fetch documents with search, pagination, and field selection
-  Future<List<Map<String, dynamic>>> fetchDocumentsBySearchQuery({required String collectionName, required String query, int page = 1, int itemsPerPage = 10,}) async {
-    String selectIndex() {
-      switch (collectionName) {
-        case 'orders':
-          return 'orders';
-        case 'vendors':
-          return 'vendor';
-        default:
-          return 'default';
-      }
+  Future<void> updateUserBalanceById({
+    required String collectionName,
+    required int id,
+    required double balance,
+    required bool isAddition,
+  }) async {
+    await _ensureConnected();
+    try {
+      final changeAmount = isAddition ? balance : -balance;
+
+      await _db!.collection(collectionName).update(
+        where.eq(UserFieldConstants.userId, id),
+        {
+          '\$inc': {'balance': changeAmount}
+        },
+      );
+    } catch (e) {
+      throw Exception('Failed to update user balance: $e');
     }
+  }
 
-    var collection = _db!.collection(collectionName);
-    // Calculate the number of documents to skip
-    int skip = (page - 1) * itemsPerPage;
+  // Search documents with pagination
+  Future<List<Map<String, dynamic>>> fetchDocumentsBySearchQuery({
+    required String collectionName,
+    required String query,
+    int page = 1,
+    int itemsPerPage = 10,
+    Map<String, dynamic>? filter, // ✅ Optional filter parameter
+  }) async {
+    await _ensureConnected();
 
-    // MongoDB Aggregation Pipeline for Autocomplete Search
-    final List<Map<String, Object>> pipeline = [
-      {
-        "\$search": {
-          "index": selectIndex(),
-          "text": {
-            "query": query,
-            "path": {
-              "wildcard": "*"
+    try {
+      final pipeline = [
+        {
+          "\$search": {
+            "index": "default",
+            "text": {
+              "query": query,
+              "path": {"wildcard": "*"}
             }
           }
-        }
-      },
-      {"\$skip": skip},
-      {"\$limit": itemsPerPage}
-    ];
-
-    try {
-      final List<Map<String, dynamic>> results = await collection.aggregateToStream(pipeline).toList();
-      return results;
-    } catch (e) {
-      throw Exception('Error searching documents: $e');
-    }
-  }
-
-  Future<Map<String, dynamic>?> fetchDocumentById({required String collectionName, required String id}) async {
-    try {
-      // Ensure _db is not null
-      if (_db == null) {
-        throw Exception('Database connection is not established.');
-      }
-
-      // Get the collection
-      var collection = _db!.collection(collectionName);
-
-      // Parse the string ID into ObjectId
-      var objectId = ObjectId.fromHexString(id);
-
-      // Fetch the document
-      var document = await collection.findOne(
-        {'_id': objectId}, // Use the parsed ObjectId
-      );
-
-      return document; // Return the fetched document (or null if not found)
-    } catch (e) {
-      rethrow; // Rethrow the error if you want the caller to handle it
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> fetchDocuments({required String collectionName, int page = 1, int itemsPerPage = 10}) async {
-    var collection = _db!.collection(collectionName);
-    // Calculate the number of documents to skip
-    int skip = (page - 1) * itemsPerPage;
-    try {
-      var documents = await collection
-          .find(where.sortBy('_id', descending: true).skip(skip).limit(itemsPerPage)) // Sort in descending order
-          .toList(); // Convert to List<Map<String, dynamic>>
-      return documents;
-    } catch (e) {
-      throw Exception('Error fetching documents: $e');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> fetchProducts({required String collectionName, int page = 1, int itemsPerPage = 10,}) async {
-    var collection = _db!.collection(collectionName);
-    int skip = (page - 1) * itemsPerPage;
-
-    try {
-      var pipeline = [
-        {
-          "\$addFields": {
-            "totalStock": { "\$sum": "\$purchase_history.quantity" }
-          }
         },
-        { "\$sort": { "totalStock": -1, "_id": -1 } },
-        { "\$skip": skip },
-        { "\$limit": itemsPerPage }
+        if (filter != null && filter.isNotEmpty)
+          {"\$match": filter}, // ✅ Optional filter stage
+        {"\$skip": (page - 1) * itemsPerPage},
+        {"\$limit": itemsPerPage}
       ];
 
-      // Use `collection.find()` with `aggregationPipeline` instead of `aggregate()`
-      var cursor = collection.aggregateToStream(pipeline); // Returns a stream of documents
-      List<Map<String, dynamic>> documents = await cursor.toList();
+      return await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to search documents: $e');
+    }
+  }
 
+  // Fetch document by ID
+  Future<Map<String, dynamic>> fetchDocumentById({
+    required String collectionName,
+    required String id,
+  }) async {
+    await _ensureConnected();
+    try {
+      final objectId = ObjectId.fromHexString(id);
+      var document = await _db!.collection(collectionName).findOne({'_id': objectId});
+      if (document == null) {
+        throw Exception('Document not found with ID: $id');
+      }
+      return document;
+    } catch (e) {
+      throw Exception('Failed to fetch document by ID: $e');
+    }
+  }
+
+  // Fetch documents with pagination
+  Future<List<Map<String, dynamic>>> fetchDocuments({
+    required String collectionName,
+    Map<String, dynamic>? filter,
+    int page = 1,
+    int itemsPerPage = 10
+  }) async {
+    await _ensureConnected();
+    var collection = _db!.collection(collectionName);
+    int skip = (page - 1) * itemsPerPage;
+
+    try {
+      var query = where
+        ..sortBy('_id', descending: true)
+        ..skip(skip)
+        ..limit(itemsPerPage);
+
+      // If filter is provided, add it
+      if (filter != null) {
+        filter.forEach((key, value) {
+          query = query.eq(key, value);
+        });
+      }
+
+      var documents = await collection.find(query).toList();
       return documents;
     } catch (e) {
       throw Exception('Error fetching documents: $e');
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchDocumentsByIds(String collectionName, List<int> documentIds) async {
+  // Fetch products with custom stock sorting (positive first, then negative, then zero)
+  Future<List<Map<String, dynamic>>> fetchProducts({
+    required String collectionName,
+    int page = 1,
+    int itemsPerPage = 10,
+  }) async {
+    await _ensureConnected();
     try {
-      var collection = _db!.collection(collectionName);
+      final pipeline = [
+        {
+          "\$addFields": {
+            "totalStock": "\$${ProductFieldName.stockQuantity}",
+            // Add a field to determine sorting priority (1=positive, -1=negative, 0=zero)
+            "stockPriority": {
+              "\$switch": {
+                "branches": [
+                  {
+                    "case": {"\$gt": ["\$${ProductFieldName.stockQuantity}", 0]},
+                    "then": 2
+                  },
+                  {
+                    "case": {"\$lt": ["\$${ProductFieldName.stockQuantity}", 0]},
+                    "then": 1
+                  },
+                ],
+                "default": 0
+              }
+            },
+            // Add absolute value for secondary sorting
+            "absStock": {"\$abs": "\$${ProductFieldName.stockQuantity}"}
+          }
+        },
+        {
+          "\$sort": {
+            "stockPriority": -1,  // 2 (positive), then 1 (negative), then 0 (zero)
+            "absStock": -1,       // Highest absolute values first
+            ProductFieldName.id: -1 // Finally by product ID
+          }
+        },
+        {"\$skip": (page - 1) * itemsPerPage},
+        {"\$limit": itemsPerPage},
+        // Remove temporary fields if needed
+        {
+          "\$project": {
+            "stockPriority": 0,
+            "absStock": 0
+          }
+        }
+      ];
 
-      // Query to find documents matching the given IDs
-      var documents = await collection
-          .find(where.oneFrom('id', documentIds)) // Query documents with IDs
-          .toList(); // Convert to List<Map<String, dynamic>>
-
-      return documents;
+      return await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
     } catch (e) {
-      throw Exception('Error fetching documents by IDs: $e');
+      throw Exception('Failed to fetch products: $e');
     }
   }
 
+  // Fetch documents by IDs
+  Future<List<Map<String, dynamic>>> fetchDocumentsByIds(
+      String collectionName,
+      List<int> documentIds,
+      ) async {
+    await _ensureConnected();
+    try {
+      return await _db!
+          .collection(collectionName)
+          .find(where.oneFrom('id', documentIds))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to fetch documents by IDs: $e');
+    }
+  }
+
+  // Fetch transactions by entity
   Future<List<Map<String, dynamic>>> fetchTransactionByEntity({
     required String collectionName,
     required EntityType entityType,
@@ -225,84 +330,72 @@ class MongoDatabase {
     int page = 1,
     int itemsPerPage = 10,
   }) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized');
-    }
-
+    await _ensureConnected();
     try {
-      var collection = _db!.collection(collectionName);
-
-      // Calculate the number of documents to skip for pagination
-      int skip = (page - 1) * itemsPerPage;
-
-      // Build query to find transactions where the entity is either sender or receiver
-      SelectorBuilder query = where
+      final skip = (page - 1) * itemsPerPage;
+      final query = where
           .eq('from_entity_type', entityType.name)
           .eq('from_entity_id', entityId)
-          .or(where.eq('to_entity_type', entityType.name).eq('to_entity_id', entityId))
-          .sortBy('_id', descending: true) // Sort in descending order
+          .or(where
+          .eq('to_entity_type', entityType.name)
+          .eq('to_entity_id', entityId))
+          .sortBy('_id', descending: true)
           .skip(skip)
           .limit(itemsPerPage);
 
-      // Fetch transactions based on query
-      var result = await collection.find(query).toList();
-
-      return result;
+      return await _db!.collection(collectionName).find(query).toList();
     } catch (e) {
       throw Exception('Failed to fetch transactions: $e');
     }
   }
 
-  Future<void> deleteDocumentById({required String collectionName, required String id,}) async {
+  // Delete document by ID
+  Future<void> deleteDocumentById({
+    required String collectionName,
+    required String id,
+  }) async {
+    await _ensureConnected();
     try {
-      // Ensure the database connection is established
-      if (_db == null) {
-        throw Exception('Database connection is not established.');
-      }
-
-      // Validate ID format
       if (id.isEmpty || id.length != 24) {
-        throw Exception("Invalid ID format: Expected a 24-character hexadecimal string. $id");
+        throw Exception("Invalid ID format: Expected a 24-character hex string");
       }
 
-      // Get the collection
-      var collection = _db!.collection(collectionName);
+      final objectId = ObjectId.fromHexString(id);
+      final result = await _db!
+          .collection(collectionName)
+          .deleteOne({'_id': objectId});
 
-      // Convert the ID to ObjectId
-      ObjectId objectId;
-      try {
-        objectId = ObjectId.fromHexString(id);
-      } catch (_) {
-        throw Exception("Invalid ObjectId: ID must be a valid 24-character hex string. $id");
-      }
-
-      // Delete the document
-      var result = await collection.deleteOne({'_id': objectId});
-
-      // Check if a document was actually deleted
       if (result.nRemoved == 0) {
-        throw Exception("No document found with the given ID.");
+        throw Exception("No document found with ID: $id");
       }
-
     } catch (e) {
-      rethrow; // Rethrow to let the caller handle the exception
+      throw Exception('Failed to delete document: $e');
     }
   }
 
-  Future<int> getNextId({required String collectionName, required String fieldName}) async {
+  // Get next ID in sequence
+  Future<int> getNextId({
+    required String collectionName,
+    required String fieldName,
+    Map<String, dynamic>? filter,
+  }) async {
+    await _ensureConnected();
     var collection = _db!.collection(collectionName);
-
     try {
-      // Fetch the last document sorted by 'id' in descending order
-      var lastDocument = await collection
-          .find(where.sortBy(fieldName, descending: true).limit(1)) // Get the last document
-          .toList();
+      var query = where.sortBy(fieldName, descending: true).limit(1);
+
+      // Apply filter if provided
+      if (filter != null) {
+        filter.forEach((key, value) {
+          query = query.eq(key, value);
+        });
+      }
+
+      var lastDocument = await collection.find(query).toList();
 
       if (lastDocument.isEmpty) {
-        // If no documents exist, start with ID 1
-        return 1;
+        return 1; // Start from 1 if no documents match
       } else {
-        // Increment the last ID by 1
         return lastDocument[0][fieldName] + 1;
       }
     } catch (e) {
@@ -310,149 +403,139 @@ class MongoDatabase {
     }
   }
 
+  // Update entity balance
   Future<void> updateBalance({
     required String collectionName,
     required Map<String, dynamic> entityBalancePair,
     required bool isAddition,
   }) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized');
-    }
+    await _ensureConnected();
     try {
-      var collection = _db!.collection(collectionName);
+      final entityIdFieldName = entityBalancePair['entityIdFieldName'] as String;
+      final entityId = entityBalancePair['entityId'] as int;
+      final balanceChange = entityBalancePair['balance'] as double;
 
-      String entityIdFieldName = entityBalancePair['entityIdFieldName'];
-      int entityId = entityBalancePair['entityId'];
-      double balanceChange = entityBalancePair['balance'];
-
-      await collection.update(
+      await _db!.collection(collectionName).update(
         where.eq(entityIdFieldName, entityId),
         {'\$inc': {'balance': isAddition ? balanceChange : -balanceChange}},
       );
-
     } catch (e) {
-      throw Exception('Failed to update entity balance: $e');
+      throw Exception('Failed to update balance: $e');
     }
   }
 
-  // Fetch Collection All IDs
+  // Fetch all IDs in collection
   Future<Set<int>> fetchCollectionIds(String collectionName) async {
+    await _ensureConnected();
     try {
-      var collection = _db!.collection(collectionName);
-      Set<int> allIds = {};
+      final collection = _db!.collection(collectionName);
+      final allIds = <int>{};
       int page = 1;
-      int pageSize = 1000;
+      const pageSize = 1000;
 
       while (true) {
-        int skipCount = (page - 1) * pageSize;
-
-        // Fetch only the 'id' field with pagination
-        List<Map<String, dynamic>> batch = await collection
-            .find(where.fields(['id']).skip(skipCount).limit(pageSize))
+        final batch = await collection
+            .find(where.fields(['id']).skip((page - 1) * pageSize).limit(pageSize))
             .toList();
 
-        if (batch.isEmpty) break; // Stop when no more data is available
+        if (batch.isEmpty) break;
 
-        allIds.addAll(batch.map((p) => p['id'] as int)); // Collect IDs
-        page++; // Move to next batch
+        allIds.addAll(batch.map((p) => p['id'] as int));
+        page++;
       }
 
       return allIds;
     } catch (e) {
-      throw Exception('Failed to fetch Collection IDs: $e');
+      throw Exception('Failed to fetch collection IDs: $e');
     }
   }
 
-  // Get the count of documents in a collection
+  // Get document count
   Future<int> fetchCollectionCount(String collectionName) async {
+    await _ensureConnected();
     try {
-      var collection = _db?.collection(collectionName);
-      int? count = await collection?.count(); // Get document count
-      return count ?? 0;
+      return await _db!.collection(collectionName).count() ?? 0;
     } catch (e) {
-      throw Exception('Error getting collection count: $e');
+      throw Exception('Failed to get collection count: $e');
     }
   }
 
-  // Delete all documents from a collection
-  Future<void> deleteDocuments({required String collectionName, required Map<String, dynamic> filter,}) async {
-    var collection = _db!.collection(collectionName);
-
+  // Delete documents matching filter
+  Future<void> deleteDocuments({
+    required String collectionName,
+    required Map<String, dynamic> filter,
+  }) async {
+    await _ensureConnected();
     try {
-      // Delete all documents by passing an empty filter
-      await collection.deleteMany(filter);
+      await _db!.collection(collectionName).deleteMany(filter);
     } catch (e) {
-      throw Exception('Error deleting documents: $e');
+      throw Exception('Failed to delete documents: $e');
     }
   }
 
-  // Fetch documents from a collection
-  Future<Map<String, dynamic>?> fetchMetaDocuments({required String collectionName, required String metaDataName}) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized.');
-    }
-    var collection = _db!.collection(collectionName);
-
+  // Fetch metadata documents
+  Future<Map<String, dynamic>?> fetchMetaDocuments({
+    required String collectionName,
+    required String metaDataName,
+  }) async {
+    await _ensureConnected();
     try {
-      var document = await collection.findOne({MetaDataName.metaDocumentName: metaDataName}); // Fetch the document with ID 123
-
-      return document; // Return the fetched document (or null if not found)
-
+      return await _db!
+          .collection(collectionName)
+          .findOne({MetaDataName.metaDocumentName: metaDataName});
     } catch (e) {
-      throw Exception('Error fetching documents: $e');
+      throw Exception('Failed to fetch metadata: $e');
     }
   }
 
-  // Push a new value to the metadata list
+  // Update metadata
   Future<void> pushMetaDataValue({
     required String collectionName,
     required String metaDataName,
     required String metaFieldName,
-    required dynamic value,}) async {
-    if (_db == null) {
-      throw Exception('Database connection is not initialized.');
-    }
-
-    var collection = _db!.collection(collectionName);
+    required dynamic value,
+  }) async {
+    await _ensureConnected();
     try {
-      await collection.updateOne(
-        {MetaDataName.metaDocumentName: metaDataName}, // Find the document by ID
-        {'\$set': {metaFieldName: value}}, // Store as a comma-separated string
-        upsert: true, // Create the document if it doesn't exist
+      await _db!.collection(collectionName).updateOne(
+        {MetaDataName.metaDocumentName: metaDataName},
+        {'\$set': {metaFieldName: value}},
+        upsert: true,
       );
     } catch (e) {
-      throw Exception('Error pushing to metadata: $e');
+      throw Exception('Failed to update metadata: $e');
     }
   }
 
-  Future<Map<String, dynamic>?> findOne({required String collectionName, required Map<String, dynamic> query}) async {
-    var collection = _db!.collection(collectionName);
-
+  // Find one document matching query
+  Future<Map<String, dynamic>?> findOne({
+    required String collectionName,
+    required Map<String, dynamic> query,
+  }) async {
+    await _ensureConnected();
     try {
-      var document = await collection.findOne(query); // Find a single document
-
-      return document; // Returns null if no match is found
+      return await _db!.collection(collectionName).findOne(query);
     } catch (e) {
-      throw Exception('Error finding document: $e');
+      throw Exception('Failed to find document: $e');
     }
   }
 
-  Future<List<Map<String, dynamic>>> findMany({required String collectionName, required Map<String, dynamic> query}) async {
-    var collection = _db!.collection(collectionName);
-
+  // Find multiple documents matching query
+  Future<List<Map<String, dynamic>>> findMany({
+    required String collectionName,
+    required Map<String, dynamic> query,
+  }) async {
+    await _ensureConnected();
     try {
-      var documents = await collection.find(query).toList(); // Find all matching documents
-
-      return documents; // Returns an empty list if no matches are found
+      return await _db!.collection(collectionName).find(query).toList();
     } catch (e) {
-      throw Exception('Error finding documents: $e');
+      throw Exception('Failed to find documents: $e');
     }
   }
 
-  // Close the connection
-  void close() {
-    _db?.close();
+  // Close database connection
+  Future<void> close() async {
+    await _db?.close();
+    _db = null;
   }
-
 }
-

@@ -54,8 +54,8 @@ class OrderHelper {
     }
   }
 
-  static TRoundedContainer statusWidget({required String status, required Color color}) {
-    return TRoundedContainer(
+  static RoundedContainer statusWidget({required String status, required Color color}) {
+    return RoundedContainer(
           radius: 10,
           backgroundColor: color,
           padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),

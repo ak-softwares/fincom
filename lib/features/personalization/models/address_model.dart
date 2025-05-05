@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/data/state_iso_code_map.dart';
 import '../../../utils/formatters/formatters.dart';
@@ -20,7 +18,6 @@ class AddressModel {
   String? country;
   DateTime? dateCreated;
   DateTime? dateModified;
-  bool? selectedAddress;
 
   AddressModel({
     this.id,
@@ -37,10 +34,9 @@ class AddressModel {
     this.country,
     this.dateCreated,
     this.dateModified,
-    this.selectedAddress = true,
   });
 
-  String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phone!);
+  String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phone ?? '0');
   String get name => '$firstName $lastName';
 
   static AddressModel empty() => AddressModel(id: '');
@@ -49,9 +45,9 @@ class AddressModel {
   List<String> validateFields() {
     List<String> missingFields = [];
 
-    String? phoneError = TValidator.validatePhoneNumber(phone);
-    String? emailError = TValidator.validateEmail(email);
-    String? pincodeError = TValidator.validatePinCode(pincode);
+    String? phoneError = Validator.validatePhoneNumber(phone);
+    String? emailError = Validator.validateEmail(email);
+    String? pincodeError = Validator.validatePinCode(pincode);
 
     if (firstName?.isEmpty ?? true) missingFields.add('First Name is missing');
     if (address1?.isEmpty ?? true) missingFields.add('Address is missing');
@@ -87,27 +83,31 @@ class AddressModel {
       AddressFieldName.country: country,
       AddressFieldName.dateCreated: dateCreated,
       AddressFieldName.dateModified: dateModified,
-      AddressFieldName.selectedAddress: selectedAddress,
     };
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      AddressFieldName.id: id,
-      AddressFieldName.firstName: firstName,
-      AddressFieldName.lastName: lastName,
-      AddressFieldName.phone: phone,
-      AddressFieldName.email: email,
-      AddressFieldName.address1: address1,
-      AddressFieldName.address2: address2,
-      AddressFieldName.city: city,
-      AddressFieldName.state: state,
-      AddressFieldName.pincode: pincode,
-      AddressFieldName.country: country,
-      AddressFieldName.dateCreated: dateCreated,
-      AddressFieldName.dateModified: dateModified,
-      AddressFieldName.selectedAddress: selectedAddress,
-    };
+    final map = <String, dynamic>{};
+
+    void addIfNotNull(String key, dynamic value) {
+      if (value != null) map[key] = value;
+    }
+
+    addIfNotNull(AddressFieldName.id, id);
+    addIfNotNull(AddressFieldName.firstName, firstName);
+    addIfNotNull(AddressFieldName.lastName, lastName);
+    addIfNotNull(AddressFieldName.phone, phone);
+    addIfNotNull(AddressFieldName.email, email);
+    addIfNotNull(AddressFieldName.address1, address1);
+    addIfNotNull(AddressFieldName.address2, address2);
+    addIfNotNull(AddressFieldName.city, city);
+    addIfNotNull(AddressFieldName.state, state);
+    addIfNotNull(AddressFieldName.pincode, pincode);
+    addIfNotNull(AddressFieldName.country, country);
+    addIfNotNull(AddressFieldName.dateCreated, dateCreated);
+    addIfNotNull(AddressFieldName.dateModified, dateModified);
+
+    return map;
   }
 
   Map<String, dynamic> toJsonForWoo() {
@@ -140,48 +140,6 @@ class AddressModel {
       country: CountryData.getCountryFromISOCode(data[AddressFieldName.country] ?? 'IN'),
     );
   }
-
-  factory AddressModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
-    return AddressModel(
-      id: snapshot.id,
-      firstName: data[AddressFieldName.firstName] ?? '',
-      lastName: data[AddressFieldName.lastName] ?? '',
-      phone: data[AddressFieldName.phone] ?? '',
-      address1: data[AddressFieldName.address1] ?? '',
-      address2: data[AddressFieldName.address2] ?? '',
-      city: data[AddressFieldName.city] ?? '',
-      state: data[AddressFieldName.state] ?? '',
-      pincode: data[AddressFieldName.pincode] ?? '',
-      country: data[AddressFieldName.country] ?? '',
-      dateCreated: (data[AddressFieldName.dateCreated] as Timestamp?)?.toDate() ?? DateTime(2000),
-      dateModified: (data[AddressFieldName.dateModified] as Timestamp?)?.toDate() ?? DateTime(2000),
-      selectedAddress: data[AddressFieldName.selectedAddress]as bool,
-    );
-  }
-
-  factory AddressModel.fromQuerySnapshot(QuerySnapshot<Map<String, dynamic>> snapshot) {
-    if (snapshot.docs.isEmpty) {
-      return empty(); // Assuming empty() returns a default or empty AddressModel
-    }
-    final data = snapshot.docs.first.data();
-    return AddressModel(
-      id: snapshot.docs.first.id,
-      firstName: data[AddressFieldName.firstName] ?? '',
-      lastName: data[AddressFieldName.lastName] ?? '',
-      phone: data[AddressFieldName.phone] ?? '',
-      address1: data[AddressFieldName.address1] ?? '',
-      address2: data[AddressFieldName.address2] ?? '',
-      city: data[AddressFieldName.city] ?? '',
-      state: data[AddressFieldName.state] ?? '',
-      pincode: data[AddressFieldName.pincode] ?? '',
-      country: data[AddressFieldName.country] ?? '',
-      dateCreated: (data[AddressFieldName.dateCreated] as Timestamp?)?.toDate() ?? DateTime(2000),
-      dateModified: (data[AddressFieldName.dateModified] as Timestamp?)?.toDate() ?? DateTime(2000),
-      selectedAddress: data[AddressFieldName.selectedAddress]as bool,
-    );
-  }
-
 
   @override
   String toString() {

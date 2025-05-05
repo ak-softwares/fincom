@@ -8,4 +8,8 @@ class LocalStorage{
   static const String rememberMeEmail     = 'REMEMBER_ME_EMAIL';
   static const String rememberMePassword  = 'REMEMBER_ME_PASSWORD';
   static const String authUserID          = 'AUTH_USER_ID';
+  static const String loginExpiry         = 'LOGIN_EXPIRY';
+
+  static const String themeMode          = 'THEME_MODE';
+
 }

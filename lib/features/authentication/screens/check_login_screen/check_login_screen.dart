@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../common/widgets/loaders/animation_loader.dart';
+import '../../../../common/dialog_box_massages/animation_loader.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/helpers/navigation_helper.dart';
 
@@ -14,12 +14,12 @@ class CheckLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TAnimationLoaderWidgets(
+    return AnimationLoaderWidgets(
       text: text,
       animation: animation,
       showAction: true,
       actionText: 'Login',
-      onActionPressed: () => NavigationHelper.navigateToLoginScreen(),
+      onActionPress: () => NavigationHelper.navigateToLoginScreen(),
     );
   }
 }

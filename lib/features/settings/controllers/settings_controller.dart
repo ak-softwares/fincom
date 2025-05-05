@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../common/widgets/loaders/loader.dart';
-import '../../../data/repositories/woocommerce_repositories/settings/woo_settings_repositories.dart';
+import '../../../common/dialog_box_massages/snack_bar_massages.dart';
+import '../../../data/repositories/woocommerce/settings/woo_settings_repositories.dart';
 import '../models/settings_model.dart';
 
 class SettingsController extends GetxController {
@@ -26,8 +26,7 @@ class SettingsController extends GetxController {
       //assign banner
       appSettings.value = fetchedAppSettings;
     } catch (e) {
-      TLoaders.errorSnackBar(
-          title: 'Error - Banner loading', message: e.toString());
+      AppMassages.errorSnackBar(title: 'Error - Banner loading', message: e.toString());
     }
   }
 
@@ -37,7 +36,7 @@ class SettingsController extends GetxController {
       appSettings.value = AppSettingsModel(); // Resets all fields to default values
       await getAppSettings();
     } catch (error) {
-      TLoaders.warningSnackBar(title: 'Error', message: error.toString());
+      AppMassages.warningSnackBar(title: 'Error', message: error.toString());
     } finally {
       isLoading(false);
     }

@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/data/state_iso_code_map.dart';
@@ -22,7 +21,6 @@ class UpdateAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('update_user_address_screen');
 
     final addressController = Get.put(AddressController());
 
@@ -36,7 +34,7 @@ class UpdateAddressScreen extends StatelessWidget {
     addressController.country.text = address.country!;
 
     return Scaffold(
-      appBar: AppAppBar2(titleText: title, showBackArrow: true),
+      appBar: AppAppBar(title: title, showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.defaultSpace),
@@ -46,17 +44,17 @@ class UpdateAddressScreen extends StatelessWidget {
               children: [
 
                 // Name
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 Row(
                   children: [
                     Expanded(
                         child: TextFormField(
                           controller: addressController.firstName,
-                          validator: (value) => TValidator.validateEmptyText('First Name', value),
+                          validator: (value) => Validator.validateEmptyText('First Name', value),
                           decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: 'First Name*'),
                         )
                     ),
-                    const SizedBox(width: AppSizes.spaceBtwInputFields),
+                    const SizedBox(width: AppSizes.inputFieldSpace),
                     // Last Name
                     Expanded(
                         child: TextFormField(
@@ -68,37 +66,37 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // Address1
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 TextFormField(
                     controller: addressController.address1,
-                    validator: (value) => TValidator.validateEmptyText('Street address', value),
+                    validator: (value) => Validator.validateEmptyText('Street address', value),
                     decoration: const InputDecoration(prefixIcon: Icon(Iconsax.building), labelText: 'Street Address*')
                 ),
 
                 // Address2
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 TextFormField(
                     controller: addressController.address2,
                     decoration: const InputDecoration(prefixIcon: Icon(Iconsax.buildings), labelText: 'Land Mark')
                 ),
 
                 // City
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 Row(
                   children: [
                     Expanded(
                         child: TextFormField(
                           controller: addressController.city,
-                          validator: (value) => TValidator.validateEmptyText('City', value),
+                          validator: (value) => Validator.validateEmptyText('City', value),
                           decoration: const InputDecoration(prefixIcon: Icon(Iconsax.building), labelText: 'City*'),
                         )
                     ),
-                    const SizedBox(width: AppSizes.spaceBtwInputFields),
+                    const SizedBox(width: AppSizes.inputFieldSpace),
                     // Pincode
                     Expanded(
                         child: TextFormField(
                           controller: addressController.pincode,
-                          validator: (value) => TValidator.validatePinCode(value),
+                          validator: (value) => Validator.validatePinCode(value),
                           decoration: const InputDecoration(prefixIcon: Icon(Iconsax.code), labelText: 'Pincode*')
                         )
                     ),
@@ -106,7 +104,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
 
                 // State
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 DropdownButtonFormField<String>(
                   isExpanded: true,
                   items: StateData.indianStates.map((state) {
@@ -117,12 +115,12 @@ class UpdateAddressScreen extends StatelessWidget {
                   }).toList(),
                   value: addressController.state.text.isNotEmpty ? addressController.state.text : null,
                   onChanged: (value) {addressController.state.text = value!;},
-                  validator: (value) => TValidator.validateEmptyText('State', value),
+                  validator: (value) => Validator.validateEmptyText('State', value),
                   decoration: const InputDecoration(prefixIcon: Icon(Iconsax.activity), labelText: 'State*'),
                 ),
 
                 // Country
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
                 TextFormField(
                     enabled: false,
                     controller: addressController.country,

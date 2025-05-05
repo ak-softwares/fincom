@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../../features/accounts/screen/home/home.dart';
+import '../../features/accounts/screen/purchase/purchase.dart';
+import '../../features/accounts/screen/sales/sales.dart';
 import '../../features/personalization/screens/user_menu/user_menu_screen.dart';
-import '../../features/shop/controllers/cart_controller/cart_controller.dart';
-import '../../features/shop/screen_account/home/home.dart';
-import '../../features/shop/screen_account/purchase/purchase.dart';
-import '../../features/shop/screen_account/sales/sales.dart';
-import '../../services/firebase_analytics/firebase_analytics.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/constants/icons.dart';
-import '../widgets/loaders/loader.dart';
+import '../dialog_box_massages/snack_bar_massages.dart';
 
 
 class BottomNavigation extends StatefulWidget {
@@ -22,28 +19,19 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final cartController = Get.put(CartController());
 
   DateTime? _lastBackPressedTime; // Variable to track the time of the last back button press
   int _currentIndex = 0;
   final screens = [
-    const Home(),
-    const SalesVoucher(),
+    const Analytics(),
+    const Sales(),
     const Purchase(),
     const UserMenuScreen(),
-  ];
-
-  final List<String> _pageNames = [
-    'bn_menu_home',
-    'bn_menu_category',
-    'bn_menu_cart',
-    'bn_menu_user_menu'
   ];
 
   void _onTabChange(int index) {
     if (index != _currentIndex) {
       // Log page view only when navigating to a new page
-      FBAnalytics.logPageView(_pageNames[index]);
       setState(() {
         _currentIndex = index;
       });
@@ -70,7 +58,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             SystemNavigator.pop();
           } else {
             // If not, show a toast message and update _lastBackPressedTime
-            TLoaders.customToast(message: "Press Back Again To Exit");
+            AppMassages.showToastMessage(message: "Press Back Again To Exit");
             _lastBackPressedTime = DateTime.now();
           }
         }
@@ -97,11 +85,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // navigation bar padding
             tabs: [
               GButton(
-                icon: TIcons.home,
+                icon: AppIcons.home,
                 text: 'Home',
               ),
               GButton(
-                icon: TIcons.sales,
+                icon: AppIcons.sales,
                 text: 'Sale',
               ),
               // GButton(
@@ -109,11 +97,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
               //   text: 'Likes',
               // ),
               GButton(
-                icon: TIcons.purchase,
+                icon: AppIcons.purchase,
                 text: 'Purchase',
               ),
               GButton(
-                icon: TIcons.user,
+                icon: AppIcons.user,
                 text: 'Profile',
               )
             ]

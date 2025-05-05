@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/widgets/loaders/loader.dart';
+import '../../../../common/dialog_box_massages/full_screen_loader.dart';
+import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
-import '../../../../data/repositories/woocommerce_repositories/authentication/woo_authentication.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
+import '../../../../data/repositories/woocommerce/authentication/woo_authentication.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import '../../screens/email_login/reset_password_screen.dart';
 
 class ForgetPasswordController extends GetxController{
@@ -22,18 +21,18 @@ class ForgetPasswordController extends GetxController{
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       //Start Loading
-      TFullScreenLoader.openLoadingDialog('Processing your request..', Images.docerAnimation);
+      FullScreenLoader.openLoadingDialog('Processing your request..', Images.docerAnimation);
       //check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         //remove Loader
-        TFullScreenLoader.stopLoading();
+        FullScreenLoader.stopLoading();
         return;
       }
       // Form Validation
       if(!forgetPasswordFormKey.currentState!.validate()) {
         //remove Loader
-        TFullScreenLoader.stopLoading();
+        FullScreenLoader.stopLoading();
         return;
       }
 
@@ -41,13 +40,13 @@ class ForgetPasswordController extends GetxController{
       await wooAuthenticationRepository.resetPasswordWithEmail(email);
 
       //remove Loader
-      TFullScreenLoader.stopLoading();
-      TLoaders.customToast(message: 'Reset password email send');
+      FullScreenLoader.stopLoading();
+      AppMassages.showToastMessage(message: 'Reset password email send');
       Get.to(() => ResetPasswordScreen(email: email));
     } catch (error) {
       //remove Loader
-      TFullScreenLoader.stopLoading();
-      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
+      FullScreenLoader.stopLoading();
+      AppMassages.errorSnackBar(title: 'Error', message: error.toString());
     }
   }
 }

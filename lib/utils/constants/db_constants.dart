@@ -41,9 +41,10 @@ class PurchaseListConstants {
   static const String expandedSections = 'expandedSections';
   static const String purchaseOrders = 'purchaseOrders';
 }
+
 class ProductFieldName {
   static const String id = '_id';
-  static const String productId = 'product_id';
+  static const String productId = 'id';
   static const String name = 'name';
   static const String mainImage = 'main_image';
   static const String permalink = 'permalink';
@@ -60,6 +61,7 @@ class ProductFieldName {
   static const String price = 'price';
   static const String salePrice = 'sale_price';
   static const String regularPrice = 'regular_price';
+  static const String purchasePrice = 'purchase_price';
   static const String brands = 'brands';
   static const String dateOnSaleFrom = 'date_on_sale_from';
   static const String dateOnSaleTo = 'date_on_sale_to';
@@ -165,78 +167,11 @@ class MetaFieldName {
   static const String value           = 'counter';
 }
 
-class UserFieldName {
-  static const String activeTime          = 'activeTime';
-  static const String avatarUrl           = 'avatarUrl';
-  static const String dateCreated         = 'dateCreated';
-  static const String dateModified        = 'dateModified';
-  static const String email               = 'email';
-  static const String userId              = 'userId';
-  static const String isPayingCustomer    = 'isPayingCustomer';
-  static const String name                = 'name';
-  static const String password            = 'password';
-  static const String phone               = 'phone';
-  static const String role                = 'role';
-  static const String metaData            = 'metaData';
-  static const String cartItems           = 'cartItems';
-  static const String wishlistItems       = 'wishlistItems';
-  static const String recentItems         = 'recentItems';
-  static const String items               = 'items';
-  static const String roleCustomer        = 'customer';
-  static const String customerOrders      = 'customerOrders';
-}
-
-class VendorFieldName {
-  static const String id = '_id';
-  static const String vendorId = 'vendor_id';
-  static const String email = 'email';
-  static const String phone = 'phone';
-  static const String password = 'password';
-  static const String name = 'first_name';
-  static const String company = 'company';
-  static const String gstNumber = 'gst_number';
-  static const String billing = 'billing';
-  static const String shipping = 'shipping';
-  static const String avatarUrl = 'avatar_url';
-  static const String dateCreated = 'date_created';
-  static const String balance = 'balance';
-  static const String openingBalance = 'opening_balance';
-}
-
-
-class CustomerFieldName {
-  static const String id = '_id';
-  static const String customerId = 'id';
-  static const String email = 'email';
-  static const String password = 'password';
-  static const String fullName = 'full_name';
-  static const String firstName = 'first_name';
-  static const String lastName = 'last_name';
-  static const String role = 'role';
-  static const String username = 'username';
-  static const String billing = 'billing';
-  static const String shipping = 'shipping';
-  static const String isPayingCustomer = 'is_paying_customer';
-  static const String avatarUrl = 'avatar_url';
-  static const String dateCreated = 'date_created';
-  static const String metaData = 'meta_data';
-  static const String fCMToken = 'easyapp_fcm_token';
-  static const String verifyPhone = 'easyapp_verify_phone';
-  static const String isCODBlocked = 'easyapp_cod_blocked';
-}
-
-class CustomerMetaDataName {
-  static const String id = 'id';
-  static const String key = 'key';
-  static const String value = 'value';
-  static const String metaData = 'meta_data';
-  static const String fCMToken = 'easyapp_fcm_token';
-  static const String verifyPhone = 'easyapp_verify_phone';
-
-}
-
 class OrderFieldName {
-  static const String id = 'id';
+  static const String id = '_id';
+  static const String wooId = 'id';
+  static const String invoiceNumber = 'invoice_number';
+  static const String orderId = 'order_id';
   static const String status = 'status';
   static const String currency = 'currency';
   static const String pricesIncludeTax = 'prices_include_tax';
@@ -249,6 +184,7 @@ class OrderFieldName {
   static const String cartTax = 'cart_tax';
   static const String total = 'total';
   static const String totalTax = 'total_tax';
+  static const String userId = 'user_id';
   static const String customerId = 'customer_id';
   static const String billing = 'billing';
   static const String shipping = 'shipping';
@@ -268,6 +204,8 @@ class OrderFieldName {
   static const String paymentUrl = 'payment_url';
   static const String currencySymbol = 'currency_symbol';
   static const String setPaid = 'set_paid';
+  static const String purchaseInvoiceImages = 'purchase_invoice_images';
+  static const String orderType = 'order_type';
 }
 
 class OrderMetaDataName {
@@ -302,25 +240,6 @@ class OrderStatusPritiName {
   static const String returnPending = 'Return Pending';
 }
 
-class AddressFieldName {
-  static const String id = 'id';
-  static const String name = 'name';
-  static const String firstName = 'first_name';
-  static const String lastName = 'last_name';
-  static const String phone = 'phone';
-  static const String email = 'email';
-  static const String address1 = 'address_1';
-  static const String address2 = 'address_2';
-  static const String company = 'company';
-  static const String city = 'city';
-  static const String state = 'state';
-  static const String pincode = 'postcode';
-  static const String country = 'country';
-  static const String dateCreated = 'dateCreated';
-  static const String dateModified = 'dateModified';
-  static const String selectedAddress = 'selectedAddress';
-}
-
 class CartFieldName {
   static const String id = 'id';
   static const String name = 'name';
@@ -335,6 +254,7 @@ class CartFieldName {
   static const String total = 'total';
   static const String sku = 'sku';
   static const String price = 'price';
+  static const String purchasePrice = 'purchase_price';
   static const String image = 'image';
   static const String src = 'src';
   static const String parentName = 'parent_name';
@@ -447,4 +367,90 @@ class PaymentMethodTitle {
   static const String prepaid = 'Prepaid';
   static const String paytm = 'Paytm Wallet';
   static const String razorpay = 'Razorpay';
+}
+
+class UserFieldConstants {
+  // Common Fields
+  static const String id = '_id';
+  static const String userId = 'userId';
+  static const String email = 'email';
+  static const String password = 'password';
+  static const String role = 'role';
+  static const String name = 'name';
+  static const String firstName = 'first_name';
+  static const String lastName = 'last_name';
+  static const String fullName = 'full_name';
+  static const String phone = 'phone';
+  static const String avatarUrl = 'avatar_url';
+  static const String dateCreated = 'date_created';
+  static const String dateModified = 'date_modified';
+  static const String isPayingCustomer = 'is_paying_customer';
+  static const String metaData = 'meta_data';
+
+  // Address Fields
+  static const String billing = 'billing';
+  static const String shipping = 'shipping';
+
+  // Metadata Specific Fields
+  static const String fCMToken = 'easyapp_fcm_token';
+  static const String verifyPhone = 'easyapp_verify_phone';
+  static const String isCODBlocked = 'easyapp_cod_blocked';
+
+  // Activity Fields
+  static const String activeTime = 'active_time';
+  static const String cartItems = 'cart_items';
+  static const String wishlistItems = 'wishlist_items';
+  static const String recentItems = 'recent_items';
+  static const String items = 'items';
+  static const String customerOrders = 'customer_orders';
+
+  // User Roles
+  static const String roleCustomer = 'customer';
+  static const String roleVendor = 'vendor';
+  static const String roleAdmin = 'admin';
+
+  // Additional Fields (from both classes)
+  static const String username = 'username';
+  static const String company = 'company';
+  static const String gstNumber = 'gst_number';
+  static const String balance = 'balance';
+  static const String openingBalance = 'opening_balance';
+  static const String userType = 'user_type';
+}
+
+class AddressFieldName {
+  static const String id = 'id';
+  static const String name = 'name';
+  static const String firstName = 'first_name';
+  static const String lastName = 'last_name';
+  static const String phone = 'phone';
+  static const String email = 'email';
+  static const String address1 = 'address_1';
+  static const String address2 = 'address_2';
+  static const String company = 'company';
+  static const String city = 'city';
+  static const String state = 'state';
+  static const String pincode = 'postcode';
+  static const String country = 'country';
+  static const String dateCreated = 'dateCreated';
+  static const String dateModified = 'dateModified';
+  static const String selectedAddress = 'selectedAddress';
+}
+
+
+class VendorFieldName {
+  static const String id = '_id';
+  static const String vendorId = 'vendor_id';
+  static const String email = 'email';
+  static const String phone = 'phone';
+  static const String password = 'password';
+  static const String name = 'first_name';
+  static const String company = 'company';
+  static const String gstNumber = 'gst_number';
+  static const String billing = 'billing';
+  static const String shipping = 'shipping';
+  static const String avatarUrl = 'avatar_url';
+  static const String dateCreated = 'date_created';
+  static const String balance = 'balance';
+  static const String openingBalance = 'opening_balance';
 }

@@ -1,7 +1,7 @@
 import 'package:fincom/utils/constants/db_constants.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
-import '../../../../features/shop/models/expense_model.dart';
+import '../../../../features/accounts/models/expense_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
 

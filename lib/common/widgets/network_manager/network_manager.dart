@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fincom/common/dialog_box_massages/snack_bar_massages.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import '../loaders/loader.dart';
 
 //manages the network connectivity status and provides method to checl and handel connectivity changes
 class NetworkManager extends GetxController {
@@ -31,7 +30,7 @@ class NetworkManager extends GetxController {
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
 
     if (result.contains(ConnectivityResult.none)) {
-      TLoaders.warningSnackBar(title: 'No Internet Connection');
+      AppMassages.warningSnackBar(title: 'No Internet Connection');
     }
     // final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
 

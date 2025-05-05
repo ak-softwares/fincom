@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:get/get.dart';
 
-import '../../../../features/shop/controllers/product/product_controller.dart';
-import '../../../../features/shop/models/product_model.dart';
+import '../../../../features/accounts/models/cart_item_model.dart';
+import '../../../../features/accounts/models/product_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
@@ -40,7 +40,6 @@ class MongoProductRepo extends GetxController {
       // Fetch products from MongoDB with pagination
       final List<Map<String, dynamic>> productData =
             await _mongoDatabase.fetchProducts(collectionName:collectionName, page: page);
-
       // Convert data to a list of ProductModel
       final List<ProductModel> products = productData.map((data) => ProductModel.fromJson(data)).toList();
 
@@ -98,12 +97,11 @@ class MongoProductRepo extends GetxController {
     }
   }
 
-  Future<void> updateProductQuantities({required List<ProductPurchaseHistory> purchaseHistoryList, required bool isAddition}) async {
+  Future<void> updateQuantities({required List<CartModel> cartItems, bool isAddition = false, bool isPurchase = false}) async {
     try {
-      List<Map<String, dynamic>> productPurchaseHistoryMaps = purchaseHistoryList.map((purchaseHistory) => purchaseHistory.toMap()).toList();
-      await _mongoDatabase.updateProductsStock(collectionName, productPurchaseHistoryMaps); // Use batch insert function
+      await _mongoDatabase.updateQuantities(collectionName: collectionName, cartItems: cartItems, isAddition: isAddition, isPurchase: isPurchase);
     } catch (e) {
-      throw Exception('Failed to update product quantities: $e');
+      rethrow;
     }
   }
 
@@ -158,7 +156,7 @@ class MongoProductRepo extends GetxController {
   Future<void> updateProduct({required String id, required ProductModel product}) async {
     try {
       Map<String, dynamic> productMap = product.toJson();
-      await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: productMap);
+          await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: productMap);
     } catch (e) {
       throw 'Failed to update Product: $e';
     }

@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/shop/screens/products/scrolling_products.dart';
+import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../layout_models/product_grid_layout.dart';
 import '../../styles/shadows.dart';
 import 'shimmer_effect.dart';
 class ProductVoucherShimmer extends StatelessWidget {
-  const ProductVoucherShimmer({
-    super.key,
-    this.itemCount = 1,
-    this.orientation = OrientationType.vertical
-  });
+  const ProductVoucherShimmer({super.key, this.itemCount = 1,});
 
   final int itemCount;
-  final OrientationType orientation;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +20,8 @@ class ProductVoucherShimmer extends StatelessWidget {
 
     return GridLayout(
         itemCount: itemCount,
-        crossAxisCount: orientation == OrientationType.vertical ? 2 : 1,
-        mainAxisExtent: orientation == OrientationType.vertical ? AppSizes.productCardVerticalHeight : productVoucherTileHeight,
+        crossAxisCount: 1,
+        mainAxisExtent: productVoucherTileHeight,
         itemBuilder: (context, index) {
           return Container(
             width: productVoucherTileWidth,

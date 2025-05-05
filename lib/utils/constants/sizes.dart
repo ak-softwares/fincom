@@ -1,8 +1,10 @@
 
+import 'dart:ui';
+
 class AppSizes {
   AppSizes._();
 
-  //Padding and margin sizes
+  // Padding and margin sizes
   static const double xs = 4.0;
   static const double sm = 8.0;
   static const double md = 16.0;
@@ -16,6 +18,27 @@ class AppSizes {
   static const double defaultSpaceLg = 30.0;
   static const double defaultBtwTiles = 10.0;
   static const double defaultBorderWidth = 0.2;
+
+  // Input Field
+  static const double inputFieldHeight = 18.0;
+  static const double inputFieldWidth = 120.0;
+  static const double inputFieldPadding = 16.0;
+  static const double inputFieldTextSize = 16.0;
+  static const FontWeight inputFieldTextWeight = FontWeight.w500;
+  static const double inputFieldRadius = defaultRadius;
+  static const double inputFieldSpace = 16.0;
+  static const double inputFieldBorderWidth = 1.0;
+
+  // Button Sizes
+  static const double buttonHeight = 18.0;
+  static const double buttonWidth = 120.0;
+  static const double buttonPadding = 16.0;
+  static const double buttonTextSize = 16.0;
+  static const FontWeight buttonTextWeight = FontWeight.w500;
+  static const double buttonRadius = defaultRadius;
+  static const double buttonElevation = 4.0;
+  static const double buttonBorderWidth = 1.0;
+
 
   // Default spacing between sections
   static const double spaceBtwItems = 8;
@@ -31,12 +54,6 @@ class AppSizes {
   static const double fontSizeSm = 14.0;
   static const double fontSizeMd = 16.0;
   static const double fontSizeLg = 18.0;
-
-  // Button Sizes
-  static const double buttonHeight = 18.0;
-  static const double buttonWidth = 120.0;
-  static const double buttonRadius = 12.0;
-  static const double buttonElevation = 4.0;
 
   // AppBar Height
   static const double appBarHeight = 56.0;
@@ -98,6 +115,13 @@ class AppSizes {
   static const double orderImageWidth = 100.0;
 
   // Order Tile
+  static const double saleTileHeight = 205;
+  static const double saleTileWidth = 100.0;
+  static const double saleTileRadius = 10.0;
+  static const double saleImageHeight = 50.0;
+  static const double saleImageWidth = 100.0;
+
+  // Order Tile
   static const double purchaseItemTileHeight = 72;
   static const double purchaseItemTileWidth = 100.0;
   static const double purchaseItemTileRadius = 5.0;
@@ -146,7 +170,7 @@ class AppSizes {
   static const double expenseImageHeight = 30.0;
   static const double expenseImageWidth = 30.0;
 
-  // Purchase product Card
+  // Purchase Card
   static const double purchaseTileHeight = 170;
   static const double purchaseTileWidth = 100.0;
   static const double purchaseTileRadius = 5.0;
@@ -160,9 +184,12 @@ class AppSizes {
   static const double purchaseProductImageHeight = 60.0;
   static const double purchaseProductImageWidth = 60.0;
 
-  // Input Field
-  static const double inputFieldRadius = 5;
-  static const double spaceBtwInputFields = 16.0;
+  // Sale product Card
+  static const double saleProductTileHeight = 80;
+  static const double saleProductTileWidth = 100.0;
+  static const double saleProductTileRadius = 5.0;
+  static const double saleProductImageHeight = 60.0;
+  static const double saleProductImageWidth = 60.0;
 
   // Card sizes
   static const double cardRadiusLg = 16.0;

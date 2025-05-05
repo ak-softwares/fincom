@@ -1,6 +1,6 @@
 
-class TTexts {
-  TTexts._();
+class AppTexts {
+  AppTexts._();
 
   //OnBoarding Text
   static const String onBoardingTitle1  = "Choose your product";

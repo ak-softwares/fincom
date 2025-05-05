@@ -1,15 +1,12 @@
-import 'package:fincom/features/shop/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
-import '../../features/shop/screens/products/scrolling_products.dart';
+import '../../features/accounts/models/product_model.dart';
+import '../../features/accounts/screen/products/widget/product_tile.dart';
+import '../../utils/constants/enums.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/constants/sizes.dart';
-import '../../utils/helpers/navigation_helper.dart';
-import '../widgets/loaders/animation_loader.dart';
-import '../widgets/product/product_cards/product_card.dart';
-import '../widgets/product/product_voucher/product_voucher_card.dart';
-import '../widgets/shimmers/product_shimmer.dart';
+import '../dialog_box_massages/animation_loader.dart';
 import '../widgets/shimmers/product_voucher_shimmer.dart';
 
 class ProductGridLayout extends StatelessWidget {
@@ -18,7 +15,7 @@ class ProductGridLayout extends StatelessWidget {
     required this.controller,
     this.sourcePage = '',
     this.orientation = OrientationType.vertical,
-    this.emptyWidget = const TAnimationLoaderWidgets(text: 'Whoops! No products found...', animation: Images.pencilAnimation),
+    this.emptyWidget = const AnimationLoaderWidgets(text: 'Whoops! No products found...', animation: Images.pencilAnimation),
     this.onTap,
   });
 
@@ -32,7 +29,7 @@ class ProductGridLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value) {
-        return  ProductVoucherShimmer(itemCount: 2, orientation: orientation);
+        return  ProductVoucherShimmer(itemCount: 2);
       } else if(controller.products.isEmpty) {
         return emptyWidget;
       } else {
@@ -43,14 +40,12 @@ class ProductGridLayout extends StatelessWidget {
           mainAxisExtent: orientation == OrientationType.vertical ? AppSizes.productCardVerticalHeight : AppSizes.productVoucherTileHeight,
           itemBuilder: (context, index) {
             if (index < products.length) {
-              return ProductVoucherCard(
+              return ProductTile(
                   product: products[index],
-                  orientation: orientation,
-                  pageSource: sourcePage,
                   onTap: () => onTap?.call(products[index]), // Pass the product directly
               );
             } else {
-              return ProductVoucherShimmer(orientation: orientation);
+              return ProductVoucherShimmer();
             }
           }
         );

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/styles/spacing_style.dart';
-import '../../../../common/widgets/terms_conditions_checkbox/terms_conditions_checkbox.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/validators/validation.dart';
@@ -18,10 +16,9 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('signup_screen');
 
     return Scaffold(
-      appBar: const AppAppBar2(titleText: "Signup", showBackArrow: true),
+      appBar: const AppAppBar(title: "Signup", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -40,29 +37,29 @@ class SignUpScreen extends StatelessWidget {
                         //Name
                         TextFormField(
                           controller: controller.fullName,
-                          validator: (value) => TValidator.validateEmptyText(TTexts.firstName, value),
-                          decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: TTexts.firstName),
+                          validator: (value) => Validator.validateEmptyText(AppTexts.firstName, value),
+                          decoration: const InputDecoration(prefixIcon: Icon(Iconsax.user), labelText: AppTexts.firstName),
                         ),
-                        const SizedBox(height: AppSizes.spaceBtwInputFields),
+                        const SizedBox(height: AppSizes.inputFieldSpace),
                         //Email
                         TextFormField(
                             controller: controller.email,
-                            validator: (value) => TValidator.validateEmail(value),
+                            validator: (value) => Validator.validateEmail(value),
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Iconsax.direct_right),
-                                labelText: TTexts.email
+                                labelText: AppTexts.email
                             )
                         ),
                         //Password
-                        const SizedBox(height: AppSizes.spaceBtwInputFields),
+                        const SizedBox(height: AppSizes.inputFieldSpace),
                         Obx(
                             () => TextFormField(
                               controller: controller.password,
-                              validator: (value) => TValidator.validatePassword(value),
+                              validator: (value) => Validator.validatePassword(value),
                               obscureText: controller.hidePassword.value,
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(Iconsax.password_check),
-                                  labelText: TTexts.password,
+                                  labelText: AppTexts.password,
                                   suffixIcon: IconButton(
                                     onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
                                     icon: controller.hidePassword.value ? const Icon(Iconsax.eye_slash) : const Icon(Iconsax.eye),
@@ -70,22 +67,21 @@ class SignUpScreen extends StatelessWidget {
                               )
                         )),
                         // phone
-                        const SizedBox(height: AppSizes.spaceBtwInputFields),
+                        const SizedBox(height: AppSizes.inputFieldSpace),
                         TextFormField(
                             controller: controller.phone,
-                            validator: (value) => TValidator.validatePhoneNumber(value),
+                            validator: (value) => Validator.validatePhoneNumber(value),
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Iconsax.call),
-                                labelText: TTexts.phone
+                                labelText: AppTexts.phone
                             )
                         ),
 
                         //terms and conditions
                         const SizedBox(height: AppSizes.spaceBtwSection),
-                        const TTermsAndConditionsCheckBox(),
 
                         // signup button
-                        const SizedBox(height: AppSizes.spaceBtwInputFields),
+                        const SizedBox(height: AppSizes.inputFieldSpace),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

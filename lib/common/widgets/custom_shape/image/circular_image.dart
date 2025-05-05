@@ -3,15 +3,13 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-import '../../../../features/shop/controllers/product/image_controller.dart';
+import '../../../../features/accounts/controller/image/image_controller.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/constants/sizes.dart';
 import '../../shimmers/shimmer_effect.dart';
 
-class TRoundedImage extends StatelessWidget {
-  const TRoundedImage({
+class RoundedImage extends StatelessWidget {
+  const RoundedImage({
     super.key,
     this.width = 35,
     this.height = 35,

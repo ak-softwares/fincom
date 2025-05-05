@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/local_storage_constants.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
@@ -27,7 +26,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   void initState() {
     super.initState();
-    FBAnalytics.logPageView('onboarding_screen');
     pageController = PageController();
     currentPage = pageController.initialPage;
   }
@@ -53,9 +51,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               // print('Current Page: ${currentPage + 1}');
             },
             children: const [
-              OnBoardingPage(image: Images.onBoardingImage1, title: TTexts.onBoardingTitle1, subTitle: TTexts.onBoardingSubTitle1),
-              OnBoardingPage(image: Images.onBoardingImage2, title: TTexts.onBoardingTitle2, subTitle: TTexts.onBoardingSubTitle2),
-              OnBoardingPage(image: Images.onBoardingImage3, title: TTexts.onBoardingTitle3, subTitle: TTexts.onBoardingSubTitle3),
+              OnBoardingPage(image: Images.onBoardingImage1, title: AppTexts.onBoardingTitle1, subTitle: AppTexts.onBoardingSubTitle1),
+              OnBoardingPage(image: Images.onBoardingImage2, title: AppTexts.onBoardingTitle2, subTitle: AppTexts.onBoardingSubTitle2),
+              OnBoardingPage(image: Images.onBoardingImage3, title: AppTexts.onBoardingTitle3, subTitle: AppTexts.onBoardingSubTitle3),
             ],
           ),
           // Skip button
@@ -110,7 +108,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                backgroundColor: AppColors.buttonPrimary,
+                backgroundColor: AppColors.buttonBackgroundColor,
                 side: BorderSide.none,
               ),
               child: Icon(LineAwesomeIcons.arrow_right_solid),

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../../features/shop/models/order_model.dart';
-import '../../../../features/shop/models/purchase_item_model.dart';
+import '../../../../features/accounts/models/order_model.dart';
+import '../../../../features/accounts/models/purchase_item_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../database/mongodb/mongodb.dart';

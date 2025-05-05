@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../../../../common/widgets/loaders/loader.dart';
+import '../../../../common/dialog_box_massages/full_screen_loader.dart';
+import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
-import '../../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../../data/repositories/mongodb/user/user_repositories.dart';
-import '../../../../data/repositories/woocommerce_repositories/authentication/woo_authentication.dart';
-import '../../../../data/repositories/woocommerce_repositories/customers/woo_customer_repository.dart';
+import '../../../../data/repositories/mongodb/authentication/authentication_repositories.dart';
+import '../../../../data/repositories/woocommerce/authentication/woo_authentication.dart';
+import '../../../../data/repositories/woocommerce/customers/woo_customer_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/local_storage_constants.dart';
-import '../../../../utils/helpers/navigation_helper.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
+import '../authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/user_model.dart';
 
 class LoginController extends GetxController {
@@ -29,7 +28,7 @@ class LoginController extends GetxController {
   final wooCustomersRepository = Get.put(WooCustomersRepository());
   final wooAuthenticationRepository = Get.put(WooAuthenticationRepository());
   final mongoAuthenticationRepository = Get.put(MongoAuthenticationRepository());
-  final authenticationRepository = Get.put(AuthenticationRepository());
+  final userController = Get.put(AuthenticationController());
 
   //Init method fetch user's saved password and email from local storage
   @override
@@ -50,7 +49,7 @@ class LoginController extends GetxController {
   Future<void> mongoLogin() async {
     try {
       //Start Loading
-      TFullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
+      FullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
       //check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) return;
@@ -65,12 +64,12 @@ class LoginController extends GetxController {
         localStorage.write(LocalStorage.rememberMeEmail, email.text.trim());
         localStorage.write(LocalStorage.rememberMePassword, password.text);
       }
-      authenticationRepository.login(user: user);
+      userController.login(user: user);
     } catch (error) {
       //remove Loader
-      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
+      AppMassages.errorSnackBar(title: 'Error', message: error.toString());
     } finally {
-      TFullScreenLoader.stopLoading();
+      FullScreenLoader.stopLoading();
     }
   }
 
@@ -78,23 +77,23 @@ class LoginController extends GetxController {
   Future<void> wooLoginWithEmailAndPassword() async {
     try {
       //Start Loading
-      TFullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
+      FullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
       //check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         //remove Loader
-        TFullScreenLoader.stopLoading();
+        FullScreenLoader.stopLoading();
         return;
       }
       // Form Validation
       if (!loginFormKey.currentState!.validate()) {
         //remove Loader
-        TFullScreenLoader.stopLoading();
+        FullScreenLoader.stopLoading();
         return;
       }
 
       String userId = await wooAuthenticationRepository.loginWithEmailAndPass(email.text.trim(), password.text);
-      final CustomerModel customer = await wooCustomersRepository.fetchCustomerById(userId);
+      final UserModel customer = await wooCustomersRepository.fetchCustomerById(userId);
 
       //save to local storage
       if (rememberMe.value) {
@@ -102,59 +101,12 @@ class LoginController extends GetxController {
         localStorage.write(LocalStorage.rememberMePassword, password.text);
       }
       //remove Loader
-      TFullScreenLoader.stopLoading();
+      FullScreenLoader.stopLoading();
       // authenticationRepository.login(user: customer);
     } catch (error) {
       //remove Loader
-      TFullScreenLoader.stopLoading();
-      TLoaders.errorSnackBar(title: 'Error', message: error.toString());
-    }
-  }
-
-  //Email and Password signIn
-  Future<void> loginWithEmailAndPassword() async {
-    try {
-      //Start Loading
-      TFullScreenLoader.openLoadingDialog('We are processing your information..', Images.docerAnimation);
-
-      //check internet connectivity
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        //remove Loader
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Form Validation
-      if(!loginFormKey.currentState!.validate()) {
-        //remove Loader
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-      // Register user in the Firebase Authentication & save user data in the Firebase
-      final userCredential = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
-
-      //privacy policy check
-      if(rememberMe.value) {
-        localStorage.write(LocalStorage.rememberMeEmail, email.text.trim());
-        localStorage.write(LocalStorage.rememberMePassword, password.text.trim());
-      }
-
-      //remove Loader
-      TFullScreenLoader.stopLoading();
-      // UserController.instance.fetchUserRecord();
-      TLoaders.customToast(message: 'Login successfully!');
-
-      // redirect
-      // AuthenticationRepository.instance.screenRedirect();
-      // move to next screen
-      NavigationHelper.navigateToBottomNavigation();
-
-    } catch (error) {
-      //remove Loader
-      TFullScreenLoader.stopLoading();
-      //show some Generic error to the user
-      TLoaders.errorSnackBar(title: 'Oh Snap!', message: error.toString());
+      FullScreenLoader.stopLoading();
+      AppMassages.errorSnackBar(title: 'Error', message: error.toString());
     }
   }
 }

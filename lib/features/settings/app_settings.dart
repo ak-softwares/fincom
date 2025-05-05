@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../authentication/controllers/authentication_controller/authentication_controller.dart';
 
 class AppSettings {
 
@@ -7,9 +11,11 @@ class AppSettings {
   static const String subTitle            =  'Wholesale Market Place';
 
   static const String appCurrency         =  'INR';
-  static const String appCurrencySymbol   =  '₹';
+  static const String currencySymbol   =  '₹';
   static const int freeShippingOver       =  999;
   static const double shippingCharge      =  100;
+  static String version = '';
+  static const int otpLength              =  4;
 
   // Images
   static const String lightAppLogo = 'assets/logos/fincom_logo.png';
@@ -61,8 +67,11 @@ class AppSettings {
   static const String youtube               = 'https://www.youtube.com/@aramarket';
   static const String playStore             = 'https://play.google.com/store/apps/details?id=com.company.aramarketin&hl=en_IN&gl=US';
 
-  static Future<String> getAppVersion() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.version; // This retrieves the version from pubspec.yaml
+  static Future<void> init() async {
+    final info = await PackageInfo.fromPlatform();
+    version = info.version;
+    await Get.put(AuthenticationController()).checkIsAdminLogin();
   }
+
+  static String get appVersion => version;
 }

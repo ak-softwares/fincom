@@ -1,266 +1,216 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../../utils/constants/db_constants.dart';
-import '../../../utils/formatters/formatters.dart';
+import '../../../utils/constants/enums.dart';
 import 'address_model.dart';
 
-//for woocommerce
-class CustomerModel {
+class UserModel {
   String? id;
-  int? customerId;
+  int? userId;
   String? email;
   String? password;
   String? firstName;
   String? lastName;
+  String? name;
   String? role;
   String? username;
+  String? phone;
   String? company;
   String? gstNumber;
   AddressModel? billing;
   AddressModel? shipping;
   double? balance;
+  double? openingBalance;
   bool? isPayingCustomer;
   String? avatarUrl;
   String? dateCreated;
+  String? dateModified;
   bool? isPhoneVerified;
   String? fCMToken;
   bool? isCODBlocked;
-
-  CustomerModel({
-    this.id,
-    this.customerId,
-    this.email,
-    this.password,
-    this.firstName,
-    this.lastName,
-    this.role,
-    this.username,
-    this.gstNumber,
-    this.billing,
-    this.shipping,
-    this.balance,
-    this.isPayingCustomer,
-    this.avatarUrl,
-    this.dateCreated,
-    this.isPhoneVerified,
-    this.fCMToken,
-    this.isCODBlocked,
-  });
-
-  static CustomerModel empty() => CustomerModel();
-  String get name => '${firstName ?? ''} ${lastName ?? ''}';
-  String get phone => billing?.phone ?? '';
-
-  factory CustomerModel.fromJson(Map<String, dynamic> json) {
-    return CustomerModel(
-      customerId: json[CustomerFieldName.customerId] ?? 0,
-      email: json[CustomerFieldName.email] ?? '',
-      firstName: json[CustomerFieldName.firstName] ?? '',
-      lastName: json[CustomerFieldName.lastName] ?? '',
-      role: json[CustomerFieldName.role] ?? '',
-      username: json[CustomerFieldName.username] ?? '',
-      billing: AddressModel.fromJson(json[CustomerFieldName.billing] ?? {}),
-      shipping: AddressModel.fromJson(json[CustomerFieldName.shipping] ?? {}),
-      isPayingCustomer: json[CustomerFieldName.isPayingCustomer] ?? false,
-      avatarUrl: json[CustomerFieldName.avatarUrl] ?? '',
-      dateCreated: json[CustomerFieldName.dateCreated] ?? '',
-      isPhoneVerified: (json[CustomerFieldName.metaData] as List?)?.any((meta) => meta['key'] == CustomerMetaDataName.verifyPhone && meta['value'] == true) ?? false,
-      fCMToken: (json[CustomerFieldName.metaData] as List?)?.firstWhere((meta) => meta['key'] == CustomerMetaDataName.fCMToken, orElse: () => {'value': ''},)['value'] ?? '',
-      isCODBlocked: (json[CustomerFieldName.metaData] as List?)?.any((meta) => meta['key'] == CustomerFieldName.isCODBlocked && meta['value'] == "1") ?? false,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      CustomerFieldName.customerId: customerId,
-      CustomerFieldName.email: email,
-      CustomerFieldName.firstName: firstName,
-      CustomerFieldName.lastName: lastName,
-      CustomerFieldName.role: role,
-      CustomerFieldName.username: username,
-      CustomerFieldName.billing: billing?.toMap(),
-      CustomerFieldName.shipping: shipping?.toMap(),
-      CustomerFieldName.isPayingCustomer: isPayingCustomer,
-      CustomerFieldName.avatarUrl: avatarUrl,
-      CustomerFieldName.dateCreated: dateCreated,
-      CustomerFieldName.metaData: [
-        {
-          'key': CustomerMetaDataName.verifyPhone,
-          'value': isPhoneVerified,
-        },
-        {
-          'key': CustomerMetaDataName.fCMToken,
-          'value': fCMToken,
-        },
-        {
-          'key': CustomerFieldName.isCODBlocked,
-          'value': isCODBlocked ?? false ? "1" : "0",
-        }
-      ],
-    };
-  }
-
-  Map<String, dynamic> toJsonForWooSingUp(){
-    return {
-      CustomerFieldName.firstName: firstName,
-      CustomerFieldName.username: username,
-      CustomerFieldName.email: email,
-      CustomerFieldName.password: password,
-      CustomerFieldName.billing: billing?.toJsonForWoo(),
-      CustomerFieldName.shipping: shipping?.toJsonForWoo(),
-    };
-  }
-}
-
-class CustomerMetaDataModel{
-  final int? id;
-  final String? key;
-  final String? value;
-
-  CustomerMetaDataModel({
-    this.id,
-    this.key,
-    this.value,
-  });
-
-  //Convert a cartItem to a Json map
-  Map<String, dynamic> toJsonForWoo() {
-    return {
-      OrderMetaDataName.key: key ?? '',
-      OrderMetaDataName.value: value ?? '',
-    };
-  }
-}
-
-class UserModel {
-
-  String? id;
-  String? activeTime;
-  String? avatarUrl;
-  DateTime? dateCreated;
-  DateTime? dateModified;
-  String? email;
-  String? userId;
-  bool? isPayingCustomer;
-  String? name;
-  String? password;
-  String?  phone;
-  String? role;
-  Map<String, dynamic>? metaData;
+  UserType userType;
+  DateTime? activeTime;
   List<dynamic>? cartItems;
   List<dynamic>? wishlistItems;
   List<dynamic>? recentItems;
   List<dynamic>? customerOrders;
 
-  ///Constructor for UserModel.
   UserModel({
-    this.activeTime,
+    this.id,
+    this.userId,
+    this.email,
+    this.password,
+    this.firstName,
+    this.lastName,
+    this.name,
+    this.role,
+    this.username,
+    this.phone,
+    this.company,
+    this.gstNumber,
+    this.billing,
+    this.shipping,
+    this.balance,
+    this.openingBalance,
+    this.isPayingCustomer,
     this.avatarUrl,
     this.dateCreated,
     this.dateModified,
-    this.email,
-    this.userId,
-    this.isPayingCustomer,
-    this.name,
-    this.password,
-    this.phone,
-    this.role,
-    this.metaData,
+    this.isPhoneVerified,
+    this.fCMToken,
+    this.isCODBlocked,
+    this.userType = UserType.customer,
+    this.activeTime,
     this.cartItems,
     this.wishlistItems,
     this.recentItems,
     this.customerOrders,
   });
 
-  ///Helper function to Format phone number
-  String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phone ?? '');
+  static UserModel empty() => UserModel();
 
-  /// static function to create an empty user model.
-  static UserModel empty() => UserModel(phone: '');
-
-  ///Covert model to json structure for storing data in FireStore.
-  Map<String, dynamic> toJson() {
-    // Create metaData map with cartItems, wishlistItems, and recentItems
-    Map<String, dynamic> metaData = {
-      UserFieldName.cartItems: {
-        UserFieldName.items: cartItems,
-        UserFieldName.dateModified: Timestamp.now().toDate(),
-      },
-      UserFieldName.wishlistItems: {
-        UserFieldName.items: wishlistItems,
-        UserFieldName.dateModified: Timestamp.now().toDate(),
-      },
-      UserFieldName.recentItems: {
-        UserFieldName.items: recentItems,
-        UserFieldName.dateModified: Timestamp.now().toDate(),
-      },
-      UserFieldName.customerOrders: {
-        UserFieldName.items: customerOrders,
-        UserFieldName.dateModified: Timestamp.now().toDate(),
-      },
-    };
-
-    return {
-      UserFieldName.activeTime: activeTime,
-      UserFieldName.avatarUrl: avatarUrl,
-      UserFieldName.dateCreated: dateCreated,
-      UserFieldName.dateModified: dateModified,
-      UserFieldName.email: email,
-      UserFieldName.userId: userId,
-      UserFieldName.isPayingCustomer: isPayingCustomer,
-      UserFieldName.name: name,
-      // UserFieldName.password: password,
-      UserFieldName.phone: phone,
-      UserFieldName.role: role,
-      UserFieldName.metaData: metaData,
-    };
+  String get fullName {
+    if (name != null && name!.isNotEmpty) return name!;
+    return '${firstName ?? ''} ${lastName ?? ''}'.trim();
   }
-  Map<String, dynamic> toMap() {
-    return {
-      UserFieldName.name: name,
-      UserFieldName.email: email,
-      UserFieldName.password: password,
-      UserFieldName.phone: phone,
-    };
-  }
+
+  bool get isVendor => userType == UserType.vendor;
+  bool get isCustomer => userType == UserType.customer;
+  bool get isAdmin => userType == UserType.admin;
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final UserType userType = UserType.values.firstWhere(
+          (e) => e.name == json[UserFieldConstants.userType],
+      orElse: () => UserType.customer, // or a default fallback
+    );
+
     return UserModel(
-      name: json[UserFieldName.name] ?? '',
-      email: json[UserFieldName.email] ?? '',
-      password: json[UserFieldName.password] ?? '',
-      phone: json[UserFieldName.phone] ?? '',
+      id: json[UserFieldConstants.id] is ObjectId
+          ? (json[UserFieldConstants.id] as ObjectId).toHexString() // Convert ObjectId to string
+          : json[UserFieldConstants.id]?.toString(), // Fallback to string if not ObjectId
+      userId: json[UserFieldConstants.userId] ?? 0,
+      email: json[UserFieldConstants.email] ?? '',
+      password: json[UserFieldConstants.password] ?? '',
+      name: json[UserFieldConstants.name] ?? '',
+      role: json[UserFieldConstants.role] ?? '',
+      username: json[UserFieldConstants.username] ?? '',
+      phone: json[UserFieldConstants.phone] ?? (json[UserFieldConstants.billing]?[UserFieldConstants.phone] ?? ''),
+      company: json[UserFieldConstants.company] ?? '',
+      gstNumber: json[UserFieldConstants.gstNumber] ?? '',
+      billing: AddressModel.fromJson(json[UserFieldConstants.billing] ?? {}),
+      shipping: AddressModel.fromJson(json[UserFieldConstants.shipping] ?? {}),
+      isPayingCustomer: json[UserFieldConstants.isPayingCustomer] ?? false,
+      avatarUrl: json[UserFieldConstants.avatarUrl] ?? '',
+      dateCreated: json[UserFieldConstants.dateCreated] ?? '',
+      dateModified: json[UserFieldConstants.dateModified] ?? '',
+      isPhoneVerified: (json[UserFieldConstants.metaData] as List?)?.any((meta) =>
+      meta['key'] == UserFieldConstants.verifyPhone && meta['value'] == true) ?? false,
+      fCMToken: (json[UserFieldConstants.metaData] as List?)?.firstWhere(
+              (meta) => meta['key'] == UserFieldConstants.fCMToken,
+          orElse: () => {'value': ''})['value'] ?? '',
+      isCODBlocked: (json[UserFieldConstants.metaData] as List?)?.any((meta) =>
+      meta['key'] == UserFieldConstants.isCODBlocked && meta['value'] == "1") ?? false,
+      balance: json[UserFieldConstants.balance]?.toDouble() ?? 0.0,
+      openingBalance: json[UserFieldConstants.openingBalance]?.toDouble(),
+      userType: userType,
+      activeTime: json[UserFieldConstants.activeTime] != null
+          ? DateTime.parse(json[UserFieldConstants.activeTime])
+          : null,
+      cartItems: json[UserFieldConstants.cartItems] as List<dynamic>?,
+      wishlistItems: json[UserFieldConstants.wishlistItems] as List<dynamic>?,
+      recentItems: json[UserFieldConstants.recentItems] as List<dynamic>?,
+      customerOrders: json[UserFieldConstants.customerOrders] as List<dynamic>?,
     );
   }
 
-  // Factory method to create a UserModel from a Firebase document snapshot.
-  factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
-    final data = document.data();
-    if (data != null) {
-      return UserModel(
-        activeTime: data[UserFieldName.activeTime] ?? '',
-        avatarUrl: data[UserFieldName.avatarUrl] ?? '',
-        dateCreated: (data[AddressFieldName.dateCreated] as Timestamp?)?.toDate() ?? DateTime(2000),
-        dateModified: (data[AddressFieldName.dateModified] as Timestamp?)?.toDate() ?? DateTime(2000),
-        email: data[UserFieldName.email] ?? '',
-        userId: data[UserFieldName.userId] ?? '',
-        isPayingCustomer: data[UserFieldName.isPayingCustomer] ?? false,
-        name: data[UserFieldName.name] ?? '',
-        // password: data[UserFieldName.password] ?? '',
-        phone: data[UserFieldName.phone] ?? '',
-        role: data[UserFieldName.role] ?? '',
-      );
-    } else {
-      return UserModel.empty();
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+
+    void addIfNotNull(String key, dynamic value) {
+      if (value != null) map[key] = value;
     }
+    addIfNotNull(UserFieldConstants.userId, userId);
+    addIfNotNull(UserFieldConstants.email, email);
+    addIfNotNull(UserFieldConstants.name, name);
+    addIfNotNull(UserFieldConstants.role, role);
+    addIfNotNull(UserFieldConstants.username, username);
+    addIfNotNull(UserFieldConstants.password, password);
+    addIfNotNull(UserFieldConstants.phone, phone);
+    addIfNotNull(UserFieldConstants.company, company);
+    addIfNotNull(UserFieldConstants.gstNumber, gstNumber);
+    addIfNotNull(UserFieldConstants.billing, billing?.toMap());
+    addIfNotNull(UserFieldConstants.shipping, shipping?.toMap());
+    addIfNotNull(UserFieldConstants.isPayingCustomer, isPayingCustomer);
+    addIfNotNull(UserFieldConstants.avatarUrl, avatarUrl);
+    addIfNotNull(UserFieldConstants.dateCreated, dateCreated);
+    addIfNotNull(UserFieldConstants.dateModified, dateModified);
+    addIfNotNull(UserFieldConstants.balance, balance);
+    addIfNotNull(UserFieldConstants.openingBalance, openingBalance);
+    addIfNotNull(UserFieldConstants.userType, userType.name);
+    addIfNotNull(UserFieldConstants.activeTime, activeTime?.toIso8601String());
+    addIfNotNull(UserFieldConstants.cartItems, cartItems);
+    addIfNotNull(UserFieldConstants.wishlistItems, wishlistItems);
+    addIfNotNull(UserFieldConstants.recentItems, recentItems);
+    addIfNotNull(UserFieldConstants.customerOrders, customerOrders);
+
+    final metaDataList = <Map<String, dynamic>>[];
+
+    if (isPhoneVerified != null) {
+      metaDataList.add({
+        'key': UserFieldConstants.verifyPhone,
+        'value': isPhoneVerified,
+      });
+    }
+
+    if (fCMToken != null) {
+      metaDataList.add({
+        'key': UserFieldConstants.fCMToken,
+        'value': fCMToken,
+      });
+    }
+
+    if (isCODBlocked != null) {
+      metaDataList.add({
+        'key': UserFieldConstants.isCODBlocked,
+        'value': isCODBlocked! ? "1" : "0",
+      });
+    }
+
+    if (metaDataList.isNotEmpty) {
+      map[UserFieldConstants.metaData] = metaDataList;
+    }
+
+    return map;
   }
 
-
+  Map<String, dynamic> toJsonForSignUp() {
+    return {
+      UserFieldConstants.firstName: firstName,
+      UserFieldConstants.username: username,
+      UserFieldConstants.email: email,
+      UserFieldConstants.password: password,
+      UserFieldConstants.billing: billing?.toJsonForWoo(),
+      UserFieldConstants.shipping: shipping?.toJsonForWoo(),
+      UserFieldConstants.userType: userType.toString().split('.').last,
+    };
+  }
 }
 
+class UserMetaDataModel {
+  final int? id;
+  final String? key;
+  final String? value;
 
+  UserMetaDataModel({
+    this.id,
+    this.key,
+    this.value,
+  });
 
-
-
-
-
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key ?? '',
+      'value': value ?? '',
+    };
+  }
+}

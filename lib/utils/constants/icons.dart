@@ -5,8 +5,8 @@ import 'package:line_icons/line_icons.dart';
 
 import 'colors.dart';
 
-class TIcons {
-  TIcons._();
+class AppIcons {
+  AppIcons._();
 
   // Accounts
   static IconData sales = LineIcons.shoppingBag;

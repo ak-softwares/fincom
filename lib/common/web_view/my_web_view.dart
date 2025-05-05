@@ -5,7 +5,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../utils/constants/colors.dart';
-import '../navigation_bar/appbar2.dart';
+import '../navigation_bar/appbar.dart';
 
 class MyWebViewController extends GetxController {
   final RxInt progress = 0.obs;
@@ -70,7 +70,7 @@ class MyWebView extends StatelessWidget {
         // return;
       },
       child: Scaffold(
-        appBar: AppAppBar2(titleText: title),
+        appBar: AppAppBar(title: title),
         body: RefreshIndicator(
           color: AppColors.primaryColor,
           onRefresh: () async {

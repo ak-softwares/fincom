@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../controllers/login_controller/login_controller.dart';
 import '../create_account/signup.dart';
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/styles/spacing_style.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/constants/text_strings.dart';
@@ -20,12 +19,11 @@ class EmailLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('email_login_screen');
 
     final controller = Get.put(LoginController());
     final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
-      appBar: const AppAppBar2(titleText: "Login", showBackArrow: true),
+      appBar: const AppAppBar(title: "Login", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWidthAppbarHeight,
@@ -36,9 +34,9 @@ class EmailLoginScreen extends StatelessWidget {
                 //login, Title, Subtitle
                 Column(
                   children: [
-                    Text(TTexts.loginTitle, style: Theme.of(context).textTheme.headlineMedium),
+                    Text(AppTexts.loginTitle, style: Theme.of(context).textTheme.headlineMedium),
                     const SizedBox(height: AppSizes.sm),
-                    Text(TTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
+                    Text(AppTexts.loginSubTitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center)
                   ],
                 ),
                 const SizedBox(height: AppSizes.spaceBtwSection),
@@ -50,29 +48,29 @@ class EmailLoginScreen extends StatelessWidget {
                           //Email
                           TextFormField(
                             controller: controller.email,
-                            validator: (value) => TValidator.validateEmail(value),
+                            validator: (value) => Validator.validateEmail(value),
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Iconsax.direct_right),
-                                labelText: TTexts.email,
+                                labelText: AppTexts.email,
                             )
                           ),
                           //Password
-                          const SizedBox(height: AppSizes.spaceBtwInputFields),
+                          const SizedBox(height: AppSizes.inputFieldSpace),
                           Obx(
                                 () => TextFormField(
                                   controller: controller.password,
-                                  validator: (value) => TValidator.validateEmptyText('Password', value),
+                                  validator: (value) => Validator.validateEmptyText('Password', value),
                                   obscureText: controller.hidePassword.value,
                                   decoration: InputDecoration(
                                       prefixIcon: const Icon(Iconsax.password_check),
-                                      labelText: TTexts.password,
+                                      labelText: AppTexts.password,
                                       suffixIcon: IconButton(
                                         onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
                                         icon: controller.hidePassword.value ? const Icon(Iconsax.eye_slash) : const Icon(Iconsax.eye),
                                       )
                                   )
                               )),
-                          const SizedBox(height: AppSizes.spaceBtwInputFields / 2),
+                          const SizedBox(height: AppSizes.inputFieldSpace / 2),
                           //forget password and remember me
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,7 +82,7 @@ class EmailLoginScreen extends StatelessWidget {
                                           onChanged: (value) => controller.rememberMe.value = !controller.rememberMe.value,
                                       ),
                                     ),
-                                    const Text(TTexts.rememberMe),
+                                    const Text(AppTexts.rememberMe),
                                   ],
                                 ),
                                 TextButton(
@@ -93,7 +91,7 @@ class EmailLoginScreen extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(builder: (context) => ForgetPasswordScreen(email: controller.email.text.trim(),))
                                       );},
-                                    child: Text(TTexts.forgotPassword, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor))
+                                    child: Text(AppTexts.forgotPassword, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor))
                                 )
                               ]
                           ),
@@ -103,7 +101,7 @@ class EmailLoginScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              child: const Text(TTexts.login),
+                              child: const Text(AppTexts.login),
                               onPressed: () => controller.mongoLogin(),
                             ),
                           ),
@@ -123,7 +121,7 @@ class EmailLoginScreen extends StatelessWidget {
                       )),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(TTexts.orSignInWith.capitalize!, style: Theme.of(context).textTheme.labelMedium),
+                        child: Text(AppTexts.orSignInWith.capitalize!, style: Theme.of(context).textTheme.labelMedium),
                       ),
                       Expanded(child: Divider(
                         thickness: 0.5,

@@ -1,13 +1,12 @@
-import 'package:fincom/common/widgets/shimmers/customers_voucher_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
-import '../../features/shop/screen_account/customers/widget/customer_tile_simmer.dart';
-import '../../features/shop/screens/products/scrolling_products.dart';
+import '../../features/accounts/screen/customers/widget/customer_tile.dart';
+import '../../features/accounts/screen/customers/widget/customer_tile_simmer.dart';
+import '../../utils/constants/enums.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/constants/sizes.dart';
-import '../widgets/loaders/animation_loader.dart';
-import '../widgets/tiles/Customers/customer_tile.dart';
+import '../dialog_box_massages/animation_loader.dart';
 import 'product_grid_layout.dart';
 
 class CustomersGridLayout extends StatelessWidget {
@@ -16,7 +15,7 @@ class CustomersGridLayout extends StatelessWidget {
     required this.controller,
     required this.sourcePage,
     this.orientation = OrientationType.horizontal,
-    this.emptyWidget = const TAnimationLoaderWidgets(text: 'Whoops! No products found...', animation: Images.pencilAnimation),
+    this.emptyWidget = const AnimationLoaderWidgets(text: 'Whoops! No products found...', animation: Images.pencilAnimation),
   });
 
   final dynamic controller;
@@ -29,10 +28,10 @@ class CustomersGridLayout extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value) {
         return  CustomersTileShimmer(itemCount: 2);
-      } else if(controller.customers.isEmpty) {
+      } else if(controller.users.isEmpty) {
         return emptyWidget;
       } else {
-        final customers = controller.customers.value;
+        final customers = controller.users.value;
         return Column(
           children: [
             GridLayout(
@@ -41,7 +40,7 @@ class CustomersGridLayout extends StatelessWidget {
                 mainAxisExtent: AppSizes.customerVoucherTileHeight,
                 itemBuilder: (context, index) {
                   if (index < customers.length) {
-                    return CustomerVoucherTile(customer: customers[index]);
+                    return CustomerTile(customer: customers[index]);
                   } else {
                     return CustomersTileShimmer();
                   }

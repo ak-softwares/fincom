@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/device/device_utility.dart';
 
-class TTabbar extends StatelessWidget implements PreferredSizeWidget{
+class AppTabBar extends StatelessWidget implements PreferredSizeWidget{
   //if you want to to add the background color to tabs you have to wrap them in material widget.
   // to do that we need [PreferredSizeWidget] and thats why created custom class
-  const TTabbar({super.key, required this.tabs});
+  const AppTabBar({super.key, required this.tabs});
 
   final List<Widget> tabs;
 
@@ -16,9 +16,6 @@ class TTabbar extends StatelessWidget implements PreferredSizeWidget{
       child: TabBar(
         tabs: tabs,
         isScrollable: true,
-        indicatorColor: AppColors.primaryColor,
-        unselectedLabelColor: Colors.grey,
-        labelColor: Colors.black,
       ),
     );
   }

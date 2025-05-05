@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
+import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/styles/spacing_style.dart';
-import '../../../../common/widgets/loaders/loader.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/icons.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helpers/navigation_helper.dart';
 import '../../controllers/phone_otp_controller/phone_otp_controller.dart';
+
 class EnterOTPScreen extends StatelessWidget {
   const EnterOTPScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('enter_otp_screen');
 
     final otpController = Get.put(OTPController());
     int seconds  = 60;
@@ -63,7 +60,7 @@ class EnterOTPScreen extends StatelessWidget {
                               textAlign: TextAlign.center
                           ),
                           const SizedBox(width: AppSizes.xs),
-                          Icon(TIcons.edit, color: AppColors.linkColor,size: 15,)
+                          Icon(AppIcons.edit, color: AppColors.linkColor,size: 15,)
                         ],
                       ),
                     ),
@@ -94,7 +91,7 @@ class EnterOTPScreen extends StatelessWidget {
                     //   otpController.messageOtpCode.value = code!;
                     // },
                     onCodeSubmitted: (otp) {
-                      otpController.verifyOTPFast2sms(otp);
+                      otpController.verifyOtp(otp);
                     },
                   ),
                 ),
@@ -108,13 +105,13 @@ class EnterOTPScreen extends StatelessWidget {
                       {
                         String otp = otpController.otp.text.trim();
                         otp.length == otpLength
-                            ? otpController.verifyOTPFast2sms(otp)
-                            : TLoaders.customToast(message: 'Please enter OTP');
+                            ? otpController.verifyOtp(otp)
+                            : AppMassages.showToastMessage(message: 'Please enter OTP');
                       },
                       child:  const Text('Verify OTP')
                   ),
                 ),
-                const SizedBox(height: AppSizes.spaceBtwInputFields),
+                const SizedBox(height: AppSizes.inputFieldSpace),
 
                 //Countdown
                 Countdown(
@@ -129,7 +126,7 @@ class EnterOTPScreen extends StatelessWidget {
                               TextButton(
                                 onPressed: () {
                                   currentRemainingTime = seconds.toDouble();
-                                  otpController.fast2SmsSendOpt(phone: otpController.phoneNumber.value);
+                                  otpController.whatsappSendOtp(phone: otpController.phoneNumber.value);
                                   // otpController.phoneAuthentication(otpController.selectedCountry1.value, otpController.phone.text.trim());
                                 },
                                 child: Text('Resend OTP',

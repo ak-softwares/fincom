@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:get/get.dart';
 
-import '../../../../features/shop/models/order_model.dart';
+import '../../../../features/accounts/models/order_model.dart';
 import '../../../../utils/constants/api_constants.dart';
+import '../../../../utils/constants/db_constants.dart';
+import '../../../../utils/constants/enums.dart';
 import '../../../database/mongodb/mongodb.dart';
 
-class MongoOrdersRepo extends GetxController {
-  static MongoOrdersRepo get instance => Get.find();
+class MongoOrderRepo extends GetxController {
+  static MongoOrderRepo get instance => Get.find();
   final MongoDatabase _mongoDatabase = MongoDatabase();
   final String collectionName = 'orders';
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
@@ -30,22 +33,46 @@ class MongoOrdersRepo extends GetxController {
     }
   }
 
-  // Fetch All Orders from MongoDB
-  Future<List<OrderModel>> fetchOrders({int page = 1}) async {
+  // Fetch All Sales from MongoDB
+  Future<List<OrderModel>> fetchOrders({required OrderType orderType, int page = 1}) async {
     try {
-
-      // Fetch orders from MongoDB with pagination
-      final List<Map<String, dynamic>> ordersData =
-            await _mongoDatabase.fetchDocuments(collectionName:collectionName, page: page);
-
-      // Convert data to a list of OrdersModel
+      final List<Map<String, dynamic>> ordersData = await _mongoDatabase.fetchDocuments(
+          collectionName: collectionName,
+          filter: {OrderFieldName.orderType: orderType.name},
+          page: page);
       final List<OrderModel> orders = ordersData.map((data) => OrderModel.fromJson(data)).toList();
-
       return orders;
     } catch (e) {
       throw 'Failed to fetch orders: $e';
     }
   }
+
+  Future<List<OrderModel>> fetchOrdersByDate({
+    required OrderType orderType,
+    required DateTime startDate,
+    required DateTime endDate,
+    int page = 1,
+  }) async {
+    try {
+      final filter = {
+        OrderFieldName.orderType: orderType.name,
+        OrderFieldName.dateCreated: {
+          '\$gte': startDate,
+          '\$lte': endDate,
+        },
+      };
+
+      final List<Map<String, dynamic>> ordersData = await _mongoDatabase.fetchDocuments(
+        collectionName: collectionName,
+        filter: filter,
+        page: page,
+      );
+      return ordersData.map((data) => OrderModel.fromJson(data)).toList();
+    } catch (e) {
+      throw 'Failed to fetch orders: $e';
+    }
+  }
+
 
   // Fetch Order's IDs from MongoDB
   Future<Set<int>> fetchOrdersIds() async {
@@ -75,13 +102,27 @@ class MongoOrdersRepo extends GetxController {
     }
   }
 
- // Upload multiple orders
+  // Upload multiple orders
   Future<void> pushOrders({required List<OrderModel> orders}) async {
     try {
       List<Map<String, dynamic>> ordersMaps = orders.map((order) => order.toMap()).toList();
       await _mongoDatabase.insertDocuments(collectionName, ordersMaps); // Use batch insert function
     } catch (e) {
       throw 'Failed to upload orders: $e';
+    }
+  }
+
+  // Update a order
+  Future<void> updateOrder({required OrderModel order}) async {
+    try {
+      Map<String, dynamic> customerMap = order.toMap();
+        await _mongoDatabase.updateDocumentById(
+            id: order.id ?? '',
+            collectionName: collectionName,
+            updatedData: customerMap
+        );
+    } catch (e) {
+      throw 'Failed to update order: $e';
     }
   }
 
@@ -92,6 +133,59 @@ class MongoOrdersRepo extends GetxController {
       return count;
     } catch (e) {
       throw 'Failed to fetch orders count: $e';
+    }
+  }
+
+  // Get the total count of purchases in the collection
+  Future<int> fetchOrderGetNextId({required OrderType orderType}) async {
+    try {
+      int nextID = await _mongoDatabase.getNextId(
+          collectionName: collectionName,
+          fieldName: OrderFieldName.invoiceNumber,
+          filter: {OrderFieldName.orderType: orderType.name},
+      );
+      return nextID;
+    } catch (e) {
+      throw 'Failed to fetch sale id: $e';
+    }
+  }
+
+  // Delete a purchase
+  Future<void> deleteOrderById({required String id}) async {
+    try {
+      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+    } catch (e) {
+      throw 'Failed to Delete sale: $e';
+    }
+  }
+
+  Future<OrderModel> fetchOrderById({required String saleId}) async {
+    try {
+      final Map<String, dynamic> orderData = await _mongoDatabase.fetchDocumentById(id: saleId, collectionName: collectionName);
+      final OrderModel order = OrderModel.fromJson(orderData);
+      return order;
+    } catch (e) {
+      throw 'Failed to Delete sale: $e';
+    }
+  }
+
+  Future<OrderModel> fetchOrderByOrderId({required int orderId, required OrderType orderType}) async {
+    try {
+      // Check if a user with the provided email exists
+      final saleData = await _mongoDatabase.findOne(
+        collectionName: collectionName,
+        query: {
+          OrderFieldName.orderId: orderId,
+          OrderFieldName.orderType: orderType.name, // assuming you're storing userType as a string like 'admin'
+        },
+      );
+      if (saleData == null) {
+        throw 'Invalid order id no order found'; // User not found
+      }
+      final OrderModel sale = OrderModel.fromJson(saleData);
+      return sale;
+    } catch (e) {
+      rethrow;
     }
   }
 

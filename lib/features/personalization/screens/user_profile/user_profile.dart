@@ -1,18 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fincom/common/widgets/custom_shape/image/circular_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../common/dialog_box/dialog_massage.dart';
-import '../../../../common/navigation_bar/appbar2.dart';
+import '../../../../common/dialog_box_massages/dialog_massage.dart';
+import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/text/section_heading.dart';
-import '../../../../common/widgets/shimmers/shimmer_effect.dart';
-import '../../../../services/firebase_analytics/firebase_analytics.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controllers/customers_controller.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../change_profile/change_user_profile.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -20,12 +17,11 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FBAnalytics.logPageView('user_profile_screen');
 
-    final controller = Get.put(CustomersController());
+    final controller = Get.put(AuthenticationController());
 
     return Scaffold(
-      appBar: const AppAppBar2(titleText: 'Profile Setting', showBackArrow: true),
+      appBar: const AppAppBar(title: 'Profile Setting', showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.defaultSpace),
@@ -35,11 +31,11 @@ class UserProfileScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwSection),
               Stack(
                 children: [
-                  TRoundedImage(
+                  RoundedImage(
                       height: 100,
                       width: 100,
-                      isNetworkImage: controller.user.value.avatarUrl != null ? true : false,
-                      image: controller.user.value.avatarUrl ?? Images.tProfileImage
+                      isNetworkImage: controller.admin.value.avatarUrl != null ? true : false,
+                      image: controller.admin.value.avatarUrl ?? Images.tProfileImage
                   ),
                   Positioned(
                     bottom: 0,
@@ -51,7 +47,7 @@ class UserProfileScreen extends StatelessWidget {
                           color: Colors.yellow// tAccentColor.withOpacity(0.1)
                       ),
                       child: IconButton(
-                        onPressed: () => controller.uploadProfilePicture(context),
+                        onPressed: () {},
                         icon: const Icon(Iconsax.edit_2, size: 16, color: Colors.black),
                       ),
                     ),
@@ -71,32 +67,24 @@ class UserProfileScreen extends StatelessWidget {
                     children: [
                       TProfileMenu(
                           title: 'Name',
-                          value: controller.user.value.name ?? 'Name',
+                          value: controller.admin.value.name ?? 'Name',
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}
                       ),
                       Divider(color: Colors.grey[200]),
                       TProfileMenu(
                           title: 'Email',
-                          value: controller.user.value.email ?? "Email",
+                          value: controller.admin.value.email ?? "Email",
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}),
                       Divider(color: Colors.grey[200]),
                       TProfileMenu(
                           title: 'Phone',
-                          value: controller.user.value.phone ?? 'Phone',
+                          value: controller.admin.value.phone ?? 'Phone',
                           onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangeUserProfile()));}),
                       const Divider(),
                       Center(
                         child: TextButton(
                             child: const Text('Delete Account', style: TextStyle(color: Colors.red),),
-                            onPressed: () => DialogHelper.showDialog(
-                              context: context,
-                              title: 'Delete Account',
-                              message: 'Are you sure you want to delete your account permanently? This Action is not reversible and all of your data will be removed permanently',
-                              toastMessage: 'Your Account Deleted successfully!',
-                              function: () async {
-                                await controller.wooDeleteAccount();
-                              },
-                            ),
+                            onPressed: () => controller.showDialogDeleteAccount(context: context)
                         )
                       )
                     ],
