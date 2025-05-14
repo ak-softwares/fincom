@@ -34,7 +34,7 @@ class UserMenuScreen extends StatelessWidget {
                 color: AppColors.refreshIndicator,
                 onRefresh: () async => userController.refreshAdmin(),
                 child: SingleChildScrollView(
-                  padding: TSpacingStyle.defaultPageVertical,
+                  padding: AppSpacingStyle.defaultPageVertical,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

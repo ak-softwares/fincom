@@ -30,7 +30,7 @@ class CustomerTile extends StatelessWidget {
         child: Container(
             color: Theme.of(context).colorScheme.surface,
             width: customerVoucherTileWidth,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             child: Column(
               children: [
                 Row(

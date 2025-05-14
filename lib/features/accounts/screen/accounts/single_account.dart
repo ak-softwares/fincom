@@ -8,29 +8,28 @@ import '../../../../common/widgets/common/colored_amount.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controller/payment/payment_controller.dart';
+import '../../controller/account/account_controller.dart';
 import '../../models/payment_method.dart';
 import '../transaction/widget/transactions_by_entity.dart';
-import '../vendor/single_vendor.dart';
-import 'add_payment.dart';
+import 'add_account.dart';
 
-class SinglePayment extends StatefulWidget {
-  const SinglePayment({super.key, required this.payment});
+class SingleAccount extends StatefulWidget {
+  const SingleAccount({super.key, required this.account});
 
-  final PaymentMethodModel payment;
+  final AccountModel account;
 
   @override
-  State<SinglePayment> createState() => _SinglePaymentState();
+  State<SingleAccount> createState() => _SingleAccountState();
 }
 
-class _SinglePaymentState extends State<SinglePayment> {
-  late PaymentMethodModel payment;
-  final paymentController = Get.put(PaymentMethodController());
+class _SingleAccountState extends State<SingleAccount> {
+  late AccountModel payment;
+  final paymentController = Get.put(AccountsController());
 
   @override
   void initState() {
     super.initState();
-    payment = widget.payment; // Initialize with the passed purchase
+    payment = widget.account; // Initialize with the passed purchase
   }
 
   Future<void> _refreshPayment() async {
@@ -50,9 +49,9 @@ class _SinglePaymentState extends State<SinglePayment> {
 
     return Scaffold(
         appBar: AppAppBar(
-          title: payment.paymentMethodName ?? 'Payment',
+          title: payment.accountName ?? 'Account',
           widgetInActions: TextButton(
-              onPressed: () => Get.to(() => AddPayments(payment: payment)),
+              onPressed: () => Get.to(() => AddAccount(payment: payment)),
               child: Text('Edit', style: TextStyle(color: AppColors.linkColor),)
           )
         ),
@@ -60,7 +59,7 @@ class _SinglePaymentState extends State<SinglePayment> {
         color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshPayment(),
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Container(
@@ -75,15 +74,15 @@ class _SinglePaymentState extends State<SinglePayment> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Payment Id'),
-                        Text('#${payment.paymentId.toString()}', style: TextStyle(fontSize: 14))
+                        Text('Accounts Id'),
+                        Text('#${payment.accountId.toString()}', style: TextStyle(fontSize: 14))
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Payment Method'),
-                        Text(payment.paymentMethodName ?? '', style: TextStyle(fontSize: 14))
+                        Text('Accounts Method'),
+                        Text(payment.accountName ?? '', style: TextStyle(fontSize: 14))
                       ],
                     ),
                     Row(
@@ -110,7 +109,7 @@ class _SinglePaymentState extends State<SinglePayment> {
             SizedBox(height: AppSizes.spaceBtwItems),
             SizedBox(
                 height: 350,
-                child: TransactionsByEntity(entityType: EntityType.payment, entityId: payment.paymentId ?? 0)
+                child: TransactionsByEntity(entityType: EntityType.account, entityId: payment.accountId ?? 0)
             ),
 
             // Delete

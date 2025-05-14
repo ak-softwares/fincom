@@ -6,8 +6,8 @@ import '../../../../../common/widgets/shimmers/shimmer_effect.dart';
 import '../../../../../utils/constants/sizes.dart';
 
 
-class PaymentTileSimmer extends StatelessWidget {
-  const PaymentTileSimmer({
+class AccountTileSimmer extends StatelessWidget {
+  const AccountTileSimmer({
     super.key,
     this.itemCount = 1,
   });
@@ -39,7 +39,7 @@ class PaymentTileSimmer extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Payment Method'),
+                      Text('Accounts  Method'),
                       ShimmerEffect(width: 150, height: 10),
                     ],
                   ),

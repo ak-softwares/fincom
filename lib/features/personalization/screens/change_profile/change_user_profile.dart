@@ -31,7 +31,7 @@ class ChangeUserProfile extends StatelessWidget {
         onRefresh: () async => userController.refreshAdmin(),
         child: SingleChildScrollView(
           child: Padding(
-            padding: TSpacingStyle.paddingWidthAppbarHeight,
+            padding: AppSpacingStyle.paddingWidthAppbarHeight,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

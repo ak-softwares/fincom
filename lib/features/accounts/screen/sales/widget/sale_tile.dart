@@ -16,19 +16,26 @@ import '../../orders/widgets/order_image_gallery.dart';
 import '../single_sale.dart';
 
 class SaleTile extends StatelessWidget {
-  const SaleTile({super.key, required this.order});
-  final OrderModel order;
+  const SaleTile({super.key, required this.sale});
+  final OrderModel sale;
 
   @override
   Widget build(BuildContext context) {
     final double tileRadius = AppSizes.saleTileRadius;
+    final bool isPaid = (sale.status == OrderStatus.completed || sale.status == OrderStatus.returned);
+    // final bool isPaid = sale.setPaid ?? false;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return InkWell(
-      onTap: () => Get.to(() => SingleSaleScreen(sale: order)),
+      onTap: () => Get.to(() => SingleSaleScreen(sale: sale)),
       child: Container(
-        padding: TSpacingStyle.defaultPagePadding,
+        padding: AppSpacingStyle.defaultPagePadding,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: isPaid
+              ? Theme.of(context).colorScheme.surface
+              : isDarkMode
+                ? Colors.red.withOpacity(0.3) // More visible in dark mode
+                : Colors.red.withOpacity(0.1), // Softer in light mode
           borderRadius: BorderRadius.circular(tileRadius),
         ),
         child: Column(
@@ -39,7 +46,7 @@ class SaleTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Invoice Number'),
-                Text(order.invoiceNumber.toString()),
+                Text(sale.invoiceNumber.toString()),
               ],
             ),
             Row(
@@ -48,11 +55,11 @@ class SaleTile extends StatelessWidget {
                 const Text('Order Number'),
                 Row(
                   children: [
-                    Text('#${order.orderId}'),
+                    Text('#${sale.orderId}'),
                     const SizedBox(width: 4),
                     InkWell(
                       onTap: () {
-                        Clipboard.setData(ClipboardData(text: order.orderId.toString()));
+                        Clipboard.setData(ClipboardData(text: sale.orderId.toString()));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Order Id copied')),
                         );
@@ -67,14 +74,14 @@ class SaleTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Order Date'),
-                Text(AppFormatter.formatDate(order.dateCreated)),
+                Text(AppFormatter.formatDate(sale.dateCreated)),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Total'),
-                Text('${AppSettings.currencySymbol}${order.total}'),
+                Text('${AppSettings.currencySymbol}${sale.total}'),
               ],
             ),
             Row(
@@ -83,13 +90,13 @@ class SaleTile extends StatelessWidget {
                 const Text('Status'),
                 Row(
                   children: [
-                    Text(order.status?.prettyName ?? ''),
-                    if (OrderHelper.checkOrderStatusForInTransit(order.status ?? OrderStatus.unknown)) ...[
+                    Text(sale.status?.prettyName ?? ''),
+                    if (OrderHelper.checkOrderStatusForInTransit(sale.status ?? OrderStatus.unknown)) ...[
                       const SizedBox(width: 6),
                       InkWell(
                         onTap: () => Get.to(() => MyWebView(
-                          title: 'Track Order #${order.orderId}',
-                          url: APIConstant.wooTrackingUrl + order.orderId.toString(),
+                          title: 'Track Order #${sale.orderId}',
+                          url: APIConstant.wooTrackingUrl + sale.orderId.toString(),
                         )),
                         child: const Icon(Icons.open_in_new, size: 17, color: AppColors.linkColor),
                       ),
@@ -104,7 +111,7 @@ class SaleTile extends StatelessWidget {
             Row(
               children: [
                 Flexible(
-                  child: OrderImageGallery(cartItems: order.lineItems ?? [], galleryImageHeight: 40),
+                  child: OrderImageGallery(cartItems: sale.lineItems ?? [], galleryImageHeight: 40),
                 ),
                 const SizedBox(width: AppSizes.sm),
                 Container(height: 40, width: 1, color: AppColors.borderDark),

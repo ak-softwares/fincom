@@ -54,7 +54,7 @@ class _SingleCustomerState extends State<SingleCustomer> {
         color: AppColors.refreshIndicator,
         onRefresh: _refreshCustomer,
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Row(

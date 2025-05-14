@@ -10,7 +10,7 @@ enum OrientationType {horizontal, vertical}
 // Enum to specify search type
 enum SearchType { products, customers, orders, vendor, paymentMethod}
 
-enum TransactionType { payment, refund, transfer, purchase}
+enum TransactionType { payment, refund, transfer, purchase, delete, expense}
 
 extension TransactionTypeExtension on TransactionType {
 
@@ -24,20 +24,25 @@ extension TransactionTypeExtension on TransactionType {
         return 'transfer';
       case TransactionType.purchase:
         return 'purchase';
+      case TransactionType.delete:
+        return 'delete';
+      case TransactionType.expense:
+        return 'expense';
     }
   }
 }
+
 enum PurchaseListType { vendors, purchasable, purchased, notAvailable }
 
-enum EntityType { vendor, payment, customer, expense }
+enum EntityType { vendor, account, customer, expense }
 extension EntityTypeExtension on EntityType {
 
   String get name {
     switch (this) {
       case EntityType.vendor:
         return 'vendor';
-      case EntityType.payment:
-        return 'payment';
+      case EntityType.account:
+        return 'account';
       case EntityType.customer:
         return 'customer';
       case EntityType.expense:
@@ -49,8 +54,8 @@ extension EntityTypeExtension on EntityType {
     switch (this) {
       case EntityType.vendor:
         return DbCollections.vendors;
-      case EntityType.payment:
-        return DbCollections.payments;
+      case EntityType.account:
+        return DbCollections.accounts;
       case EntityType.customer:
         return DbCollections.customers;
       case EntityType.expense:
@@ -63,8 +68,8 @@ extension EntityTypeExtension on EntityType {
     switch (this) {
       case EntityType.vendor:
         return VendorFieldName.vendorId;
-      case EntityType.payment:
-        return PaymentMethodFieldName.paymentId;
+      case EntityType.account:
+        return AccountFieldName.accountId;
       case EntityType.customer:
         return UserFieldConstants.userId;
       case EntityType.expense:
@@ -121,6 +126,7 @@ enum OrderStatus {
   completed,
   returnInTransit,
   returnPending,
+  returned,
   unknown
 }
 
@@ -145,6 +151,8 @@ extension OrderStatusExtension on OrderStatus {
         return OrderStatusName.returnInTransit;
       case OrderStatus.returnPending:
         return OrderStatusName.returnPending;
+      case OrderStatus.returned:
+        return OrderStatusName.returned;
       case OrderStatus.unknown:
         return OrderStatusName.unknown;
     }
@@ -170,6 +178,8 @@ extension OrderStatusExtension on OrderStatus {
         return OrderStatusPritiName.returnInTransit;
       case OrderStatus.returnPending:
         return OrderStatusPritiName.returnPending;
+      case OrderStatus.returned:
+        return OrderStatusPritiName.returned;
       case OrderStatus.unknown:
         return OrderStatusName.unknown;
     }
@@ -183,3 +193,40 @@ extension OrderStatusExtension on OrderStatus {
   }
 }
 
+enum ExpenseType {
+  shipping,
+  facebookAds,
+  googleAds,
+  rent,
+  salary,
+  transport,
+  other
+}
+
+extension ExpenseTypeExtension on ExpenseType {
+  String get name {
+    switch (this) {
+      case ExpenseType.shipping:
+        return ExpenseTypeName.shipping;
+      case ExpenseType.facebookAds:
+        return ExpenseTypeName.facebookAds;
+      case ExpenseType.googleAds:
+        return ExpenseTypeName.googleAds;
+      case ExpenseType.rent:
+        return ExpenseTypeName.rent;
+      case ExpenseType.salary:
+        return ExpenseTypeName.salary;
+      case ExpenseType.transport:
+        return ExpenseTypeName.transport;
+      case ExpenseType.other:
+        return ExpenseTypeName.others;
+    }
+  }
+
+  static ExpenseType? fromString(String status) {
+    return ExpenseType.values.firstWhere(
+          (e) => e.name == status,
+      orElse: () => ExpenseType.other, // Handle unknown statuses
+    );
+  }
+}

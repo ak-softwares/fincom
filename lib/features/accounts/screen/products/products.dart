@@ -3,6 +3,7 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../../../common/dialog_box_massages/animation_loader.dart';
 import '../../../../common/styles/spacing_style.dart';
+import '../../../../common/widgets/common/colored_amount.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
@@ -11,21 +12,25 @@ import 'package:get/get.dart';
 
 import '../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../common/navigation_bar/appbar.dart';
+import '../../../settings/app_settings.dart';
 import '../../controller/product/product_controller.dart';
 import '../search/search.dart';
 import 'add_product.dart';
+import 'sync_product.dart';
 import 'widget/product_shimmer.dart';
 import 'widget/product_tile.dart';
 
-class ProductsVoucher extends StatelessWidget {
-  const ProductsVoucher({super.key});
+class Products extends StatelessWidget {
+  const Products({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     final controller = Get.put(ProductController());
 
-    controller.refreshProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.refreshProducts();
+    });
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
@@ -53,23 +58,13 @@ class ProductsVoucher extends StatelessWidget {
         appBar: AppAppBar(
             title: 'Products',
             searchType: SearchType.products,
-            widgetInActions: Obx(() => controller.isSyncing.value
-                  ? TextButton(
-                      onPressed: () => controller.stopSyncing(),
-                      child: Row(
-                        spacing: AppSizes.sm,
-                        children: [
-                          SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.linkColor,strokeWidth: 2,)),
-                          Text('Stop', style: TextStyle(color: AppColors.linkColor),),
-                        ],
-                      ),
-                    )
-                  : TextButton(
-                      onPressed: () => controller.syncProducts(),
-                      child: Text('Sync', style: TextStyle(color: AppColors.linkColor),),
-                    ))
+            widgetInActions: IconButton(
+                onPressed: () => Get.to(() => SyncProductScreen()),
+                icon: Text('Sync Products', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.linkColor),)
+            )
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'product',
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
           onPressed: () => Get.to(() => AddProducts()),
@@ -81,31 +76,51 @@ class ProductsVoucher extends StatelessWidget {
           onRefresh: () async => controller.refreshProducts(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
-              // Obx(() => Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Column(
-              //         children: [
-              //           Text('Woocommerce count'),
-              //           productsVoucherController.isGettingCount.value
-              //               ? SizedBox(height: 15, width: 15, child: CircularProgressIndicator())
-              //               : Text(productsVoucherController.wooProductsCount.value.toString())
-              //         ],
-              //       ),
-              //       Column(
-              //         children: [
-              //           Text('Fincom count'),
-              //           productsVoucherController.isGettingCount.value
-              //               ? SizedBox(height: 15, width: 15, child: CircularProgressIndicator())
-              //               : Text(productsVoucherController.fincomProductsCount.value.toString())
-              //         ],
-              //       )
-              //     ],
-              //   )),
-              // SizedBox(height: Sizes.spaceBtwItems),
+            // Product Info Card
+              Obx(() {
+                return Card(
+                  elevation: 2,
+                  margin: const EdgeInsets.only(bottom: AppSizes.defaultSpace),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSizes.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Inventory Summary', style: TextStyle(fontSize: 20)),
+                        const SizedBox(height: AppSizes.sm),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Products:', style: TextStyle(fontSize: 14)),
+                            Text('${controller.totalProducts}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Stock:', style: TextStyle(fontSize: 14)),
+                            Text('${controller.totalStock}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Stock Value:', style: TextStyle(fontSize: 14)),
+                            ColoredAmount(amount: controller.totalStockValue.toDouble())
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+
               Obx(() {
                 if (controller.isLoading.value) {
                     return  ProductTileShimmer(itemCount: 2);
@@ -133,5 +148,4 @@ class ProductsVoucher extends StatelessWidget {
     );
   }
 }
-
 

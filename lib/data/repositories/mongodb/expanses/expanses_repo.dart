@@ -88,4 +88,17 @@ class MongoExpenseRepo extends GetxController {
       throw 'Failed to fetch expense ID: $e';
     }
   }
+
+  Future<List<ExpenseModel>> fetchExpensesByDate({required DateTime startDate, required DateTime endDate,}) async {
+    try {
+      final List<Map<String, dynamic>> expensesData = await _mongoDatabase.fetchDocumentsDate(
+          collectionName: collectionName,
+          startDate: startDate,
+          endDate: endDate
+      );
+      return expensesData.map((data) => ExpenseModel.fromJson(data)).toList();
+    } catch (e) {
+      throw 'Failed to fetch orders: $e';
+    }
+  }
 }

@@ -11,6 +11,7 @@ class DialogHelper {
     String? message,
     String? toastMessage,
     String? actionButtonText,
+    bool? isShowLoading = true,
     required Future<void> Function() onSubmit,
   }) {
     Get.dialog(
@@ -41,15 +42,19 @@ class DialogHelper {
                 onTap: () async {
                   Get.back();
                   // Show loading spinner
-                  Get.dialog(
-                    const Center(
-                      child: CircularProgressIndicator(color: Colors.blue, strokeWidth: 2),
-                    ),
-                    barrierDismissible: false,
-                    barrierColor: Colors.black.withOpacity(0.2),
-                  );
+                  if (isShowLoading ?? true) {
+                    Get.dialog(
+                      const Center(
+                        child: CircularProgressIndicator(color: Colors.blue, strokeWidth: 2),
+                      ),
+                      barrierDismissible: false,
+                      barrierColor: Colors.black.withOpacity(0.2),
+                    );
+                  }
                   await onSubmit();
-                  Get.back(); // Close the loading spinner
+                  if (isShowLoading ?? true) {
+                    Get.back(); // Close the loading spinner
+                  }
                   AppMassages.showToastMessage(message: toastMessage ?? 'Success');
                 },
                 child: Container(

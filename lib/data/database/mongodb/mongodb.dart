@@ -53,6 +53,22 @@ class MongoDatabase {
     }
   }
 
+  Future<String> insertDocumentGetId(String collectionName, Map<String, dynamic> data) async {
+    await _ensureConnected();
+    try {
+      final result = await _db!.collection(collectionName).insertOne(data);
+
+      if (result.isSuccess && result.id != null) {
+        return (result.id as ObjectId).toHexString();
+      } else {
+        throw Exception('Insert failed.');
+      }
+    } catch (e) {
+      throw Exception('Failed to insert document: $e');
+    }
+  }
+
+
   // Insert multiple documents
   Future<void> insertDocuments(String collectionName, List<Map<String, dynamic>> dataList) async {
     await _ensureConnected();
@@ -64,10 +80,7 @@ class MongoDatabase {
   }
 
   // Update document by ID
-  Future<void> updateDocumentById({
-    required String collectionName,
-    required String id,
-    required Map<String, dynamic> updatedData,
+  Future<void> updateDocumentById({required String collectionName, required String id, required Map<String, dynamic> updatedData,
   }) async {
     await _ensureConnected();
     try {
@@ -80,6 +93,54 @@ class MongoDatabase {
       throw Exception('Failed to update document by ID: $e');
     }
   }
+
+  Future<void> updateManyDocuments({
+    required String collectionName,
+    required List<Map<String, dynamic>> updates, // Each map must contain an 'id' field
+  }) async {
+    try {
+      final collection = _db!.collection(collectionName);
+
+      for (var update in updates) {
+        final id = update['id'];
+        if (id != null) {
+          // Remove 'id' from update map to avoid modifying the identifier
+          final updateData = Map<String, dynamic>.from(update)..remove('id');
+
+          await collection.updateOne(
+            where.eq('id', id), // Match using custom 'id' field (not MongoDB _id)
+            {'\$set': updateData},
+            upsert: false, // Only update existing documents
+          );
+        }
+      }
+
+      print('Documents updated successfully');
+    } catch (e) {
+      throw Exception('Failed to update documents: $e');
+    }
+  }
+
+
+
+  Future<void> updateDocuments({
+    required String collectionName,
+    required Map<String, dynamic> filter,
+    required Map<String, dynamic> updatedData,
+  }) async {
+    await _ensureConnected();
+    try {
+      final collection = _db!.collection(collectionName);
+      await collection.updateMany(
+        filter,
+        {'\$set': updatedData},
+        upsert: true,
+      );
+    } catch (e) {
+      throw Exception('Failed to update documents: $e');
+    }
+  }
+
 
   // Update document with custom filter
   Future<void> updateDocument({
@@ -97,6 +158,47 @@ class MongoDatabase {
       );
     } catch (e) {
       throw Exception('Failed to update document: $e');
+    }
+  }
+
+  // Updates multiple documents by their IDs in a single operation
+  Future<void> updateManyDocumentsById({
+    required String collectionName,
+    required List<String> ids,
+    required Map<String, dynamic> updatedData,
+  }) async {
+    await _ensureConnected();
+
+    try {
+      if (ids.isEmpty) {
+        throw ArgumentError('IDs list cannot be empty');
+      }
+
+      // Convert all IDs to ObjectId with validation
+      final objectIds = ids.map((id) {
+        try {
+          return ObjectId.fromHexString(id);
+        } catch (e) {
+          throw FormatException('Invalid ObjectId format for ID: $id');
+        }
+      }).toList();
+
+      final writeResult = await _db!.collection(collectionName).updateMany(
+        {OrderFieldName.id: {'\$in': objectIds}}, // Finds all documents with matching IDs
+        {'\$set': updatedData},       // Applies the same updates to all
+        upsert: true,               // Optional: create if doesn't exist
+      );
+
+      if (writeResult.nModified == 0) {
+        throw Exception('⚠️ No orders were updated - check if IDs exist');
+      }
+
+    } on FormatException catch (e) {
+      throw Exception('ID format error: ${e.message}');
+    } on MongoDartError catch (e) {
+      throw Exception('Database operation failed: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to update documents: ${e.toString()}');
     }
   }
 
@@ -247,6 +349,36 @@ class MongoDatabase {
     }
   }
 
+  Future<List<Map<String, dynamic>>> fetchDocumentsDate({
+    required String collectionName,
+    Map<String, dynamic>? filter,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    await _ensureConnected();
+    var collection = _db!.collection(collectionName);
+
+    try {
+      var query = where..sortBy('_id', descending: true);
+
+      // Apply filter if provided
+      if (filter != null) {
+        filter.forEach((key, value) {
+          query = query.eq(key, value);
+        });
+      }
+
+      // Apply date range filter (assumes 'createdAt' is the date field)
+      query = query.gte(OrderFieldName.dateCreated, startDate);
+      query = query.lte(OrderFieldName.dateCreated, endDate);
+
+      var documents = await collection.find(query).toList();
+      return documents;
+    } catch (e) {
+      throw Exception('Error fetching documents: $e');
+    }
+  }
+
   // Fetch products with custom stock sorting (positive first, then negative, then zero)
   Future<List<Map<String, dynamic>>> fetchProducts({
     required String collectionName,
@@ -306,16 +438,229 @@ class MongoDatabase {
     }
   }
 
+  Future<double> fetchTotalStockValue({required String collectionName}) async {
+    await _ensureConnected();
+    try {
+      final pipeline = [
+        {
+          // Match only products where stock and purchase price are both > 0
+          "\$match": {
+            ProductFieldName.stockQuantity: {"\$ne": 0},
+            ProductFieldName.purchasePrice: {"\$ne": 0},
+          }
+        },
+        {
+          // Add a field for stockValue = stockQuantity * purchasePrice
+          "\$addFields": {
+            "stockValue": {
+              "\$multiply": [
+                "\$${ProductFieldName.stockQuantity}",
+                "\$${ProductFieldName.purchasePrice}"
+              ]
+            }
+          }
+        },
+        {
+          // Group and sum all stockValue
+          "\$group": {
+            "_id": null,
+            "totalStockValue": {"\$sum": "\$stockValue"}
+          }
+        }
+      ];
+
+      final result = await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+
+      if (result.isNotEmpty && result[0]['totalStockValue'] != null) {
+        return (result[0]['totalStockValue'] as num).toDouble();
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      throw Exception('Failed to calculate stock value: $e');
+    }
+  }
+
+  Future<double> fetchTotalAccountBalance({required String collectionName}) async {
+    await _ensureConnected();
+    try {
+      final pipeline = [
+        {
+          // Only consider documents with a non-null balance
+          "\$match": {
+            AccountFieldName.balance: {"\$ne": null}
+          }
+        },
+        {
+          // Sum all balance fields
+          "\$group": {
+            "_id": null,
+            "totalBalance": {"\$sum": "\$balance"}
+          }
+        }
+      ];
+
+      final result = await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+
+      if (result.isNotEmpty && result[0]['totalBalance'] != null) {
+        return (result[0]['totalBalance'] as num).toDouble();
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      throw Exception('Failed to calculate total balance: $e');
+    }
+  }
+
+  Future<double> calculateAccountPayable({
+    required String collectionName,
+    Map<String, dynamic>? filter,
+  }) async {
+    await _ensureConnected();
+    try {
+      final pipeline = [
+        {
+          r'$match': filter ?? {},
+        },
+        {
+          r'$group': {
+            '_id': null,
+            'totalBalance': {
+              r'$sum': '\$${UserFieldConstants.balance}', // <-- dynamic field name here
+            }
+          }
+        }
+      ];
+
+      final result = await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+
+      if (result.isNotEmpty && result[0]['totalBalance'] != null) {
+        return (result[0]['totalBalance'] as num).toDouble();
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      throw Exception('Failed to calculate total account balance: $e');
+    }
+  }
+
+
+
+  Future<List<Map<String, dynamic>>> fetchCogsDetailsByProductIds({
+    required String collectionName,
+    required List<int> productIds,
+  }) async {
+    await _ensureConnected();
+
+    try {
+      final pipeline = [
+        {
+          "\$match": {
+            ProductFieldName.productId: {"\$in": productIds}
+          }
+        },
+        {
+          "\$project": {
+            ProductFieldName.productId: 1,
+            ProductFieldName.purchasePrice: 1,
+            "_id": 0
+          }
+        }
+      ];
+
+      final result = await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+
+      return result.cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw Exception('Failed to fetch product COGS details: $e');
+    }
+  }
+
+
+  Future<double> fetchInTransitStockValue({
+    required String collectionName,
+    required OrderType orderType,
+    required OrderStatus orderStatus,
+  }) async {
+    await _ensureConnected();
+    try {
+      final pipeline = [
+        {
+          // Match orders with given status and orderType
+          "\$match": {
+            OrderFieldName.status: orderStatus.name,
+            OrderFieldName.orderType: orderType.name,
+          }
+        },
+        {
+          // Unwind the line_items array
+          "\$unwind": "\$${OrderFieldName.lineItems}"
+        },
+        {
+          // Filter only items with valid quantity and purchase_price
+          "\$match": {
+            "${OrderFieldName.lineItems}.${ProductFieldName.purchasePrice}": {"\$gt": 0},
+            "${OrderFieldName.lineItems}.quantity": {"\$gt": 0}
+          }
+        },
+        {
+          // Calculate stock value
+          "\$addFields": {
+            "stockValue": {
+              "\$multiply": [
+                "\$${OrderFieldName.lineItems}.quantity",
+                "\$${OrderFieldName.lineItems}.${ProductFieldName.purchasePrice}"
+              ]
+            }
+          }
+        },
+        {
+          // Sum up the values
+          "\$group": {
+            "_id": null,
+            "totalInTransitStockValue": {"\$sum": "\$stockValue"}
+          }
+        }
+      ];
+
+      final result = await _db!
+          .collection(collectionName)
+          .aggregateToStream(pipeline)
+          .toList();
+
+      if (result.isNotEmpty && result[0]['totalInTransitStockValue'] != null) {
+        return (result[0]['totalInTransitStockValue'] as num).toDouble();
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch in-transit stock value: $e');
+    }
+  }
+
   // Fetch documents by IDs
-  Future<List<Map<String, dynamic>>> fetchDocumentsByIds(
-      String collectionName,
-      List<int> documentIds,
-      ) async {
+  Future<List<Map<String, dynamic>>> fetchDocumentsByFieldName({
+    required String collectionName,
+    required String fieldName,
+    required List<int> documentIds,
+  }) async {
     await _ensureConnected();
     try {
       return await _db!
           .collection(collectionName)
-          .find(where.oneFrom('id', documentIds))
+          .find(where.oneFrom(fieldName, documentIds))
           .toList();
     } catch (e) {
       throw Exception('Failed to fetch documents by IDs: $e');
@@ -406,18 +751,17 @@ class MongoDatabase {
   // Update entity balance
   Future<void> updateBalance({
     required String collectionName,
-    required Map<String, dynamic> entityBalancePair,
+    required String entityId,
+    required double amount,
     required bool isAddition,
   }) async {
     await _ensureConnected();
     try {
-      final entityIdFieldName = entityBalancePair['entityIdFieldName'] as String;
-      final entityId = entityBalancePair['entityId'] as int;
-      final balanceChange = entityBalancePair['balance'] as double;
+      final objectId = ObjectId.fromHexString(entityId);
 
       await _db!.collection(collectionName).update(
-        where.eq(entityIdFieldName, entityId),
-        {'\$inc': {'balance': isAddition ? balanceChange : -balanceChange}},
+        where.id(objectId),
+        {'\$inc': {'balance': isAddition ? amount : -amount}},
       );
     } catch (e) {
       throw Exception('Failed to update balance: $e');
@@ -435,12 +779,12 @@ class MongoDatabase {
 
       while (true) {
         final batch = await collection
-            .find(where.fields(['id']).skip((page - 1) * pageSize).limit(pageSize))
+            .find(where.fields([ProductFieldName.productId]).skip((page - 1) * pageSize).limit(pageSize))
             .toList();
 
         if (batch.isEmpty) break;
 
-        allIds.addAll(batch.map((p) => p['id'] as int));
+        allIds.addAll(batch.map((p) => p[ProductFieldName.productId] as int));
         page++;
       }
 

@@ -1,42 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../common/dialog_box_massages/dialog_massage.dart';
 import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
-import '../../../../data/repositories/mongodb/payment/mongo_payment_methods_repo.dart';
+import '../../../../data/repositories/mongodb/accounts/mongo_account_repo.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../models/payment_method.dart';
 
-class PaymentMethodController extends GetxController {
+class AccountsController extends GetxController {
 
   // Variable
   RxInt currentPage = 1.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingMore = false.obs;
-  RxInt paymentId = 0.obs;
+  RxInt accountId = 0.obs;
 
-  RxList<PaymentMethodModel> paymentMethods = <PaymentMethodModel>[].obs;
+  RxList<AccountModel> accounts = <AccountModel>[].obs;
 
-  final paymentMethodName = TextEditingController();
+  final accountsName = TextEditingController();
   final openingBalance = TextEditingController();
 
-  GlobalKey<FormState> paymentFormKey = GlobalKey<FormState>();
-  final mongoPaymentMethodsRepo = Get.put(MongoPaymentMethodsRepo());
+  GlobalKey<FormState> accountsFormKey = GlobalKey<FormState>();
+  final mongoAccountsRepo = Get.put(MongoAccountsRepo());
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    paymentId.value = await mongoPaymentMethodsRepo.fetchPaymentGetNextId();
+    accountId.value = await mongoAccountsRepo.fetchAccountGetNextId();
   }
 
   // Get All products
   Future<void> getAllPaymentMethods() async {
     try {
-      final fetchedPayments = await mongoPaymentMethodsRepo.fetchAllPaymentMethod(page: currentPage.value);
-      paymentMethods.addAll(fetchedPayments);
+      final fetchedPayments = await mongoAccountsRepo.fetchAllAccountsMethod(page: currentPage.value);
+      accounts.addAll(fetchedPayments);
     } catch (e) {
       rethrow;
     }
@@ -46,7 +45,7 @@ class PaymentMethodController extends GetxController {
     try {
       isLoading(true);
       currentPage.value = 1; // Reset page number
-      paymentMethods.clear(); // Clear existing orders
+      accounts.clear(); // Clear existing orders
       await getAllPaymentMethods();
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Payment Methods getting', message: e.toString());
@@ -57,10 +56,10 @@ class PaymentMethodController extends GetxController {
 
   // Save
   void savePaymentMethods() {
-    PaymentMethodModel paymentMethod = PaymentMethodModel(
-      paymentId: paymentId.value,
+    AccountModel paymentMethod = AccountModel(
+      accountId: accountId.value,
       openingBalance: double.tryParse(openingBalance.text) ?? 0.0, // Convert string to double safely
-      paymentMethodName: paymentMethodName.text,
+      accountName: accountsName.text,
       dateCreated: DateTime.now(), // Keep it as DateTime
     );
 
@@ -68,7 +67,7 @@ class PaymentMethodController extends GetxController {
   }
 
   // Upload vendor
-  Future<void> addPayment({required PaymentMethodModel paymentMethod}) async {
+  Future<void> addPayment({required AccountModel paymentMethod}) async {
     try {
       //Start Loading
       FullScreenLoader.openLoadingDialog('We are updating your Address..', Images.docerAnimation);
@@ -79,15 +78,15 @@ class PaymentMethodController extends GetxController {
         return;
       }
       // Form Validation
-      if (!paymentFormKey.currentState!.validate()) {
+      if (!accountsFormKey.currentState!.validate()) {
         FullScreenLoader.stopLoading();
         return;
       }
-      final fetchedPaymentId = await mongoPaymentMethodsRepo.fetchPaymentGetNextId();
-      if(fetchedPaymentId != paymentId.value) {
+      final fetchedPaymentId = await mongoAccountsRepo.fetchAccountGetNextId();
+      if(fetchedPaymentId != accountId.value) {
         throw 'vendor id is same';
       }
-      await mongoPaymentMethodsRepo.pushPaymentMethod(paymentMethod: paymentMethod); // Use batch insert function
+      await mongoAccountsRepo.pushAccountsMethod(paymentMethod: paymentMethod); // Use batch insert function
       clearPayment();
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Vendor uploaded successfully!');
@@ -100,32 +99,32 @@ class PaymentMethodController extends GetxController {
   }
 
   Future<void> clearPayment() async {
-    paymentId.value = await mongoPaymentMethodsRepo.fetchPaymentGetNextId();
-    paymentMethodName.text = '';
+    accountId.value = await mongoAccountsRepo.fetchAccountGetNextId();
+    accountsName.text = '';
     openingBalance.text = '';
   }
 
   // Update vendor
-  void resetValue(PaymentMethodModel payment) {
-    paymentId.value = payment.paymentId ?? 0;
-    paymentMethodName.text = payment.paymentMethodName ?? '';
+  void resetValue(AccountModel payment) {
+    accountId.value = payment.accountId ?? 0;
+    accountsName.text = payment.accountName ?? '';
     openingBalance.text = payment.openingBalance.toString();
   }
 
-  void saveUpdatedPayment({required PaymentMethodModel previousPayment}) {
-    PaymentMethodModel payment = PaymentMethodModel(
+  void saveUpdatedPayment({required AccountModel previousPayment}) {
+    AccountModel payment = AccountModel(
       id: previousPayment.id,
-      paymentId: previousPayment.paymentId,
+      accountId: previousPayment.accountId,
       openingBalance: double.tryParse(openingBalance.text) ?? 0.0, // Convert string to double safely
       balance: previousPayment.balance, // Convert string to double safely
-      paymentMethodName: paymentMethodName.text,
+      accountName: accountsName.text,
       dateCreated: previousPayment.dateCreated, // Keep it as DateTime
     );
 
     updatePayment(payment: payment);
   }
 
-  Future<void> updatePayment({required PaymentMethodModel payment}) async {
+  Future<void> updatePayment({required AccountModel payment}) async {
     try {
       //Start Loading
       FullScreenLoader.openLoadingDialog('We are updating payment..', Images.docerAnimation);
@@ -136,11 +135,11 @@ class PaymentMethodController extends GetxController {
         return;
       }
       // Form Validation
-      if (!paymentFormKey.currentState!.validate()) {
+      if (!accountsFormKey.currentState!.validate()) {
         FullScreenLoader.stopLoading();
         return;
       }
-      await mongoPaymentMethodsRepo.updatePayment(id: payment.id ?? '', payment: payment); // Use batch insert function
+      await mongoAccountsRepo.updateAccount(id: payment.id ?? '', payment: payment); // Use batch insert function
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Payment updated successfully!');
       Navigator.of(Get.context!).pop();
@@ -152,13 +151,13 @@ class PaymentMethodController extends GetxController {
   }
 
   // Get payment by id
-  Future<PaymentMethodModel> getPaymentByID({required String id}) async {
+  Future<AccountModel> getPaymentByID({required String id}) async {
     try {
-      final fetchedPayment = await mongoPaymentMethodsRepo.fetchPaymentById(id: id);
+      final fetchedPayment = await mongoAccountsRepo.fetchAccountById(id: id);
       return fetchedPayment;
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in payment getting', message: e.toString());
-      return PaymentMethodModel();
+      return AccountModel();
     }
   }
 
@@ -169,11 +168,21 @@ class PaymentMethodController extends GetxController {
           context: context,
           title: 'Delete Payment',
           message: 'Are you sure to delete this Payment',
-          onSubmit: () async { await mongoPaymentMethodsRepo.deletePayment(id: id); },
+          onSubmit: () async { await mongoAccountsRepo.deleteAccount(id: id); },
           toastMessage: 'Deleted successfully!'
       );
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
+
+  Future<double> getTotalStockValue() async {
+    try {
+      final double totalStockValue = await mongoAccountsRepo.fetchTotalBalance();
+      return totalStockValue;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

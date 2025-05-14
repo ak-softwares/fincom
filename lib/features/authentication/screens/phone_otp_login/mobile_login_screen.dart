@@ -24,7 +24,7 @@ class MobileLoginScreen extends StatelessWidget {
       // appBar: const TAppBar2(titleText: "Login", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
-          padding: TSpacingStyle.paddingWidthAppbarHeight,
+          padding: AppSpacingStyle.paddingWidthAppbarHeight,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 120,),
             child: Column(

@@ -114,14 +114,17 @@ class AppSizes {
   static const double orderImageHeight = 50.0;
   static const double orderImageWidth = 100.0;
 
-  // Order Tile
+  // Sale Tile
   static const double saleTileHeight = 205;
   static const double saleTileWidth = 100.0;
   static const double saleTileRadius = 10.0;
   static const double saleImageHeight = 50.0;
   static const double saleImageWidth = 100.0;
 
-  // Order Tile
+  // Barcode Sale Tile
+  static const double barcodeTileHeight = 70;
+
+  // Purchase Tile
   static const double purchaseItemTileHeight = 72;
   static const double purchaseItemTileWidth = 100.0;
   static const double purchaseItemTileRadius = 5.0;

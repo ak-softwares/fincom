@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../../features/accounts/screen/home/home.dart';
+import '../../features/accounts/screen/financials/financials.dart';
+import '../../features/accounts/screen/products/products.dart';
 import '../../features/accounts/screen/purchase/purchase.dart';
 import '../../features/accounts/screen/sales/sales.dart';
 import '../../features/personalization/screens/user_menu/user_menu_screen.dart';
-import '../../utils/constants/colors.dart';
+
 import '../../utils/constants/icons.dart';
 import '../dialog_box_massages/snack_bar_massages.dart';
 
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  const BottomNavigation({super.key, this.route});
+
+  final String? route;
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -20,27 +22,20 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
 
-  DateTime? _lastBackPressedTime; // Variable to track the time of the last back button press
   int _currentIndex = 0;
+  DateTime? _lastBackPressedTime; // Variable to track the time of the last back button press
   final screens = [
-    const Analytics(),
+    const Financials(),
     const Sales(),
     const Purchase(),
+    const Products(),
     const UserMenuScreen(),
   ];
 
-  void _onTabChange(int index) {
-    if (index != _currentIndex) {
-      // Log page view only when navigating to a new page
-      setState(() {
-        _currentIndex = index;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // FBAnalytics.logPageView('bottom_navigation_bar_screen');
+    // FBAnalytics.logPageView('bottom_navigation_bar1_screen');
     return PopScope(
       canPop: false, // This property disables the system-level back navigation
       onPopInvoked: (didPop) {
@@ -68,43 +63,66 @@ class _BottomNavigationState extends State<BottomNavigation> {
           index: _currentIndex,
           children: screens,
         ),
-        bottomNavigationBar: GNav(
-            selectedIndex: _currentIndex,
-            // onTabChange: (index) => setState(() => _currentIndex = index),
-            onTabChange: _onTabChange,
-            tabMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            haptic: true, // haptic feedback
-            tabBorderRadius: 5,
-            tabActiveBorder: Border.all(color: AppColors.primaryColor, width: 1), // tab button border
-            curve: Curves.easeOutExpo, // tab animation curves
-            duration: const Duration(milliseconds: 100), // tab animation duration
-            gap: 8, // the tab button gap between icon and text
-            // color: Colors.grey[800], // unselected icon color
-            activeColor: AppColors.primaryColor, // selected icon and text color
-            iconSize: 25, // tab button icon size
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // navigation bar padding
-            tabs: [
-              GButton(
-                icon: AppIcons.home,
-                text: 'Home',
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            splashColor: Colors.transparent, // Disables ripple effect
+            highlightColor: Colors.transparent, // Removes highlight on tap
+            hoverColor: Colors.transparent, // Ensures no hover effect
+            cardColor: Colors.transparent,
+          ),
+          child: Container(
+            // height: 60, // Adjust height as needed
+            // padding: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).colorScheme.outline, // Change color as needed
+                  width: 0.2, // Adjust thickness
+                ),
               ),
-              GButton(
-                icon: AppIcons.sales,
-                text: 'Sale',
-              ),
-              // GButton(
-              //   icon: LineIcons.heart,
-              //   text: 'Likes',
-              // ),
-              GButton(
-                icon: AppIcons.purchase,
-                text: 'Purchase',
-              ),
-              GButton(
-                icon: AppIcons.user,
-                text: 'Profile',
-              )
-            ]
+            ),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) => setState(() => _currentIndex = index),
+              type: BottomNavigationBarType.fixed,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              iconSize: 25,
+              fixedColor: Theme.of(context).colorScheme.onSurface,
+              unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+              // backgroundColor: Theme.of(context).colorScheme.surface,
+              // selectedFontSize: 12,
+              // unselectedFontSize: 12,
+              // selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
+              // unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
+              // selectedFontSize: 10,
+              // unselectedFontSize: 20,
+              items: [
+                BottomNavigationBarItem(
+                  label: 'Financials',
+                  icon: Icon(Icons.home_outlined),
+                  activeIcon: Icon(Icons.home), // Icon when selected
+                ),
+                BottomNavigationBarItem(
+                  label: 'Sales',
+                  icon: Icon(AppIcons.sales),
+                ),
+                BottomNavigationBarItem(
+                  label: 'Purchase',
+                  icon: Icon(AppIcons.purchase),
+                ),
+                BottomNavigationBarItem(
+                  label: 'Product',
+                  icon: Icon(AppIcons.products),
+                ),
+                BottomNavigationBarItem(
+                  label: 'User Menu',
+                  icon: Icon(AppIcons.user),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

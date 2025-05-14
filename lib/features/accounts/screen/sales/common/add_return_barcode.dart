@@ -5,29 +5,38 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../controller/sales_controller/add_sale_controller.dart';
+import '../../../../../common/widgets/common/input_field_with_button.dart';
+import '../../../../settings/app_settings.dart';
+import '../../../controller/sales_controller/add_sale_controller.dart';
+import '../../../controller/sales_controller/sale_return_controller.dart';
+import '../../../controller/sales_controller/sales_controller.dart';
+import '../widget/barcode_sale_tile.dart';
 
-class AddBarcodeSale extends StatelessWidget {
+class AddReturnBarcode extends StatelessWidget {
 
-  const AddBarcodeSale({super.key});
+  const AddReturnBarcode({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AddSaleController controller = Get.put(AddSaleController());
+    final SaleReturnController controller = Get.put(SaleReturnController());
 
     return Scaffold(
-      appBar: AppAppBar(title: 'Add Sale'),
-      bottomNavigationBar: Obx(() => controller.orders.isNotEmpty
+      appBar: AppAppBar(title: 'Add Return'),
+      bottomNavigationBar: Obx(() => controller.returns.isNotEmpty
           ? Padding(
               padding: const EdgeInsets.all(AppSizes.sm),
               child: ElevatedButton(
-                  onPressed: () => controller.addBarcodeSale(),
-                  child: Text('Add Sale (${controller.orders.length})')
+                onPressed: () => controller.addBarcodeReturn(),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.orange.shade500),
+                ),
+                child: Text('Add Return (${controller.returns.length})'),
               ),
             )
           : SizedBox.shrink()),
       body: ListView(
         children: [
+          // Barcode Scan
           SizedBox(
             height: 200,
             width: double.infinity,
@@ -74,40 +83,36 @@ class AddBarcodeSale extends StatelessWidget {
               },
             ),
           ),
-          // SizedBox(
-          //   height: 200,
-          //   child: MobileScanner(
-          //     controller: controller.cameraController,
-          //     onDetect: controller.handleDetection,
-          //     // scanWindow: scanWindow,
-          //   ),
-          // ),
+
+          // Add Input field
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InputFieldWithButton(
+              textEditingController: controller.returnOrderTextEditingController,
+              onPressed: () async {
+                await controller.addManualReturn();
+              },
+            ),
+          ),
+
+          // List of Orders
           Obx(() {
-            return Container(
-              padding: const EdgeInsets.all(16),
-              color: Theme.of(context).colorScheme.surface,
-              child: controller.orders.isEmpty
-                  ? const Center(child: Text('No codes scanned yet.'))
-                  : GridLayout(
-                      mainAxisExtent: 50,
-                      itemCount: controller.orders.length,
-                      itemBuilder: (_, index) {
-                        return Center(
-                          child: ListTile(
-                            leading: const Icon(Icons.qr_code),
-                            title: Text(controller.orders[index].orderId.toString()),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.close, size: 20),
-                              onPressed: () {
-                                controller.orders.removeAt(index);
-                                controller.orders.refresh();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            );
+            return controller.returns.isEmpty
+                ? const Center(child: Text('No codes scanned yet.'))
+                : GridLayout(
+                    mainAxisExtent: AppSizes.barcodeTileHeight,
+                    itemCount: controller.returns.length,
+                    itemBuilder: (_, index) {
+                      return BarcodeSaleTile(
+                          orderId: controller.returns[index].orderId ?? 0,
+                          amount: controller.returns[index].total?.toInt(),
+                          onClose: () {
+                            controller.returns.removeAt(index);
+                            controller.returns.refresh();
+                          }
+                      );
+                    },
+                  );
           }),
         ],
       ),

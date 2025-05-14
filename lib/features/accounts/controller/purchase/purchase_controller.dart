@@ -122,4 +122,14 @@ class PurchaseController extends GetxController {
     }
   }
 
+  Future<List<OrderModel>> getPurchasesByDate({required DateTime startDate, required DateTime endDate}) async {
+    try {
+      final fetchedOrders = await mongoOrderRepo
+          .fetchOrdersByDate(orderType: orderType, startDate: startDate, endDate: endDate);
+      return fetchedOrders;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

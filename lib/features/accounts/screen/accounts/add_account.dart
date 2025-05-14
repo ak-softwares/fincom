@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/navigation_bar/appbar.dart';
-import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controller/payment/payment_controller.dart';
+import '../../controller/account/account_controller.dart';
 import '../../models/payment_method.dart';
 
-class AddPayments extends StatelessWidget {
-  const AddPayments({super.key, this.payment});
+class AddAccount extends StatelessWidget {
+  const AddAccount({super.key, this.payment});
 
-  final PaymentMethodModel? payment;
+  final AccountModel? payment;
 
   @override
   Widget build(BuildContext context) {
-    final PaymentMethodController controller = Get.put(PaymentMethodController());
+    final AccountsController controller = Get.put(AccountsController());
 
     if( payment != null) {
       controller.resetValue(payment!);
     }
 
     return Scaffold(
-      appBar: AppAppBar(title: payment != null ? 'Update Payment' : 'Add Payment'),
+      appBar: AppAppBar(title: payment != null ? 'Update Account' : 'Add Account'),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
         child: ElevatedButton(
           onPressed: () => payment != null ? controller.saveUpdatedPayment(previousPayment: payment!) : controller.savePaymentMethods(),
-          child: Text(payment != null ? 'Update Payment' : 'Add Payment', style: TextStyle(fontSize: 16)),
+          child: Text(payment != null ? 'Update Account' : 'Add Account', style: TextStyle(fontSize: 16)),
         ),
       ),
       body: SingleChildScrollView(
@@ -34,23 +33,23 @@ class AddPayments extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Form(
-            key: controller.paymentFormKey,
+            key: controller.accountsFormKey,
             child: Column(
               spacing: AppSizes.spaceBtwItems,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Payment id'),
+                    Text('Accounts id'),
                     payment != null
-                        ? Text('#${payment!.paymentId}')
-                        : Obx(() => Text('#${controller.paymentId.value}')),
+                        ? Text('#${payment!.accountId}')
+                        : Obx(() => Text('#${controller.accountId.value}')),
                   ],
                 ),
                 TextFormField(
-                  controller: controller.paymentMethodName,
+                  controller: controller.accountsName,
                   decoration: InputDecoration(
-                    labelText: 'Payment Method Name',
+                    labelText: 'Account Name',
                     border: OutlineInputBorder(),
                   ),
                 ),

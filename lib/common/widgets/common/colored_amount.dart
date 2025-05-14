@@ -25,6 +25,7 @@ class ColoredAmount extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         color: textColor,
+        fontWeight: FontWeight.bold
       ),
     );
   }

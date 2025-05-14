@@ -41,15 +41,16 @@ class MongoTransactionRepo extends GetxController {
       final List<TransactionModel> transactions = transactionData.map((data) => TransactionModel.fromJson(data)).toList();
       return transactions;
     } catch (e) {
-      throw 'Failed to fetch transactions: $e';
+      throw 'Failed: $e';
     }
   }
 
   // Upload a transaction
-  Future<void> pushTransaction({required TransactionModel transaction}) async {
+  Future<String> pushTransaction({required TransactionModel transaction}) async {
     try {
       Map<String, dynamic> transactionMap = transaction.toMap(); // Convert a single transaction to a map
-      await _mongoDatabase.insertDocument(collectionName, transactionMap);
+      final String transactionId = await _mongoDatabase.insertDocumentGetId(collectionName, transactionMap);
+      return transactionId;
     } catch (e) {
       throw 'Failed to upload transaction: $e';
     }
@@ -151,11 +152,12 @@ class MongoTransactionRepo extends GetxController {
   }
 
   // Update Balance
-  Future<void> updateBalance({required String collectionName, required Map<String, dynamic> entityBalancePair, required bool isAddition}) async {
+  Future<void> updateBalanceById({required String collectionName, required String entityId, required double amount, required bool isAddition}) async {
     try {
       await _mongoDatabase.updateBalance(
           collectionName: collectionName,
-          entityBalancePair: entityBalancePair,
+          entityId: entityId,
+          amount: amount,
           isAddition: isAddition,
       );
     } catch (e) {

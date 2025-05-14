@@ -62,7 +62,7 @@ class Transactions extends StatelessWidget {
         onRefresh: () async => transactionController.refreshTransactions(), // Updated method
         child: ListView(
           controller: scrollController,
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Obx(() {

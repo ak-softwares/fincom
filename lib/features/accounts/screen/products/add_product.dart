@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controller/product/product_controller.dart';
+import '../../controller/product/add_product_controller.dart';
 import '../../models/product_model.dart';
 
 class AddProducts extends StatelessWidget {
@@ -13,7 +13,7 @@ class AddProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductController controller = Get.put(ProductController());
+    final AddProductController controller = Get.put(AddProductController());
 
     if (product != null) {
       controller.resetProductValues(product!);

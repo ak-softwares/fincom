@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../utils/constants/icons.dart';
+import '../../../../accounts/screen/accounts/accounts.dart';
 import '../../../../accounts/screen/customers/customers.dart';
 import '../../../../accounts/screen/expenses/expenses.dart';
-import '../../../../accounts/screen/payments/payments.dart';
 import '../../../../accounts/screen/products/products.dart';
 import '../../../../accounts/screen/purchase/purchase.dart';
 import '../../../../accounts/screen/purchase_list/purchase_list.dart';
-import '../../../../accounts/screen/sales/add_barcode_sale.dart';
 import '../../../../accounts/screen/sales/sales.dart';
 import '../../../../accounts/screen/transaction/transactions.dart';
 import '../../../../accounts/screen/vendor/vendors.dart';
@@ -27,7 +26,7 @@ class Menu extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          onTap: () => Get.to(() => ProductsVoucher()),
+          onTap: () => Get.to(() => Products()),
           leading: Icon(AppIcons.products, size: 25),
           title: Text('Products'),
           subtitle: Text('List of products'),
@@ -55,10 +54,10 @@ class Menu extends StatelessWidget {
           trailing: Icon(Icons.arrow_forward_ios, size: 20,),
         ),
         ListTile(
-          onTap: () => Get.to(() => const Payments()),
+          onTap: () => Get.to(() => const Accounts()),
           leading: Icon(Icons.money,size: 20),
-          title: Text('Payments'),
-          subtitle: Text('All Payments list'),
+          title: Text('Accounts'),
+          subtitle: Text('All Accounts list'),
           trailing: Icon(Icons.arrow_forward_ios, size: 20,),
         ),
         ListTile(

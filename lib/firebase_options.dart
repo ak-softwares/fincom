@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -44,42 +41,51 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDaEvrQZdlv80sOqs4ETsHbzrw1Rws2te4',
-    appId: '1:387716439678:web:b237fec047f98abefa822f',
-    messagingSenderId: '387716439678',
-    projectId: 'aramarket-in-2772c',
-    authDomain: 'aramarket-in-2772c.firebaseapp.com',
-    storageBucket: 'aramarket-in-2772c.appspot.com',
-    measurementId: 'G-9PKDPWPLQS',
+    apiKey: 'AIzaSyDRs6efaAmYQgxvos2iT-12SJs5PyATI5k',
+    appId: '1:613683440998:web:29839912f2393e8443aca7',
+    messagingSenderId: '613683440998',
+    projectId: 'fincom-dec4a',
+    authDomain: 'fincom-dec4a.firebaseapp.com',
+    storageBucket: 'fincom-dec4a.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDlK7RhMhPNbBuPSrFuPEAJtyKozqzgifs',
-    appId: '1:387716439678:android:38ffaecb06e4f00cfa822f',
-    messagingSenderId: '387716439678',
-    projectId: 'aramarket-in-2772c',
-    storageBucket: 'aramarket-in-2772c.appspot.com',
+    apiKey: 'AIzaSyDZM3m0j6lq9l_TN1YEufVDcRgyMHXaIqw',
+    appId: '1:613683440998:android:ea6c20c6f0f2d64443aca7',
+    messagingSenderId: '613683440998',
+    projectId: 'fincom-dec4a',
+    storageBucket: 'fincom-dec4a.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB2etUmA72KBHTqQJsJGScG3gbNDHzm0a8',
-    appId: '1:387716439678:ios:aef3969b4a0e289ffa822f',
-    messagingSenderId: '387716439678',
-    projectId: 'aramarket-in-2772c',
-    storageBucket: 'aramarket-in-2772c.appspot.com',
-    androidClientId: '387716439678-q0fe8vuotaun287n07t79fbn1n0m8r0s.apps.googleusercontent.com',
-    iosClientId: '387716439678-9c6cm4s6gvlsao358vfek7ld8h270199.apps.googleusercontent.com',
-    iosBundleId: 'com.example.aramarketNew',
+    apiKey: 'AIzaSyABWHYXOf66jaidtI-ZMi-VInu60iF8yk8',
+    appId: '1:613683440998:ios:3ef8400972ba06a843aca7',
+    messagingSenderId: '613683440998',
+    projectId: 'fincom-dec4a',
+    storageBucket: 'fincom-dec4a.firebasestorage.app',
+    androidClientId: '613683440998-n6ctlkdlpldg2cg4sol3eqnihgbmp1og.apps.googleusercontent.com',
+    iosClientId: '613683440998-mflo4osd0na886a7oedl75hq7srm5df8.apps.googleusercontent.com',
+    iosBundleId: 'com.accounts.ara',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB2etUmA72KBHTqQJsJGScG3gbNDHzm0a8',
-    appId: '1:387716439678:ios:af251201f0a23624fa822f',
-    messagingSenderId: '387716439678',
-    projectId: 'aramarket-in-2772c',
-    storageBucket: 'aramarket-in-2772c.appspot.com',
-    androidClientId: '387716439678-q0fe8vuotaun287n07t79fbn1n0m8r0s.apps.googleusercontent.com',
-    iosClientId: '387716439678-rcgc2kqp46d3b0opp3dbkpnl05io0b56.apps.googleusercontent.com',
-    iosBundleId: 'com.example.aramarketNew.RunnerTests',
+    apiKey: 'AIzaSyABWHYXOf66jaidtI-ZMi-VInu60iF8yk8',
+    appId: '1:613683440998:ios:e3c308e2bd928a1243aca7',
+    messagingSenderId: '613683440998',
+    projectId: 'fincom-dec4a',
+    storageBucket: 'fincom-dec4a.firebasestorage.app',
+    androidClientId: '613683440998-n6ctlkdlpldg2cg4sol3eqnihgbmp1og.apps.googleusercontent.com',
+    iosClientId: '613683440998-fgkvvrngej4juso1781a4oi1gpt8h28u.apps.googleusercontent.com',
+    iosBundleId: 'com.example.aramarketNew',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDRs6efaAmYQgxvos2iT-12SJs5PyATI5k',
+    appId: '1:613683440998:web:6dc52c7b47bdb89643aca7',
+    messagingSenderId: '613683440998',
+    projectId: 'fincom-dec4a',
+    authDomain: 'fincom-dec4a.firebaseapp.com',
+    storageBucket: 'fincom-dec4a.firebasestorage.app',
+  );
+
 }

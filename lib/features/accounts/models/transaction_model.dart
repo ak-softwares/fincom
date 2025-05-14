@@ -7,10 +7,10 @@ class TransactionModel {
   int? transactionId;
   DateTime? date;
   double? amount;
-  int? fromEntityId; // ID of the sender
+  String? fromEntityId; // ID of the sender
   String? fromEntityName;
   EntityType? fromEntityType; // Type: "Customer", "Vendor", "PaymentMethod"
-  int? toEntityId; // ID of the receiver
+  String? toEntityId; // ID of the receiver
   String? toEntityName;
   EntityType? toEntityType; // Type: "Customer", "Vendor", "PaymentMethod"
   TransactionType? transactionType; // Enum-based transaction type
@@ -52,16 +52,14 @@ class TransactionModel {
           ? (json[TransactionFieldName.id] as ObjectId).toHexString()
           : json[TransactionFieldName.id]?.toString(),
       transactionId: json[TransactionFieldName.transactionId] as int?,
-      date: json[TransactionFieldName.date] != null
-          ? DateTime.tryParse(json[TransactionFieldName.date].toString())
-          : null,
+      date: json[TransactionFieldName.date],
       amount: (json[TransactionFieldName.amount] as num?)?.toDouble(),
-      fromEntityId: json[TransactionFieldName.fromEntityId] as int?,
+      fromEntityId: json[TransactionFieldName.fromEntityId] as String?,
       fromEntityName: json[TransactionFieldName.fromEntityName],
       fromEntityType: json[TransactionFieldName.fromEntityType] != null
           ? EntityType.values.byName(json[TransactionFieldName.fromEntityType])
           : null,
-      toEntityId: json[TransactionFieldName.toEntityId] as int?,
+      toEntityId: json[TransactionFieldName.toEntityId] as String?,
       toEntityName: json[TransactionFieldName.toEntityName],
       toEntityType: json[TransactionFieldName.toEntityType] != null
           ? EntityType.values.byName(json[TransactionFieldName.toEntityType])
@@ -79,9 +77,13 @@ class TransactionModel {
     final json = {
       TransactionFieldName.transactionId: transactionId,
       TransactionFieldName.amount: amount,
-      TransactionFieldName.date: date?.toIso8601String(),
+      TransactionFieldName.date: date,
       TransactionFieldName.transactionType: transactionType?.name,
     };
+
+    if(id != null) {
+      json[TransactionFieldName.id] =  id;
+    }
 
     if(fromEntityType != null) {
       json[TransactionFieldName.fromEntityId] =  fromEntityId;

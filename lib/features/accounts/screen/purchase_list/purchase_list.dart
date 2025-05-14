@@ -1,5 +1,6 @@
 import 'package:fincom/common/layout_models/product_grid_layout.dart';
 import 'package:fincom/common/navigation_bar/appbar.dart';
+import 'package:fincom/features/accounts/screen/sales/widget/sale_tile.dart';
 import 'package:fincom/utils/formatters/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -72,7 +73,7 @@ class PurchaseList extends StatelessWidget {
           controller.refreshOrders();
         },
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           children: [
             Obx(() {
               if (controller.isLoading.value) {
@@ -424,13 +425,13 @@ class PurchaseList extends StatelessWidget {
       builder: (context) {
         return relatedOrders.isNotEmpty
             ? SingleChildScrollView(
-                padding: TSpacingStyle.defaultPagePadding,
+                padding: AppSpacingStyle.defaultPagePadding,
                 child: GridLayout(
                   itemCount: relatedOrders.length,
                   crossAxisCount: 1,
-                  mainAxisExtent: AppSizes.orderTileHeight,
+                  mainAxisExtent: AppSizes.saleTileHeight,
                   itemBuilder: (context, index) {
-                    return OrderTile(order: relatedOrders[index]);
+                    return SaleTile(sale: relatedOrders[index]);
                   },
                 ),
               )

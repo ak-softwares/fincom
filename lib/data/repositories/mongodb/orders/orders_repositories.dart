@@ -51,28 +51,21 @@ class MongoOrderRepo extends GetxController {
     required OrderType orderType,
     required DateTime startDate,
     required DateTime endDate,
-    int page = 1,
   }) async {
     try {
-      final filter = {
-        OrderFieldName.orderType: orderType.name,
-        OrderFieldName.dateCreated: {
-          '\$gte': startDate,
-          '\$lte': endDate,
-        },
-      };
+      final filter = {OrderFieldName.orderType: orderType.name,};
 
-      final List<Map<String, dynamic>> ordersData = await _mongoDatabase.fetchDocuments(
+      final List<Map<String, dynamic>> ordersData = await _mongoDatabase.fetchDocumentsDate(
         collectionName: collectionName,
         filter: filter,
-        page: page,
+        startDate: startDate,
+        endDate: endDate
       );
       return ordersData.map((data) => OrderModel.fromJson(data)).toList();
     } catch (e) {
       throw 'Failed to fetch orders: $e';
     }
   }
-
 
   // Fetch Order's IDs from MongoDB
   Future<Set<int>> fetchOrdersIds() async {
@@ -90,8 +83,11 @@ class MongoOrderRepo extends GetxController {
       if (ordersIds.isEmpty) return []; // Return empty list if no IDs provided
 
       // Fetch orders from MongoDB where the ID matches any in the list
-      final List<Map<String, dynamic>> ordersData =
-            await _mongoDatabase.fetchDocumentsByIds(collectionName, ordersIds,);
+      final List<Map<String, dynamic>> ordersData = await _mongoDatabase.fetchDocumentsByFieldName(
+        collectionName:  collectionName,
+        fieldName: OrderFieldName.orderId,
+        documentIds: ordersIds,
+      );
 
       // Convert data to a list of OrdersModel
       final List<OrderModel> orders = ordersData.map((data) => OrderModel.fromJson(data)).toList();
@@ -123,6 +119,54 @@ class MongoOrderRepo extends GetxController {
         );
     } catch (e) {
       throw 'Failed to update order: $e';
+    }
+  }
+
+  // Update a order
+  Future<void> updateOrdersPaymentByOrderId({required List<int> orderNumbers}) async {
+    try {
+      await _mongoDatabase.updateDocuments(
+          collectionName: collectionName,
+          filter: {
+            OrderFieldName.orderId: {'\$in': orderNumbers},
+          },
+          updatedData: {
+            OrderFieldName.status: OrderStatus.completed.name,
+            OrderFieldName.dateCompleted: DateTime.now(),
+          }
+      );
+    } catch (e) {
+      throw 'Failed to update order: $e';
+    }
+  }
+
+  Future<void> updateOrdersStatus({required List<OrderModel> orders, required OrderStatus newStatus}) async {
+    try {
+      if (orders.isEmpty) {
+        throw Exception('❌ No orders provided');
+      }
+
+      final orderIds = orders.map((order) => order.id).where((id) => id != null && id.isNotEmpty).toList();
+
+      if (orderIds.length != orders.length) {
+        throw Exception('🚫 Some orders have missing or invalid IDs');
+      }
+
+      await _mongoDatabase.updateManyDocumentsById(
+        collectionName: collectionName,
+        ids: orderIds.cast<String>(),
+        updatedData: {
+          OrderFieldName.status: newStatus.name,
+          if (newStatus == OrderStatus.completed)
+            OrderFieldName.dateCompleted: DateTime.now(),
+          if (newStatus == OrderStatus.returned)
+            OrderFieldName.dateReturned: DateTime.now(),
+        },
+      );
+    } on FormatException catch (e) {
+      throw Exception('🆔 ID Error in order list: ${e.message}');
+    } catch (e) {
+      throw Exception('❌ Failed to update orders: ${e.toString()}');
     }
   }
 
@@ -184,6 +228,16 @@ class MongoOrderRepo extends GetxController {
       }
       final OrderModel sale = OrderModel.fromJson(saleData);
       return sale;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Fetch All Products from MongoDB
+  Future<double> fetchStockValueOfInTransit({required OrderType orderType, required OrderStatus orderStatus}) async {
+    try {
+      final double totalStockValue = await _mongoDatabase.fetchInTransitStockValue(collectionName: collectionName, orderType: orderType, orderStatus: orderStatus);
+      return totalStockValue;
     } catch (e) {
       rethrow;
     }

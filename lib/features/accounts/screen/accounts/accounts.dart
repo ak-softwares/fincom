@@ -9,21 +9,21 @@ import '../../../../common/styles/spacing_style.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controller/payment/payment_controller.dart';
-import 'add_payment.dart';
-import 'single_payment.dart';
-import 'widget/payment_tile.dart';
-import 'widget/payment_tile_simmer.dart';
+import '../../controller/account/account_controller.dart';
+import 'add_account.dart';
+import 'single_account.dart';
+import 'widget/account_tile.dart';
+import 'widget/account_tile_simmer.dart';
 
-class Payments extends StatelessWidget {
-  const Payments({super.key});
+class Accounts extends StatelessWidget {
+  const Accounts({super.key});
 
   @override
   Widget build(BuildContext context) {
     const double paymentTileHeight = AppSizes.paymentTileHeight;
 
     final ScrollController scrollController = ScrollController();
-    final paymentController = Get.put(PaymentMethodController());
+    final paymentController = Get.put(AccountsController());
 
     paymentController.refreshPaymentMethods();
 
@@ -32,7 +32,7 @@ class Payments extends StatelessWidget {
         if(!paymentController.isLoadingMore.value){
           // User has scrolled to 80% of the content's height
           const int itemsPerPage = 10; // Number of items per page
-          if (paymentController.paymentMethods.length % itemsPerPage != 0) {
+          if (paymentController.accounts.length % itemsPerPage != 0) {
             // If the length of orders is not a multiple of itemsPerPage, it means all items have been fetched
             return; // Stop fetching
           }
@@ -45,17 +45,17 @@ class Payments extends StatelessWidget {
     });
 
     final Widget emptyWidget = AnimationLoaderWidgets(
-      text: 'Whoops! No Payment Method Found...',
+      text: 'Whoops! No Accounts Method Found...',
       animation: Images.pencilAnimation,
     );
 
     return Scaffold(
-        appBar: const AppAppBar(title: 'Payment Methods'),
+        appBar: const AppAppBar(title: 'Accounts'),
         floatingActionButton: FloatingActionButton(
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
-          onPressed: () => Get.to(() => AddPayments()),
-          tooltip: 'Add Payment Method',
+          onPressed: () => Get.to(() => AddAccount()),
+          tooltip: 'Add Accounts',
           child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
         ),
         body: RefreshIndicator(
@@ -63,16 +63,16 @@ class Payments extends StatelessWidget {
           onRefresh: () async => paymentController.refreshPaymentMethods(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {
                 if (paymentController.isLoading.value) {
-                  return  PaymentTileSimmer(itemCount: 2);
-                } else if(paymentController.paymentMethods.isEmpty) {
+                  return  AccountTileSimmer(itemCount: 2);
+                } else if(paymentController.accounts.isEmpty) {
                   return emptyWidget;
                 } else {
-                  final paymentMethods = paymentController.paymentMethods;
+                  final paymentMethods = paymentController.accounts;
                   return Column(
                     children: [
                       GridLayout(
@@ -81,12 +81,12 @@ class Payments extends StatelessWidget {
                           mainAxisExtent: paymentTileHeight,
                           itemBuilder: (context, index) {
                             if (index < paymentMethods.length) {
-                              return PaymentMethodTile(
+                              return AccountTile(
                                 payment: paymentMethods[index],
-                                onTap: () => Get.to(() => SinglePayment(payment: paymentMethods[index])),
+                                onTap: () => Get.to(() => SingleAccount(account: paymentMethods[index])),
                               );
                             } else {
-                              return PaymentTileSimmer();
+                              return AccountTileSimmer();
                             }
                           }
                       ),

@@ -59,7 +59,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
         color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshPurchase(),
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Column(

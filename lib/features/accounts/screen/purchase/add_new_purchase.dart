@@ -37,6 +37,8 @@ class AddNewPurchase extends StatelessWidget {
 
     if (clonedPreviousPurchase != null) {
       addPurchaseController.resetValue(purchase: clonedPreviousPurchase);
+    } else{
+      addPurchaseController.dateController.text = DateTime.now().toString();
     }
 
     return Scaffold(
@@ -51,7 +53,7 @@ class AddNewPurchase extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: TSpacingStyle.defaultPagePadding,
+        padding: AppSpacingStyle.defaultPagePadding,
         child: Column(
           spacing: AppSizes.spaceBtwSection,
           crossAxisAlignment: CrossAxisAlignment.start,

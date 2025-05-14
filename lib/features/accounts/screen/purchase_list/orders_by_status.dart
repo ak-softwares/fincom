@@ -7,6 +7,7 @@ import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../models/order_model.dart';
 import '../orders/widgets/order_tile.dart';
+import '../sales/widget/sale_tile.dart';
 
 class OrdersByStatus extends StatelessWidget {
   const OrdersByStatus({super.key, required this.orders, required this.orderStatus});
@@ -18,7 +19,7 @@ class OrdersByStatus extends StatelessWidget {
     return Scaffold(
       appBar: const AppAppBar(title: 'Purchase List Orders'),
       body: SingleChildScrollView(
-        padding: TSpacingStyle.defaultPagePadding,
+        padding: AppSpacingStyle.defaultPagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: AppSizes.sm,
@@ -27,9 +28,9 @@ class OrdersByStatus extends StatelessWidget {
             GridLayout(
               itemCount: orders.length,
               crossAxisCount: 1,
-              mainAxisExtent: AppSizes.orderTileHeight,
+              mainAxisExtent: AppSizes.saleTileHeight,
               itemBuilder: (context, index) {
-                return OrderTile(order: orders[index]);
+                return SaleTile(sale: orders[index]);
               },
             ),
           ],

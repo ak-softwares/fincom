@@ -11,7 +11,7 @@ import '../../../../utils/constants/api_constants.dart';
 class WooOrdersRepository extends GetxController {
   static WooOrdersRepository get instance => Get.find();
 
-  // Fetch Product Count
+  // Fetch Orders Count
   Future<int> fetchOrdersCount() async {
     try {
       final Map<String, String> queryParams = {
@@ -75,7 +75,7 @@ class WooOrdersRepository extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> ordersJson = json.decode(response.body);
-        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJson(json)).toList();
+        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJsonWoo(json)).toList();
         return orders;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);
@@ -91,7 +91,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  // Fetch All Products
+  // Fetch All Orders
   Future<List<OrderModel>> fetchAllOrders({required String page}) async {
     try{
       final Map<String, String> queryParams = {
@@ -115,7 +115,7 @@ class WooOrdersRepository extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> ordersJson = json.decode(response.body);
-        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJson(json)).toList();
+        final List<OrderModel> orders = ordersJson.map((json) => OrderModel.fromJsonWoo(json)).toList();
         return orders;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);
@@ -131,7 +131,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  //Fetch orders by customer's id
+  // Fetch orders by customer's id
   Future<List<OrderModel>> fetchOrdersByCustomerId({required String customerId, required String page}) async {
     try {
       final Map<String, String> queryParams = {
@@ -168,7 +168,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  //Fetch orders by customer's email
+  // Fetch orders by customer's email
   Future<List<OrderModel>> fetchOrdersByCustomerEmail({required String customerEmail, required String page}) async {
     try {
       final Map<String, String> queryParams = {
@@ -206,7 +206,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  //create order
+  // Create order
   Future<OrderModel> createOrderByCustomerId(OrderModel orderData) async {
     try {
       final Uri uri = Uri.https(
@@ -237,7 +237,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  //Cancel order
+  // Cancel order
   Future<OrderModel> updateStatusByOrderId(String orderId, String status) async {
     try {
       Map<String, dynamic> data = {
@@ -271,7 +271,7 @@ class WooOrdersRepository extends GetxController {
     }
   }
 
-  // Fetch order by customer's id
+  // Fetch order by id
   Future<OrderModel> fetchOrderById({required String orderId}) async {
 
     try {
@@ -286,10 +286,9 @@ class WooOrdersRepository extends GetxController {
           'Authorization': APIConstant.authorization,
         },
       );
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> orderJson = json.decode(response.body);
-        final OrderModel order = OrderModel.fromJson(orderJson, isWoo: true);
+        final OrderModel order = OrderModel.fromJsonWoo(orderJson);
         return order;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);

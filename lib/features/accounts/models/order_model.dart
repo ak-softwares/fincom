@@ -2,12 +2,12 @@ import 'package:fincom/utils/constants/enums.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../../utils/constants/db_constants.dart';
-import '../../../utils/formatters/formatters.dart';
 import '../../personalization/models/address_model.dart';
+import '../../personalization/models/user_model.dart';
 import '../../settings/app_settings.dart';
 import 'cart_item_model.dart';
 import 'coupon_model.dart';
-import 'image_model.dart'; // Assuming this exists for purchaseInvoiceImages
+import 'image_model.dart';
 
 class OrderModel {
   String? id;
@@ -20,6 +20,7 @@ class OrderModel {
   DateTime? dateModified;
   DateTime? dateCompleted;
   DateTime? datePaid;
+  DateTime? dateReturned;
   String? discountTotal;
   String? discountTax;
   String? shippingTotal;
@@ -28,6 +29,7 @@ class OrderModel {
   double? total;
   String? totalTax;
   int? userId;
+  UserModel? user;
   AddressModel? billing;
   AddressModel? shipping;
   String? paymentMethod;
@@ -37,6 +39,7 @@ class OrderModel {
   String? customerUserAgent;
   String? customerNote;
   List<OrderMedaDataModel>? metaData;
+  OrderAttributeModel? orderAttribute;
   List<CartModel>? lineItems;
   List<CouponModel>? couponLines;
   String? paymentUrl;
@@ -56,6 +59,7 @@ class OrderModel {
     this.dateModified,
     this.dateCompleted,
     this.datePaid,
+    this.dateReturned,
     this.discountTotal,
     this.discountTax,
     this.shippingTotal,
@@ -64,6 +68,7 @@ class OrderModel {
     this.total,
     this.totalTax,
     this.userId,
+    this.user,
     this.billing,
     this.shipping,
     this.paymentMethod,
@@ -73,6 +78,7 @@ class OrderModel {
     this.customerUserAgent,
     this.customerNote,
     this.metaData,
+    this.orderAttribute,
     this.lineItems,
     this.couponLines,
     this.paymentUrl,
@@ -94,46 +100,127 @@ class OrderModel {
     ) ?? 0;
   }
 
-  factory OrderModel.fromJson(Map<String, dynamic> json, {bool isWoo = false}) {
+  factory OrderModel.fromJson(Map<String, dynamic> json) {
     final OrderType orderType = OrderType.values.firstWhere(
           (e) => e.name == json[OrderFieldName.orderType],
-      orElse: () => OrderType.sale, // or a default fallback
+      orElse: () => OrderType.sale,
     );
+    final List<OrderMedaDataModel> metaData = json[OrderFieldName.metaData] != null
+        ? List<OrderMedaDataModel>.from(
+            json[OrderFieldName.metaData].map((item) => OrderMedaDataModel.fromJson(item)),
+          )
+        : [];
     return OrderModel(
-        id: json[OrderFieldName.id] is ObjectId
-            ? (json[OrderFieldName.id] as ObjectId).toHexString()
-            : json[OrderFieldName.id]?.toString(),
-        orderId: isWoo ? json[OrderFieldName.wooId] : json[OrderFieldName.orderId],
-        invoiceNumber: json[OrderFieldName.invoiceNumber] ?? 0,
-        status: OrderStatusExtension.fromString(json[OrderFieldName.status] ?? ''),
-        currency: json[OrderFieldName.currency] ?? '',
-        pricesIncludeTax: json[OrderFieldName.pricesIncludeTax] ?? false,
-        dateCreated: json[OrderFieldName.dateCreated] ?? DateTime.now(),
-        dateModified: json[OrderFieldName.dateModified] ?? DateTime.now(),
-        dateCompleted: json[OrderFieldName.dateCompleted] ?? DateTime.now(),
-        datePaid: json[OrderFieldName.datePaid] ?? DateTime.now(),
-        discountTotal: json[OrderFieldName.discountTotal] ?? '',
-        discountTax: json[OrderFieldName.discountTax] ?? '',
-        shippingTotal: json[OrderFieldName.shippingTotal] ?? '',
-        shippingTax: json[OrderFieldName.shippingTax] ?? '',
-        cartTax: json[OrderFieldName.cartTax] ?? '',
-        totalTax: json[OrderFieldName.totalTax] ?? '',
-        total: json[OrderFieldName.total] ?? 0,
-        userId: isWoo ? (json[OrderFieldName.customerId] ?? 0) : (json[OrderFieldName.userId] ?? 0),
-        billing: json[OrderFieldName.billing] != null ? AddressModel.fromJson(json[OrderFieldName.billing]) : AddressModel(),
-        shipping: json[OrderFieldName.shipping] != null ? AddressModel.fromJson(json[OrderFieldName.shipping]) : AddressModel(),
-        paymentMethod: json[OrderFieldName.paymentMethod] ?? '',
-        paymentMethodTitle: json[OrderFieldName.paymentMethodTitle] ?? '',
-        transactionId: json[OrderFieldName.transactionId] ?? '',
-        customerIpAddress: json[OrderFieldName.customerIpAddress] ?? '',
-        customerUserAgent: json[OrderFieldName.customerUserAgent] ?? '',
-        customerNote: json[OrderFieldName.customerNote] ?? '',
-        lineItems: List<CartModel>.from(json[OrderFieldName.lineItems].map((item) => CartModel.fromJson(item))),
-        paymentUrl: json[OrderFieldName.paymentUrl] ?? '',
-        currencySymbol: json[OrderFieldName.currencySymbol] ?? '',
-        purchaseInvoiceImages: List<ImageModel>.from(json[OrderFieldName.purchaseInvoiceImages]?.map((item) => ImageModel.fromJson(item)) ?? []),
-        orderType: orderType,
-      );
+      id: json[OrderFieldName.id] is ObjectId
+          ? (json[OrderFieldName.id] as ObjectId).toHexString()
+          : json[OrderFieldName.id]?.toString(),
+      orderId: json[OrderFieldName.orderId],
+      invoiceNumber: json[OrderFieldName.invoiceNumber] ?? 0,
+      status: OrderStatusExtension.fromString(json[OrderFieldName.status] ?? ''),
+      currency: json[OrderFieldName.currency] ?? '',
+      pricesIncludeTax: json[OrderFieldName.pricesIncludeTax] ?? false,
+      dateCreated: json[OrderFieldName.dateCreated],
+      dateModified: json[OrderFieldName.dateModified],
+      dateCompleted: json[OrderFieldName.dateCompleted],
+      datePaid: json[OrderFieldName.datePaid],
+      dateReturned: json[OrderFieldName.dateReturned],
+      discountTotal: json[OrderFieldName.discountTotal] ?? '',
+      discountTax: json[OrderFieldName.discountTax] ?? '',
+      shippingTotal: json[OrderFieldName.shippingTotal] ?? '',
+      shippingTax: json[OrderFieldName.shippingTax] ?? '',
+      cartTax: json[OrderFieldName.cartTax] ?? '',
+      totalTax: json[OrderFieldName.totalTax] ?? '',
+      total: json[OrderFieldName.total] ?? 0,
+      userId: json[OrderFieldName.userId] ?? 0,
+      billing: json[OrderFieldName.billing] != null
+          ? AddressModel.fromJson(json[OrderFieldName.billing])
+          : AddressModel(),
+      shipping: json[OrderFieldName.shipping] != null
+          ? AddressModel.fromJson(json[OrderFieldName.shipping])
+          : AddressModel(),
+      paymentMethod: json[OrderFieldName.paymentMethod] ?? '',
+      paymentMethodTitle: json[OrderFieldName.paymentMethodTitle] ?? '',
+      transactionId: json[OrderFieldName.transactionId] ?? '',
+      customerIpAddress: json[OrderFieldName.customerIpAddress] ?? '',
+      customerUserAgent: json[OrderFieldName.customerUserAgent] ?? '',
+      customerNote: json[OrderFieldName.customerNote] ?? '',
+      lineItems: List<CartModel>.from(
+        json[OrderFieldName.lineItems].map((item) => CartModel.fromJson(item)),
+      ),
+      paymentUrl: json[OrderFieldName.paymentUrl] ?? '',
+      currencySymbol: json[OrderFieldName.currencySymbol] ?? '',
+      purchaseInvoiceImages: List<ImageModel>.from(
+        json[OrderFieldName.purchaseInvoiceImages]?.map((item) => ImageModel.fromJson(item)) ?? [],
+      ),
+      couponLines: json[OrderFieldName.couponLines] != null
+          ? List<CouponModel>.from(
+              json[OrderFieldName.couponLines].map((item) => CouponModel.fromJson(item)),
+            )
+          : [],
+      metaData: metaData,
+      orderAttribute: OrderAttributeModel.fromMetaData(metaData),
+      orderType: orderType,
+    );
+  }
+
+  factory OrderModel.fromJsonWoo(Map<String, dynamic> json) {
+    return OrderModel(
+      orderId: json[OrderFieldName.wooId],
+      status: OrderStatusExtension.fromString(json[OrderFieldName.status] ?? ''),
+      currency: json[OrderFieldName.currency] ?? '',
+      pricesIncludeTax: json[OrderFieldName.pricesIncludeTax] ?? false,
+      dateCreated: json[OrderFieldName.dateCreated] != null && json[OrderFieldName.dateCreated] != ''
+          ? DateTime.parse(json[OrderFieldName.dateCreated])
+          : null,
+
+      dateModified: json[OrderFieldName.dateModified] != null && json[OrderFieldName.dateModified] != ''
+          ? DateTime.parse(json[OrderFieldName.dateModified])
+          : null,
+
+      dateCompleted: json[OrderFieldName.dateCompleted] != null && json[OrderFieldName.dateCompleted] != ''
+          ? DateTime.parse(json[OrderFieldName.dateCompleted])
+          : null,
+
+      datePaid: json[OrderFieldName.datePaid] != null && json[OrderFieldName.datePaid] != ''
+          ? DateTime.parse(json[OrderFieldName.datePaid])
+          : null,
+
+      discountTotal: json[OrderFieldName.discountTotal] ?? '',
+      discountTax: json[OrderFieldName.discountTax] ?? '',
+      shippingTotal: json[OrderFieldName.shippingTotal] ?? '',
+      shippingTax: json[OrderFieldName.shippingTax] ?? '',
+      cartTax: json[OrderFieldName.cartTax] ?? '',
+      totalTax: json[OrderFieldName.totalTax] ?? '',
+      total: double.tryParse(json[OrderFieldName.total]?.toString() ?? '0') ?? 0.0,
+      userId: json[OrderFieldName.customerId] ?? 0,
+      billing: json[OrderFieldName.billing] != null
+          ? AddressModel.fromJson(json[OrderFieldName.billing])
+          : AddressModel(),
+      shipping: json[OrderFieldName.shipping] != null
+          ? AddressModel.fromJson(json[OrderFieldName.shipping])
+          : AddressModel(),
+      paymentMethod: json[OrderFieldName.paymentMethod] ?? '',
+      paymentMethodTitle: json[OrderFieldName.paymentMethodTitle] ?? '',
+      transactionId: json[OrderFieldName.transactionId] ?? '',
+      customerIpAddress: json[OrderFieldName.customerIpAddress] ?? '',
+      customerUserAgent: json[OrderFieldName.customerUserAgent] ?? '',
+      customerNote: json[OrderFieldName.customerNote] ?? '',
+      lineItems: List<CartModel>.from(
+        json[OrderFieldName.lineItems].map((item) => CartModel.fromJson(item)),
+      ),
+      paymentUrl: json[OrderFieldName.paymentUrl] ?? '',
+      currencySymbol: json[OrderFieldName.currencySymbol] ?? '',
+      couponLines: json[OrderFieldName.couponLines] != null
+          ? List<CouponModel>.from(
+              json[OrderFieldName.couponLines].map((item) => CouponModel.fromJson(item)),
+            )
+          : [],
+      metaData: json[OrderFieldName.metaData] != null
+          ? List<OrderMedaDataModel>.from(
+              json[OrderFieldName.metaData].map((item) => OrderMedaDataModel.fromJson(item)),
+            )
+          : [],
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -145,6 +232,9 @@ class OrderModel {
       if (pricesIncludeTax != null) OrderFieldName.pricesIncludeTax: pricesIncludeTax,
       if (dateCreated != null) OrderFieldName.dateCreated: dateCreated,
       if (dateModified != null) OrderFieldName.dateModified: dateModified,
+      if (dateCompleted != null) OrderFieldName.dateCompleted: dateCompleted,
+      if (datePaid != null) OrderFieldName.datePaid: datePaid,
+      if (dateReturned != null) OrderFieldName.dateReturned: dateReturned,
       if (discountTotal != null) OrderFieldName.discountTotal: discountTotal,
       if (discountTax != null) OrderFieldName.discountTax: discountTax,
       if (shippingTotal != null) OrderFieldName.shippingTotal: shippingTotal,
@@ -153,6 +243,7 @@ class OrderModel {
       if (total != null) OrderFieldName.total: total,
       if (totalTax != null) OrderFieldName.totalTax: totalTax,
       if (userId != null) OrderFieldName.userId: userId,
+      if (user != null) OrderFieldName.user: user?.toMap(),
       if (billing != null) OrderFieldName.billing: billing?.toMap(),
       if (shipping != null) OrderFieldName.shipping: shipping?.toMap(),
       if (paymentMethod != null) OrderFieldName.paymentMethod: paymentMethod,
@@ -163,11 +254,14 @@ class OrderModel {
       if (customerNote != null) OrderFieldName.customerNote: customerNote,
       if (dateCompleted != null) OrderFieldName.dateCompleted: dateCompleted,
       if (datePaid != null) OrderFieldName.datePaid: datePaid,
+      if (setPaid != null) OrderFieldName.setPaid: setPaid,
       if (lineItems != null) OrderFieldName.lineItems: lineItems?.map((item) => item.toMap()).toList(),
       if (paymentUrl != null) OrderFieldName.paymentUrl: paymentUrl,
       if (currencySymbol != null) OrderFieldName.currencySymbol: currencySymbol,
+      if (couponLines != null) OrderFieldName.couponLines: couponLines?.map((item) => item.toMap()).toList(),
       if (purchaseInvoiceImages != null)
         OrderFieldName.purchaseInvoiceImages: purchaseInvoiceImages?.map((img) => img.toJson()).toList(),
+      if (metaData != null) OrderFieldName.metaData: metaData?.map((item) => item.toMap()).toList(),
       if (orderType != null) OrderFieldName.orderType: orderType?.name,
     };
   }
@@ -215,6 +309,7 @@ class OrderModel {
     DateTime? dateModified,
     DateTime? dateCompleted,
     DateTime? datePaid,
+    DateTime? dateReturned,
     String? discountTotal,
     String? discountTax,
     String? shippingTotal,
@@ -223,6 +318,7 @@ class OrderModel {
     double? total,
     String? totalTax,
     int? userId,
+    UserModel? user,
     AddressModel? billing,
     AddressModel? shipping,
     String? paymentMethod,
@@ -249,6 +345,9 @@ class OrderModel {
       pricesIncludeTax: pricesIncludeTax ?? this.pricesIncludeTax,
       dateCreated: dateCreated ?? this.dateCreated,
       dateModified: dateModified ?? this.dateModified,
+      dateCompleted: dateCompleted ?? this.dateCompleted,
+      datePaid: datePaid ?? this.datePaid,
+      dateReturned: dateReturned ?? this.dateReturned,
       discountTotal: discountTotal ?? this.discountTotal,
       discountTax: discountTax ?? this.discountTax,
       shippingTotal: shippingTotal ?? this.shippingTotal,
@@ -257,6 +356,7 @@ class OrderModel {
       total: total ?? this.total,
       totalTax: totalTax ?? this.totalTax,
       userId: userId ?? this.userId,
+      user: user ?? this.user,
       billing: billing ?? this.billing,
       shipping: shipping ?? this.shipping,
       paymentMethod: paymentMethod ?? this.paymentMethod,
@@ -265,8 +365,6 @@ class OrderModel {
       customerIpAddress: customerIpAddress ?? this.customerIpAddress,
       customerUserAgent: customerUserAgent ?? this.customerUserAgent,
       customerNote: customerNote ?? this.customerNote,
-      dateCompleted: dateCompleted ?? this.dateCompleted,
-      datePaid: datePaid ?? this.datePaid,
       metaData: metaData ?? this.metaData,
       lineItems: lineItems ?? this.lineItems,
       couponLines: couponLines ?? this.couponLines,
@@ -277,7 +375,6 @@ class OrderModel {
       orderType: orderType ?? this.orderType,
     );
   }
-
 }
 
 class OrderMedaDataModel {
@@ -291,10 +388,114 @@ class OrderMedaDataModel {
     this.value,
   });
 
+  factory OrderMedaDataModel.fromJson(Map<String, dynamic> json) {
+    return OrderMedaDataModel(
+      id: json[OrderMetaDataName.id] is String ? int.tryParse(json[OrderMetaDataName.id]) : json[OrderMetaDataName.id],
+      key: json[OrderMetaDataName.key],
+      value: json[OrderMetaDataName.value]?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      OrderMetaDataName.id: id,
+      OrderMetaDataName.key: key,
+      OrderMetaDataName.value: value,
+    };
+  }
+
   Map<String, dynamic> toJsonForWoo() {
     return {
       OrderMetaDataName.key: key ?? '',
       OrderMetaDataName.value: value ?? '',
     };
   }
+}
+
+class OrderAttributeModel {
+  String? source;
+  String? sourceType; // e.g., referral, organic, unknown, utm, Web Admin, typein (Direct)
+  String? medium; // e.g., cart page source
+  String? campaign; // e.g., google_cpc
+  String? referrer; // e.g., referral URL
+  DateTime? date;
+
+  OrderAttributeModel({
+    this.source,
+    this.sourceType,
+    this.medium,
+    this.campaign,
+    this.referrer,
+    this.date,
+  });
+
+  Map<String, dynamic> toJson({bool isLocal = false}) {
+    final Map<String, dynamic> data = {};
+
+    if (source != null) data[OrderMetaKeyName.source] = source;
+    if (sourceType != null) data[OrderMetaKeyName.sourceType] = sourceType;
+    if (medium != null) data[OrderMetaKeyName.medium] = medium;
+    if (campaign != null) data[OrderMetaKeyName.campaign] = campaign;
+    if (referrer != null) data[OrderMetaKeyName.referrer] = referrer;
+    if(isLocal){
+      if (date != null) data[OrderMetaKeyName.date] = date!.toIso8601String();
+    }
+    return data;
+  }
+
+  factory OrderAttributeModel.fromJson(Map<String, dynamic> json) {
+    return OrderAttributeModel(
+      source: json[OrderMetaKeyName.source],
+      sourceType: json[OrderMetaKeyName.sourceType],
+      medium: json[OrderMetaKeyName.medium],
+      campaign: json[OrderMetaKeyName.campaign],
+      referrer: json[OrderMetaKeyName.referrer],
+      date: json[OrderMetaKeyName.date] != null ? DateTime.parse(json[OrderMetaKeyName.date]) : null,
+    );
+  }
+
+  factory OrderAttributeModel.fromMetaData(List<OrderMedaDataModel> metaData) {
+    String? getValue(String key) => metaData.firstWhere(
+          (m) => m.key == key,
+      orElse: () => OrderMedaDataModel(key: key, value: null),
+    ).value;
+
+    return OrderAttributeModel(
+      source: getValue(OrderMetaKeyName.source),
+      sourceType: getValue(OrderMetaKeyName.sourceType),
+      medium: getValue(OrderMetaKeyName.medium),
+      campaign: getValue(OrderMetaKeyName.campaign),
+      referrer: getValue(OrderMetaKeyName.referrer),
+    );
+  }
+}
+
+class RevenueSummary {
+  final String type;
+  final int totalRevenue;
+  final int orderCount;
+  final double percent;
+  final List<SourceBreakdown> sourceBreakdown;
+
+  RevenueSummary({
+    required this.type,
+    required this.totalRevenue,
+    required this.orderCount,
+    required this.percent,
+    required this.sourceBreakdown,
+  });
+}
+
+class SourceBreakdown {
+  final String source;
+  final int revenue;
+  final int orderCount;
+  final double percent;
+
+  SourceBreakdown({
+    required this.source,
+    required this.revenue,
+    required this.orderCount,
+    required this.percent,
+  });
 }

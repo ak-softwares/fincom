@@ -18,99 +18,14 @@ class ProductController extends GetxController{
   RxInt currentPage = 1.obs;
   RxBool isLoading = false.obs;
   RxBool isLoadingMore = false.obs;
-  RxBool isStopped = false.obs; // New: Track if the user wants to stop syncing
-  RxBool isSyncing = false.obs;
-  RxBool isGettingCount = false.obs;
-  RxInt processedProducts = 0.obs;
-  RxInt totalProcessedProducts = 0.obs;
-  RxInt fincomProductsCount = 0.obs;
-  RxInt wooProductsCount = 0.obs;
+
+  RxInt totalProducts = 0.obs;
+  RxInt totalStock = 0.obs;
+  RxInt totalStockValue = 0.obs;
+
   RxList<ProductModel> products = <ProductModel>[].obs;
+
   final mongoProductRepo = Get.put(MongoProductRepo());
-  final wooProductRepository = Get.put(WooProductRepository());
-
-  // Form Key
-  final GlobalKey<FormState> productFormKey = GlobalKey<FormState>();
-
-  TextEditingController productTitleController = TextEditingController();
-  TextEditingController purchasePriceController = TextEditingController();
-  TextEditingController stockController = TextEditingController();
-
-
-  Future<void> syncProducts() async {
-    try {
-      isSyncing(true);
-      isStopped(false); // Reset stop flag
-      processedProducts.value = 0; // Reset progress
-      totalProcessedProducts.value = 0; // Reset total compared product count
-
-      int batchSize = 500; // Adjust based on API limits and DB capacity
-
-      // **Step 1: Fetch Existing Product IDs Efficiently**
-      Set<int> uploadedProductIds = await mongoProductRepo.fetchProductsIds(); // Consider paginating this
-
-      int currentPage = 1;
-      while (!isStopped.value) {
-        // **Step 2: Fetch a batch of products from API**
-        List<ProductModel> products = await wooProductRepository.fetchAllProducts(page: currentPage.toString());
-
-        if (products.isEmpty) break; // Stop if no more products are available
-
-        totalProcessedProducts.value += products.length; // Track total compared products
-
-        // **Step 3: Filter only new products**
-        List<ProductModel> newProducts = products.where((product) {
-          return !uploadedProductIds.contains(product.productId);
-        }).toList();
-
-        // **Step 4: Bulk Insert**
-        if (newProducts.isNotEmpty) {
-          for (int i = 0; i < newProducts.length; i += batchSize) {
-            if (isStopped.value) {
-              AppMassages.warningSnackBar(title: 'Sync Stopped', message: 'Syncing stopped by user.');
-              return;
-            }
-
-            int end = (i + batchSize < newProducts.length) ? i + batchSize : newProducts.length;
-            List<ProductModel> chunk = newProducts.sublist(i, end);
-
-            await mongoProductRepo.pushProducts(products: chunk); // Upload chunk
-
-            processedProducts.value += chunk.length; // Update progress
-          }
-        }
-
-        currentPage++; // Move to the next page
-      }
-
-      if (!isStopped.value) {
-        AppMassages.successSnackBar(title: 'Sync Complete', message: 'All new products uploaded.');
-      }
-    } catch (e) {
-      AppMassages.errorSnackBar(title: 'Sync Error', message: e.toString());
-    } finally {
-      isSyncing(false);
-    }
-  }
-
-  void stopSyncing() {
-    isStopped(true);
-  }
-
-  // Get total customer count
-  Future<void> getTotalProductsCount() async {
-    try {
-      isGettingCount(true);
-      int fincomProductsCounts = await mongoProductRepo.fetchProductsCount();
-      fincomProductsCount.value = fincomProductsCounts; // Assuming totalCustomers is an observable or state variable
-      int wooProductsCounts = await wooProductRepository.fetchProductCount();
-      wooProductsCount.value = wooProductsCounts; // Assuming totalCustomers is an observable or state variable
-    } catch (e) {
-      AppMassages.errorSnackBar(title: 'Error in products Count Fetching', message: e.toString());
-    } finally {
-      isGettingCount(false);
-    }
-  }
 
   // Get All products
   Future<void> getAllProducts() async {
@@ -147,112 +62,22 @@ class ProductController extends GetxController{
     }
   }
 
-  // Delete Product
-  Future<void> deleteProduct({required String id, required BuildContext context}) async {
+  Future<double> getTotalStockValue() async {
     try {
-      DialogHelper.showDialog(
-        context: context,
-        title: 'Delete Product',
-        message: 'Are you sure you want to delete this product?',
-        onSubmit: () async {
-          await mongoProductRepo.deleteProduct(id: id);
-          Get.back();
-        },
-        toastMessage: 'Product deleted successfully!',
-      );
+      final double totalStockValue = await mongoProductRepo.fetchTotalStockValue();
+      return totalStockValue;
     } catch (e) {
-      AppMassages.errorSnackBar(title: 'Error', message: e.toString());
+      rethrow;
     }
   }
 
-  // Add and updated function
-
-  /// Save Updated Product (New Function)
-  void saveUpdatedProduct({required ProductModel previousProduct}) {
-    ProductModel product = ProductModel(
-      id: previousProduct.id,
-      name: productTitleController.text,
-      purchasePrice: double.tryParse(purchasePriceController.text) ?? 0.0,
-      stockQuantity: int.tryParse(stockController.text) ?? 0,
-    );
-
-    updateProduct(product: product);
-  }
-
-  /// Update Product (New Function)
-  Future<void> updateProduct({required ProductModel product}) async {
+  Future<List<Map<String, dynamic>>> getCogsDetailsByProductIds({required List<int> productIds}) async {
     try {
-      FullScreenLoader.openLoadingDialog('Updating product...', '');
-
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        FullScreenLoader.stopLoading();
-        return;
-      }
-
-      await mongoProductRepo.updateProduct(id: product.id ?? '', product: product);
-
-      FullScreenLoader.stopLoading();
-      AppMassages.showToastMessage(message: 'Product updated successfully!');
-      Navigator.of(Get.context!).pop();
+      final List<Map<String, dynamic>> totalStockValue = await mongoProductRepo.fetchCogsDetailsByProductIds(productIds: productIds);
+      return totalStockValue;
     } catch (e) {
-      FullScreenLoader.stopLoading();
-      AppMassages.errorSnackBar(title: 'Error', message: e.toString());
+      rethrow;
     }
-  }
-
-  /// Reset Product Values (New Function)
-  void resetProductValues(ProductModel product) {
-    productTitleController.text = product.name ?? '';
-    purchasePriceController.text = product.purchasePrice.toString();
-    stockController.text = product.stockQuantity.toString();
-  }
-
-  /// Save Product (New Function)
-  void saveProduct() {
-    ProductModel product = ProductModel(
-      id: '', // Will be set when adding to DB
-      name: productTitleController.text,
-      price: double.tryParse(purchasePriceController.text) ?? 0.0,
-      dateCreated: DateTime.now().toIso8601String(),
-      productId: 123,
-    );
-
-    addProduct(product: product);
-  }
-
-  /// Add Product (New Function)
-  Future<void> addProduct({required ProductModel product}) async {
-    try {
-      FullScreenLoader.openLoadingDialog('Adding new product...', '');
-
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        FullScreenLoader.stopLoading();
-        return;
-      }
-
-      final fetchedProductId = await mongoProductRepo.fetchProductGetNextId();
-      if (fetchedProductId != product.productId) {
-        throw 'Product ID is not unique';
-      }
-
-      await mongoProductRepo.pushProduct(product: product);
-
-      clearProductFields();
-      FullScreenLoader.stopLoading();
-      AppMassages.showToastMessage(message: 'Product added successfully!');
-      Navigator.of(Get.context!).pop();
-    } catch (e) {
-      FullScreenLoader.stopLoading();
-      AppMassages.errorSnackBar(title: 'Error', message: e.toString());
-    }
-  }
-
-  /// Clear Product Fields (New Function)
-  void clearProductFields() {
-    productTitleController.text = '';
-    purchasePriceController.text = '';
   }
 
   Future<void> updateProductQuantity({
@@ -292,6 +117,24 @@ class ProductController extends GetxController{
     }
   }
 
+  // Delete Product
+  Future<void> deleteProduct({required String id, required BuildContext context}) async {
+    try {
+      DialogHelper.showDialog(
+        context: context,
+        title: 'Delete Product',
+        message: 'Are you sure you want to delete this product?',
+        onSubmit: () async {
+          await mongoProductRepo.deleteProduct(id: id);
+          Get.back();
+        },
+        toastMessage: 'Product deleted successfully!',
+      );
+    } catch (e) {
+      AppMassages.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
   // This function converts a productModel to a cartItemModel
   CartModel convertProductToCart({
     required ProductModel product, required int quantity, int variationId = 0, double? purchasePrice}) {
@@ -316,4 +159,18 @@ class ProductController extends GetxController{
     );
   }
 
+  // // Get total customer count
+  // Future<void> getTotalProductsCount() async {
+  //   try {
+  //     isGettingCount(true);
+  //     int fincomProductsCounts = await mongoProductRepo.fetchProductsCount();
+  //     fincomProductsCount.value = fincomProductsCounts; // Assuming totalCustomers is an observable or state variable
+  //     int wooProductsCounts = await wooProductRepository.fetchProductCount();
+  //     wooProductsCount.value = wooProductsCounts; // Assuming totalCustomers is an observable or state variable
+  //   } catch (e) {
+  //     AppMassages.errorSnackBar(title: 'Error in products Count Fetching', message: e.toString());
+  //   } finally {
+  //     isGettingCount(false);
+  //   }
+  // }
 }

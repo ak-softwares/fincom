@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-import 'package:fincom/utils/constants/sizes.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../../../common/dialog_box_massages/animation_loader.dart';
+import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../common/styles/spacing_style.dart';
 import '../../../../common/widgets/shimmers/order_shimmer.dart';
@@ -12,9 +14,12 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../common/navigation_bar/appbar.dart';
+import '../../../../utils/constants/sizes.dart';
 import '../../controller/sales_controller/sales_controller.dart';
-import 'add_barcode_sale.dart';
+import 'common/add_barcode_sale.dart';
+import 'common/add_return_barcode.dart';
 import 'add_sale.dart';
+import 'common/update_payment.dart';
 import 'widget/sale_tile.dart';
 
 class Sales extends StatelessWidget {
@@ -53,46 +58,67 @@ class Sales extends StatelessWidget {
     
     return Scaffold(
         appBar: AppAppBar(
-            title: 'Sales',
-            searchType: SearchType.orders,
-            widgetInActions: Row(
-              children: [
-                IconButton(
-                    onPressed: () => Get.to(() => AddBarcodeSale()),
-                    icon: Icon(Icons.qr_code_scanner_outlined)
-                ),
-                Obx(() => controller.isSyncing.value
-                    ? TextButton(
-                        onPressed: () => controller.stopSyncing(),
-                        child: Row(
-                          spacing: AppSizes.sm,
-                          children: [
-                            SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.linkColor,strokeWidth: 2,)),
-                            Text('Stop', style: TextStyle(color: AppColors.linkColor),),
-                          ],
-                        ),
-                      )
-                    : TextButton(
-                        onPressed: () => controller.syncOrders(),
-                        child: Text('Sync', style: TextStyle(color: AppColors.linkColor),),
-                      )),
-              ],
-            )
+          title: 'Sales',
+          searchType: SearchType.orders,
+          widgetInActions: Row(
+            children: [
+              IconButton(
+                onPressed: () => Get.to(() => AddBarcodeSale()),
+                icon: Icon(Icons.qr_code_scanner_outlined),
+              ),
+            ],
+          ),
         ),
-        floatingActionButton: FloatingActionButton(
-          heroTag: 'sales_fab', // 👈 Add a unique heroTag here
-          shape: CircleBorder(),
+        floatingActionButton: SpeedDial(
+          heroTag: 'sales_fab',
           backgroundColor: Colors.blue,
-          onPressed: () => Get.to(() => AddNewSale()),
-          tooltip: 'Send WhatsApp Message',
-          child: Icon(LineIcons.plus, size: 30, color: Colors.white,),
+          icon: LineIcons.plus,
+          activeIcon: Icons.close,
+          foregroundColor: Colors.white,
+          spacing: 10,
+          spaceBetweenChildren: 8,
+          shape: const CircleBorder(),
+          tooltip: 'Actions',
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.add_shopping_cart, color: Colors.white),
+              backgroundColor: Colors.green,
+              label: 'New Sale',
+              onTap: () => Get.to(() => AddNewSale()),
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.add_shopping_cart, color: Colors.white),
+              backgroundColor: Colors.blue,
+              label: 'Add Bulk Sale',
+              onTap: () {
+                Get.to(() => AddBarcodeSale());
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.sync, color: Colors.white),
+              backgroundColor: Colors.orange,
+              label: 'Add Return',
+              onTap: () {
+                Get.to(() => AddReturnBarcode());
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.receipt_long, color: Colors.white),
+              backgroundColor: Colors.blue,
+              label: 'Update Payment',
+              onTap: () {
+                Get.to(() => OrderNumbersView());
+              },
+            ),
+            // Add more submenu buttons as needed
+          ],
         ),
         body: RefreshIndicator(
           color: AppColors.refreshIndicator,
           onRefresh: () async => controller.refreshSales(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {
@@ -108,7 +134,28 @@ class Sales extends StatelessWidget {
                       mainAxisExtent: AppSizes.saleTileHeight,
                       itemBuilder: (context, index) {
                         if (index < sales.length) {
-                          return SaleTile(order: sales[index]);
+                          return Slidable(
+                            key: Key(sales[index].id.toString()),
+                            endActionPane: ActionPane(
+                              motion: const DrawerMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (_) async {
+                                    await controller.updatePaymentStatus(sale: sales[index]);
+                                    AppMassages.showSnackBar(
+                                      massage: "Payment Updated",
+                                      onUndo: () => controller.revertPaymentStatus(sale: sales[index])
+                                    );
+                                  },
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.paid,
+                                  label: 'Set Paid',
+                                ),
+                              ],
+                            ),
+                            child: SaleTile(sale: sales[index]),
+                          );
                         } else {
                           return OrderShimmer();
                         }

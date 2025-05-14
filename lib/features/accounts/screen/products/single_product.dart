@@ -51,7 +51,7 @@ class _SingleProductState extends State<SingleProduct> {
         color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshProduct(),
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             SizedBox(height: AppSizes.spaceBtwSection,),

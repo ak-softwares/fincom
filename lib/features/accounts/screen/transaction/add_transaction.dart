@@ -10,9 +10,8 @@ import '../../../personalization/models/user_model.dart';
 import '../../controller/transaction/transaction_controller.dart';
 import '../../models/payment_method.dart';
 import '../../models/transaction_model.dart';
-import '../payments/widget/payment_tile.dart';
+import '../accounts/widget/account_tile.dart';
 import '../purchase/purchase_entry/widget/search_products.dart';
-import '../search/search.dart';
 import '../vendor/widget/vendor_tile.dart'; // Updated import
 
 class AddTransaction extends StatelessWidget {
@@ -158,11 +157,11 @@ class AddTransaction extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             // Navigate to the search screen and wait for the result
-                            final PaymentMethodModel getSelectedPayment = await showSearch(context: context,
+                            final AccountModel getSelectedPayment = await showSearch(context: context,
                               delegate: SearchVoucher1(searchType: SearchType.paymentMethod),
                             );
                             // If products are selected, update the state
-                            if (getSelectedPayment.paymentMethodName != null) {
+                            if (getSelectedPayment.accountName != null) {
                               controller.selectedPaymentMethod(getSelectedPayment);
                             }
                           },
@@ -175,12 +174,12 @@ class AddTransaction extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Obx(() => controller.selectedPaymentMethod.value.paymentMethodName != '' && controller.selectedPaymentMethod.value.paymentMethodName != null
+                    Obx(() => controller.selectedPaymentMethod.value.accountName != '' && controller.selectedPaymentMethod.value.accountName != null
                         ? Dismissible(
-                        key: Key(controller.selectedPaymentMethod.value.paymentMethodName ?? ''), // Unique key for each item
+                        key: Key(controller.selectedPaymentMethod.value.accountName ?? ''), // Unique key for each item
                         direction: DismissDirection.endToStart, // Swipe left to remove
                         onDismissed: (direction) {
-                          controller.selectedPaymentMethod.value = PaymentMethodModel();
+                          controller.selectedPaymentMethod.value = AccountModel();
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment Method removed")),);
                         },
@@ -190,7 +189,7 @@ class AddTransaction extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: const Icon(Icons.delete, color: Colors.white),
                         ),
-                        child: SizedBox(width: double.infinity, child: PaymentMethodTile(payment: controller.selectedPaymentMethod.value))
+                        child: SizedBox(width: double.infinity, child: AccountTile(payment: controller.selectedPaymentMethod.value))
                     )
                         : SizedBox.shrink(),
                     ),

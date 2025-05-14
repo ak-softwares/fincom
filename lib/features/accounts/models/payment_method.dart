@@ -2,55 +2,45 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../../utils/constants/db_constants.dart';
 
-class PaymentMethodModel {
+class AccountModel {
   String? id;
-  int? paymentId;
+  int? accountId;
   double? openingBalance;
   double? balance;
   DateTime? dateCreated;
-  String? paymentMethodName;
+  String? accountName;
 
-  PaymentMethodModel({
+  AccountModel({
     this.id,
-    this.paymentId,
+    this.accountId,
     this.openingBalance,
     this.balance,
     this.dateCreated,
-    this.paymentMethodName,
+    this.accountName,
   });
 
-  factory PaymentMethodModel.fromJson(Map<String, dynamic> json) {
-    return PaymentMethodModel(
-      id: json[PaymentMethodFieldName.id] is ObjectId
-          ? (json[PaymentMethodFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
-          : json[PaymentMethodFieldName.id]?.toString(), // Fallback to string if not ObjectId
-      paymentId: json[PaymentMethodFieldName.paymentId],
-      openingBalance: (json[PaymentMethodFieldName.openingBalance] as num?)?.toDouble(),
-      balance: (json[PaymentMethodFieldName.balance] as num?)?.toDouble(),
-      dateCreated: json[PaymentMethodFieldName.dateCreated] != null
-          ? DateTime.parse(json[PaymentMethodFieldName.dateCreated])
+  factory AccountModel.fromJson(Map<String, dynamic> json) {
+    return AccountModel(
+      id: json[AccountFieldName.id] is ObjectId
+          ? (json[AccountFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
+          : json[AccountFieldName.id]?.toString(), // Fallback to string if not ObjectId
+      accountId: json[AccountFieldName.accountId],
+      openingBalance: (json[AccountFieldName.openingBalance] as num?)?.toDouble(),
+      balance: (json[AccountFieldName.balance] as num?)?.toDouble(),
+      dateCreated: json[AccountFieldName.dateCreated] != null
+          ? DateTime.parse(json[AccountFieldName.dateCreated])
           : null,
-      paymentMethodName: json[PaymentMethodFieldName.paymentMethodName] as String?,
+      accountName: json[AccountFieldName.accountName] as String?,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      PaymentMethodFieldName.paymentId: paymentId,
-      PaymentMethodFieldName.openingBalance: openingBalance ?? 0.0,
-      PaymentMethodFieldName.balance: balance ?? 0.0,
-      PaymentMethodFieldName.dateCreated: dateCreated?.toIso8601String(),
-      PaymentMethodFieldName.paymentMethodName: paymentMethodName,
-    };
   }
 
   Map<String, dynamic> toMap() {
     return {
-      PaymentMethodFieldName.paymentId: paymentId,
-      PaymentMethodFieldName.openingBalance: openingBalance,
-      PaymentMethodFieldName.balance: balance,
-      PaymentMethodFieldName.dateCreated: dateCreated?.toIso8601String(),
-      PaymentMethodFieldName.paymentMethodName: paymentMethodName,
+      AccountFieldName.accountId: accountId,
+      AccountFieldName.openingBalance: openingBalance ?? 0,
+      AccountFieldName.balance: balance ?? 0,
+      AccountFieldName.dateCreated: dateCreated?.toIso8601String(),
+      AccountFieldName.accountName: accountName,
     };
   }
 }

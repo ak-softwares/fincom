@@ -29,7 +29,7 @@ class PurchaseShimmer extends StatelessWidget {
         return Stack(
           children: [
             Container(
-              padding: TSpacingStyle.defaultPagePadding,
+              padding: AppSpacingStyle.defaultPagePadding,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(purchaseTileRadius),

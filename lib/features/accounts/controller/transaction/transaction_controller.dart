@@ -24,7 +24,7 @@ class TransactionController extends GetxController {
   RxList<TransactionModel> transactionsByEntity = <TransactionModel>[].obs;
 
   Rx<UserModel> selectedVendor = UserModel().obs;
-  Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel().obs;
+  Rx<AccountModel> selectedPaymentMethod = AccountModel().obs;
 
   final amount = TextEditingController();
   final date = TextEditingController();
@@ -63,7 +63,6 @@ class TransactionController extends GetxController {
       final fetchedTransactions = await mongoTransactionRepo.fetchAllTransactions(page: currentPage.value);
       transactions.addAll(fetchedTransactions);
     } catch (e) {
-      debugPrint('Error fetching transactions: $e');
       rethrow;
     }
   }
@@ -75,7 +74,7 @@ class TransactionController extends GetxController {
       transactions.clear(); // Clear existing transactions
       await getAllTransactions();
     } catch (e) {
-      AppMassages.errorSnackBar(title: 'Error in Transactions getting', message: e.toString());
+      AppMassages.errorSnackBar(title: 'Error: ', message: e.toString());
     } finally {
       isLoading(false);
     }
@@ -125,10 +124,10 @@ class TransactionController extends GetxController {
       transactionId: transactionId.value,
       amount: double.tryParse(amount.text) ?? 0.0,
       date: DateTime.tryParse(date.text) ?? DateTime.now(),
-      fromEntityId: selectedPaymentMethod.value.paymentId, // Example vendor ID
-      fromEntityName: selectedPaymentMethod.value.paymentMethodName, // Example vendor ID
-      fromEntityType: EntityType.payment,
-      toEntityId: selectedVendor.value.userId,
+      fromEntityId: selectedPaymentMethod.value.id, // Example vendor ID
+      fromEntityName: selectedPaymentMethod.value.accountName, // Example vendor ID
+      fromEntityType: EntityType.account,
+      toEntityId: selectedVendor.value.id,
       toEntityName: selectedVendor.value.company,
       toEntityType: EntityType.vendor,
       transactionType: TransactionType.payment,
@@ -169,7 +168,7 @@ class TransactionController extends GetxController {
     }
   }
 
-  Future<void> processTransaction({
+  Future<String?> processTransaction({
     required TransactionModel transaction,
     bool isDelete = false,
     bool isUpdated = false,
@@ -178,13 +177,10 @@ class TransactionController extends GetxController {
       List<Future<void>> futures = [];
       if (transaction.fromEntityType != null) {
         // Create update requests
-        Future<void> updateFromEntity = mongoTransactionRepo.updateBalance(
+        Future<void> updateFromEntity = mongoTransactionRepo.updateBalanceById(
           collectionName: transaction.fromEntityType?.dbName ?? '',
-          entityBalancePair: {
-            'entityIdFieldName': transaction.fromEntityType?.fieldName ?? '',
-            'entityId': transaction.fromEntityId,
-            'balance': transaction.amount,
-          },
+          entityId: transaction.fromEntityId ?? '',
+          amount: transaction.amount ?? 0,
           isAddition: isDelete ? true : false, // Set to true for addition, false for subtraction
         );
         futures.add(updateFromEntity);
@@ -192,13 +188,10 @@ class TransactionController extends GetxController {
 
       if (transaction.toEntityType != null) {
         // Create update requests
-        Future<void> updateToEntity = mongoTransactionRepo.updateBalance(
+        Future<void> updateToEntity = mongoTransactionRepo.updateBalanceById(
           collectionName: transaction.toEntityType?.dbName ?? '',
-          entityBalancePair: {
-            'entityIdFieldName': transaction.toEntityType?.fieldName ?? '',
-            'entityId': transaction.toEntityId,
-            'balance': transaction.amount,
-          },
+          entityId: transaction.toEntityId ?? '',
+          amount: transaction.amount ?? 0,
           isAddition: isDelete ? false : true, // Set to true for addition, false for subtraction
         );
         futures.add(updateToEntity);
@@ -211,7 +204,8 @@ class TransactionController extends GetxController {
         // Fetch next transaction ID and check for conflicts
         final fetchedTransactionId = await mongoTransactionRepo.fetchTransactionGetNextId();
         transaction.transactionId ??= fetchedTransactionId;
-        mongoTransactionRepo.pushTransaction(transaction: transaction);
+        final String transactionId  = await mongoTransactionRepo.pushTransaction(transaction: transaction);
+        return transactionId;
       }
       
       await Future.wait(futures);
@@ -219,6 +213,7 @@ class TransactionController extends GetxController {
     } catch(e) {
       rethrow;
     }
+    return null;
   }
 
   Future<void> clearTransaction() async {
@@ -241,10 +236,10 @@ class TransactionController extends GetxController {
       transactionId: previousTransaction.transactionId,
       amount: double.tryParse(amount.text) ?? previousTransaction.amount,
       date: DateTime.tryParse(date.text) ?? previousTransaction.date,
-      fromEntityId: selectedPaymentMethod.value.paymentId ?? previousTransaction.fromEntityId,
-      fromEntityName: selectedPaymentMethod.value.paymentMethodName ?? previousTransaction.fromEntityName,
+      fromEntityId: selectedPaymentMethod.value.id ?? previousTransaction.fromEntityId,
+      fromEntityName: selectedPaymentMethod.value.accountName ?? previousTransaction.fromEntityName,
       fromEntityType: previousTransaction.fromEntityType,
-      toEntityId: selectedVendor.value.userId ?? previousTransaction.toEntityId,
+      toEntityId: selectedVendor.value.id ?? previousTransaction.toEntityId,
       toEntityName: selectedVendor.value.company ?? previousTransaction.toEntityName,
       toEntityType: previousTransaction.toEntityType,
       transactionType: previousTransaction.transactionType,

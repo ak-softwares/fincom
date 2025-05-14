@@ -24,7 +24,7 @@ class SingleExpenseScreen extends StatefulWidget {
 
 class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
   late ExpenseModel expense;
-  final expenseController = Get.put(ExpenseController());
+  final controller = Get.put(ExpenseController());
   final currencyFormat = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
 
   @override
@@ -34,7 +34,7 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
   }
 
   Future<void> _refreshExpense() async {
-    final updatedExpense = await expenseController.getExpenseById(id: expense.id ?? '');
+    final updatedExpense = await controller.getExpenseById(id: expense.id ?? '');
     setState(() {
       expense = updatedExpense;
     });
@@ -47,7 +47,7 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
 
     return Scaffold(
       appBar: AppAppBar(
-        title: expense.title ?? 'Expense Details',
+        title: expense.expenseType?.name ?? 'Expense Details',
         widgetInActions: IconButton(
             icon: Icon(Icons.edit, color: Colors.blue),
             onPressed: () => Get.to(() => AddExpenseScreen(expense: expense)),
@@ -57,7 +57,7 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
         color: AppColors.refreshIndicator,
         onRefresh: _refreshExpense,
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             // Expense Summary Card
@@ -69,10 +69,6 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
                 children: [
                   // Expense ID
                   _buildDetailRow('Expense ID', '#${expense.expenseId}'),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-
-                  // Title
-                  _buildDetailRow('Title', expense.title ?? 'No title'),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Amount
@@ -87,18 +83,18 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Category
-                  _buildDetailRow('Category', expense.category ?? 'Uncategorized'),
+                  _buildDetailRow('Expense Type', expense.expenseType?.name ?? ExpenseType.other.name),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Payment Method
-                  _buildDetailRow('Payment Method', expense.paymentMethod ?? 'Not specified'),
+                  _buildDetailRow('Account Name', expense.account?.accountName ?? 'Not specified'),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   // Date
                   _buildDetailRow(
                     'Date',
-                    expense.date != null
-                        ? DateFormat('MMM dd, yyyy').format(expense.date!)
+                    expense.dateCreated != null
+                        ? DateFormat('MMM dd, yyyy').format(expense.dateCreated!)
                         : 'No date',
                   ),
                   const SizedBox(height: AppSizes.spaceBtwItems),
@@ -130,7 +126,7 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
             // Delete Button
             Center(
               child: TextButton(
-                onPressed: () => _showDeleteConfirmation(context),
+                onPressed: () => controller.deleteExpense(expense: expense, context: context),
                 child: Text(
                   'Delete Expense',
                   style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.error),
@@ -153,30 +149,4 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Expense'),
-        content: const Text('Are you sure you want to delete this expense? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              expenseController.deleteExpense(
-                id: expense.id ?? '',
-                context: context,
-              );
-              Get.back(); // Go back to previous screen after deletion
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
 }

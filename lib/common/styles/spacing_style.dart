@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../utils/constants/sizes.dart';
 
-class TSpacingStyle {
+class AppSpacingStyle {
   static const EdgeInsetsGeometry paddingWidthAppbarHeight = EdgeInsets.only(
     top: AppSizes.appBarHeight,
     left: AppSizes.defaultSpace,

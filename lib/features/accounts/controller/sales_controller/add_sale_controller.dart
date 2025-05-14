@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
-import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../personalization/controllers/user_controller.dart';
@@ -22,18 +20,15 @@ class AddSaleController extends GetxController {
   static AddSaleController get instance => Get.find();
 
   final OrderType orderType = OrderType.sale;
-  var isScanning = false.obs;
-  RxList<OrderModel> orders = <OrderModel>[].obs;
   RxDouble saleTotal = 0.0.obs;
   RxInt productCount = 0.obs;
   RxInt invoiceId = 0.obs;
 
   TextEditingController dateController = TextEditingController();
 
-  final wooOrdersRepository = Get.put(WooOrdersRepository());
   final saleController = Get.put(SaleController());
   final mongoOrderRepo = Get.put(MongoOrderRepo());
-  final productsVoucherController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
   final userController = Get.put(UserController());
 
   RxList<CartModel> selectedProducts = <CartModel>[].obs;
@@ -43,21 +38,8 @@ class AddSaleController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
-    dateController.text = DateTime.now().toString();
     updateSaleTotal();
   }
-
-
-  @override
-  void onClose() {
-    cameraController.dispose();
-    super.onClose();
-  }
-
-  final MobileScannerController cameraController = MobileScannerController(
-    torchEnabled: false,
-    formats: [BarcodeFormat.all],
-  );
 
   void addProducts(List<ProductModel> getSelectedProducts) {
     bool isUpdated = false;
@@ -112,37 +94,6 @@ class AddSaleController extends GetxController {
     }
   }
 
-  Future<void> handleDetection(BarcodeCapture capture) async {
-    if (isScanning.value) return;
-    try {
-      FullScreenLoader.onlyCircularProgressDialog('Fetching Order...');
-      isScanning.value = true;
-
-      for (final barcode in capture.barcodes) {
-        final value = barcode.rawValue;
-        bool exists = orders.any((order) => order.orderId.toString() == value);
-        if (value != null && !exists) {
-          HapticFeedback.mediumImpact();
-          final OrderModel sale = await wooOrdersRepository.fetchOrderById(orderId: value);
-          // checkIsSaleExist
-          final OrderModel checkIsSaleExist = await saleController.getSaleByOrderId(orderId: sale.orderId!);
-          if(checkIsSaleExist.id != null) {
-            throw 'Sale already exist';
-          }
-          orders.add(sale);
-        }
-      }
-
-      Future.delayed(const Duration(seconds: 2), () {
-        isScanning.value = false;
-      });
-    } catch (e) {
-      AppMassages.errorSnackBar(title: 'Error in Order Fetching', message: e.toString());
-    } finally {
-      FullScreenLoader.stopLoading();
-    }
-  }
-
   // This function converts a productModel to a cartItemModel
   CartModel convertProductToCart({required ProductModel product, required int quantity, int variationId = 0}) {
     return CartModel(
@@ -159,6 +110,7 @@ class AddSaleController extends GetxController {
       totalTax: '0',
       sku: product.sku,
       price: product.getPrice().toInt(),
+      purchasePrice: product.purchasePrice,
       image: product.mainImage,
       parentName: '0',
       isCODBlocked: product.isCODBlocked,
@@ -201,7 +153,8 @@ class AddSaleController extends GetxController {
     OrderModel sale = OrderModel(
       invoiceNumber: invoiceId.value,
       dateCreated: DateTime.tryParse(dateController.text),
-      userId: selectedCustomer.value.userId,
+      dateCompleted: DateTime.now(),
+      user: selectedCustomer.value,
       lineItems: selectedProducts,
       total: saleTotal.value,
       status: OrderStatus.inTransit,
@@ -240,19 +193,6 @@ class AddSaleController extends GetxController {
     }
   }
 
-  Future<void> addBarcodeSale() async {
-    try {
-      FullScreenLoader.onlyCircularProgressDialog('Fetching Order...');
-      await pushSales(sales: orders);
-      orders.clear();
-      AppMassages.showToastMessage(message: 'Sale Added Successfully');
-    } catch(e) {
-      AppMassages.errorSnackBar(title: 'Error sale Sale', message: e.toString());
-    } finally {
-      FullScreenLoader.stopLoading();
-    }
-  }
-
   Future<void> pushSales({required List<OrderModel> sales}) async {
     try {
 
@@ -274,7 +214,7 @@ class AddSaleController extends GetxController {
       final List<CartModel> allLineItems = sales.expand<CartModel>((sale) => sale.lineItems ?? []).toList();
 
       // Define the async operations
-      final updateProductQuantities = productsVoucherController.updateProductQuantity(cartItems: allLineItems);
+      final updateProductQuantities = productController.updateProductQuantity(cartItems: allLineItems);
 
       Future<void> uploadSales = mongoOrderRepo.pushOrders(orders: sales); // Use batch insert function
 
@@ -324,9 +264,14 @@ class AddSaleController extends GetxController {
   }
 
   void resetValue({required OrderModel sale}) {
+    dateController.value = TextEditingValue(
+      text: sale.dateCreated.toString(),
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: sale.dateCreated.toString().length),
+      ),
+    );
     invoiceId.value = sale.orderId ?? 0;
-    dateController.text = sale.dateCreated.toString();
-    // selectedCustomer.value = sale.userId,
+    selectedCustomer.value = sale.user ?? UserModel();
     selectedProducts.value = sale.lineItems ?? [];
     updateSaleTotal();
   }
@@ -340,7 +285,7 @@ class AddSaleController extends GetxController {
         id: previousSale.id,
         invoiceNumber: previousSale.invoiceNumber,
         dateCreated: DateTime.tryParse(dateController.text),
-        userId: selectedCustomer.value.userId,
+        user: selectedCustomer.value,
         lineItems: selectedProducts,
         total: saleTotal.value,
         orderType: orderType
@@ -374,7 +319,7 @@ class AddSaleController extends GetxController {
         return currentProduct.copyWith(quantity: currentQty - previousQty);
       }).toList();
 
-      final updateProductQuantities = productsVoucherController.updateProductQuantity(cartItems: updatedProducts);
+      final updateProductQuantities = productController.updateProductQuantity(cartItems: updatedProducts);
 
       final updateSale = mongoOrderRepo.updateOrder(order: newSale);
 

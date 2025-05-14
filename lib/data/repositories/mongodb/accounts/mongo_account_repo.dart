@@ -5,13 +5,13 @@ import '../../../../features/accounts/models/payment_method.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../database/mongodb/mongodb.dart';
 
-class MongoPaymentMethodsRepo extends GetxController {
+class MongoAccountsRepo extends GetxController {
   final MongoDatabase _mongoDatabase = MongoDatabase();
-  final String collectionName = DbCollections.payments;
+  final String collectionName = DbCollections.accounts;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
 
   // Fetch products by search query & pagination
-  Future<List<PaymentMethodModel>> fetchPaymentsBySearchQuery({required String query, int page = 1}) async {
+  Future<List<AccountModel>> fetchAccountsBySearchQuery({required String query, int page = 1}) async {
     try {
       // Fetch products from MongoDB with search and pagination
       final List<Map<String, dynamic>> paymentsData =
@@ -22,7 +22,7 @@ class MongoPaymentMethodsRepo extends GetxController {
           page: page
       );
       // Convert data to a list of ProductModel
-      final List<PaymentMethodModel> payments = paymentsData.map((data) => PaymentMethodModel.fromJson(data)).toList();
+      final List<AccountModel> payments = paymentsData.map((data) => AccountModel.fromJson(data)).toList();
       return payments;
     } catch (e) {
       throw 'Failed to fetch Vendors: $e';
@@ -30,13 +30,13 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Fetch All Products from MongoDB
-  Future<List<PaymentMethodModel>> fetchAllPaymentMethod({int page = 1}) async {
+  Future<List<AccountModel>> fetchAllAccountsMethod({int page = 1}) async {
     try {
       // Fetch products from MongoDB with pagination
       final List<Map<String, dynamic>> paymentMethodData =
       await _mongoDatabase.fetchDocuments(collectionName:collectionName, page: page);
       // Convert data to a list of ProductModel
-      final List<PaymentMethodModel> paymentMethod = paymentMethodData.map((data) => PaymentMethodModel.fromJson(data)).toList();
+      final List<AccountModel> paymentMethod = paymentMethodData.map((data) => AccountModel.fromJson(data)).toList();
       return paymentMethod;
     } catch (e) {
       throw 'Failed to fetch payment method: $e';
@@ -44,7 +44,7 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Upload multiple products
-  Future<void> pushPaymentMethod({required PaymentMethodModel paymentMethod}) async {
+  Future<void> pushAccountsMethod({required AccountModel paymentMethod}) async {
     try {
       Map<String, dynamic> paymentMap = paymentMethod.toMap(); // Convert a single vendor to a map
       await _mongoDatabase.insertDocument(collectionName, paymentMap);
@@ -54,7 +54,7 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Fetch payment by id
-  Future<PaymentMethodModel> fetchPaymentById({required String id}) async {
+  Future<AccountModel> fetchAccountById({required String id}) async {
     try {
       // Fetch a single document by ID
       final Map<String, dynamic>? vendorData =
@@ -65,7 +65,7 @@ class MongoPaymentMethodsRepo extends GetxController {
         throw Exception('Payment not found with ID: $id');
       }
       // Convert the document to a PurchaseModel object
-      final PaymentMethodModel payment = PaymentMethodModel.fromJson(vendorData);
+      final AccountModel payment = AccountModel.fromJson(vendorData);
       return payment;
     } catch (e) {
       throw 'Failed to fetch payment: $e';
@@ -73,9 +73,9 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Update a payment
-  Future<void> updatePayment({required String id, required PaymentMethodModel payment}) async {
+  Future<void> updateAccount({required String id, required AccountModel payment}) async {
     try {
-      Map<String, dynamic> paymentMap = payment.toJson();
+      Map<String, dynamic> paymentMap = payment.toMap();
                 await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: paymentMap);
     } catch (e) {
       throw 'Failed to upload payment: $e';
@@ -83,7 +83,7 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Delete a payment
-  Future<void> deletePayment({required String id}) async {
+  Future<void> deleteAccount({required String id}) async {
     try {
       await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
@@ -92,12 +92,23 @@ class MongoPaymentMethodsRepo extends GetxController {
   }
 
   // Get the next id
-  Future<int> fetchPaymentGetNextId() async {
+  Future<int> fetchAccountGetNextId() async {
     try {
-      int nextID = await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: PaymentMethodFieldName.paymentId);
+      int nextID = await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: AccountFieldName.accountId);
       return nextID;
     } catch (e) {
       throw 'Failed to fetch payment id: $e';
+    }
+  }
+
+  // Fetch All Products from MongoDB
+  Future<double> fetchTotalBalance() async {
+    try {
+      // Fetch products from MongoDB with pagination
+      final double totalStockValue = await _mongoDatabase.fetchTotalAccountBalance(collectionName: collectionName);
+      return totalStockValue;
+    } catch (e) {
+      rethrow;
     }
   }
 }

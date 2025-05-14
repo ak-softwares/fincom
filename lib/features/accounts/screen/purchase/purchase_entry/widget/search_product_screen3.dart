@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../common/dialog_box_massages/animation_loader.dart';
-import '../../../../../../common/layout_models/customers_grid_layout.dart';
 import '../../../../../../common/layout_models/orders_grid_layout.dart';
 import '../../../../../../common/layout_models/product_grid_layout.dart';
 import '../../../../../../common/styles/spacing_style.dart';
@@ -13,10 +12,10 @@ import '../../../../../../utils/constants/enums.dart';
 import '../../../../../../utils/constants/image_strings.dart';
 import '../../../../../../utils/constants/sizes.dart';
 import '../../../../controller/search_controller/search_controller.dart';
+import '../../../accounts/widget/account_tile.dart';
+import '../../../accounts/widget/account_tile_simmer.dart';
 import '../../../customers/widget/customer_tile.dart';
 import '../../../customers/widget/customer_tile_simmer.dart';
-import '../../../payments/widget/payment_tile.dart';
-import '../../../payments/widget/payment_tile_simmer.dart';
 import '../../../products/widget/product_tile.dart';
 import '../../../vendor/widget/vendor_tile.dart';
 import '../../../vendor/widget/vendor_tile_simmer.dart';
@@ -84,7 +83,7 @@ class SearchScreen3 extends StatelessWidget {
         onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
         child: ListView(
           controller: scrollController,
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             TSectionHeading(title: title),
@@ -311,16 +310,16 @@ class SearchScreen3 extends StatelessWidget {
               SearchType.paymentMethod => Obx(() {
                 const double paymentTileHeight = AppSizes.paymentTileHeight; // Updated constant
                 if (searchVoucherController.isLoading.value) {
-                  return  PaymentTileSimmer(itemCount: 2);
+                  return  AccountTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
-                  return searchVoucherController.selectedPayment.value.paymentMethodName != null
+                  return searchVoucherController.selectedPayment.value.accountName != null
                       ? Obx(() {
                           final selectedPayment = searchVoucherController.selectedPayment.value;
                           return Stack(
                             children: [
                               SizedBox(
                                 width: double.infinity,
-                                child: PaymentMethodTile(
+                                child: AccountTile(
                                   payment: selectedPayment,
                                   onTap: () => searchVoucherController.togglePaymentSelection(selectedPayment),
                                 ),
@@ -353,7 +352,7 @@ class SearchScreen3 extends StatelessWidget {
                                   width: double.infinity,
                                   child: InkWell(
                                     onTap: () => searchVoucherController.togglePaymentSelection(payment),
-                                      child: PaymentMethodTile(payment: payment)
+                                      child: AccountTile(payment: payment)
                                   ),
                                 ),
                                 if (isSelected)
@@ -366,7 +365,7 @@ class SearchScreen3 extends StatelessWidget {
                             );
                           });
                         } else {
-                          return PaymentTileSimmer();
+                          return AccountTileSimmer();
                         }
                       }
                   );

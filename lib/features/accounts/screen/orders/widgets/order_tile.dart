@@ -29,7 +29,7 @@ class OrderTile extends StatelessWidget {
 
     return InkWell(
       child: Container(
-        padding: TSpacingStyle.defaultPagePadding,
+        padding: AppSpacingStyle.defaultPagePadding,
         decoration: BoxDecoration(
           // color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(orderTileRadius),

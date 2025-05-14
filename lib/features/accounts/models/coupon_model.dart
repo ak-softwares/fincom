@@ -6,6 +6,7 @@ class CouponModel {
   final String? code;
   final String? amount;
   final String? dateCreated;
+  final String? discount;
   final String? discountType;
   final String? description;
   final String? dateExpires;
@@ -22,6 +23,7 @@ class CouponModel {
     this.code,
     this.amount,
     this.dateCreated,
+    this.discount,
     this.discountType,
     this.description,
     this.dateExpires,
@@ -75,6 +77,7 @@ class CouponModel {
       id: json[CouponFieldName.id],
       code: json[CouponFieldName.code],
       amount: json[CouponFieldName.amount],
+      discount: json[CouponFieldName.discount],
       dateCreated: json[CouponFieldName.dateCreated],
       discountType: json[CouponFieldName.discountType],
       description: json[CouponFieldName.description],
@@ -87,6 +90,23 @@ class CouponModel {
       isCODBlocked: (json[CouponFieldName.metaData] as List?)?.any((meta) => meta['key'] == CouponFieldName.isCODBlocked && meta['value'] == "1") ?? false,
       showOnCheckout: (json[CouponFieldName.metaData] as List?)?.any((meta) => meta['key'] == CouponFieldName.showOnCheckout && meta['value'] == "1") ?? false,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      if (id != null) CouponFieldName.id: id,
+      if (code != null) CouponFieldName.code: code,
+      if (amount != null) CouponFieldName.amount: amount,
+      if (discount != null) CouponFieldName.discount: discount,
+      if (dateCreated != null) CouponFieldName.dateCreated: dateCreated,
+      if (discountType != null) CouponFieldName.discountType: discountType,
+      if (description != null) CouponFieldName.description: description,
+      if (dateExpires != null) CouponFieldName.dateExpires: dateExpires,
+      if (freeShipping != null) CouponFieldName.freeShipping: freeShipping,
+      if (individualUse != null) CouponFieldName.individualUse: individualUse,
+      if (minimumAmount != null) CouponFieldName.minimumAmount: minimumAmount,
+      if (maximumAmount != null) CouponFieldName.maximumAmount: maximumAmount,
+    };
   }
 
   Map<String, dynamic> toJsonForWoo() {

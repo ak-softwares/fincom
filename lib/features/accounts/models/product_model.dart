@@ -276,7 +276,7 @@ class ProductModel {
   }
 
   // Use toMap for direct use of DataBase like mongoDB
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool isUpdate = false}) {
     return {
       ProductFieldName.id: id,
       ProductFieldName.productId: productId,
@@ -295,7 +295,7 @@ class ProductModel {
       ProductFieldName.price: price.toString(),
       ProductFieldName.regularPrice: regularPrice.toString(),
       ProductFieldName.salePrice: salePrice.toString(),
-      ProductFieldName.purchasePrice: purchasePrice,
+      if(!isUpdate) ProductFieldName.purchasePrice: purchasePrice,
       ProductFieldName.dateOnSaleFrom: dateOnSaleFrom,
       ProductFieldName.dateOnSaleTo: dateOnSaleTo,
       ProductFieldName.onSale: onSale,
@@ -306,7 +306,7 @@ class ProductModel {
       ProductFieldName.taxStatus: taxStatus,
       ProductFieldName.taxClass: taxClass,
       ProductFieldName.manageStock: manageStock,
-      ProductFieldName.stockQuantity: stockQuantity,
+      if(!isUpdate) ProductFieldName.stockQuantity: stockQuantity,
       ProductFieldName.weight: weight,
       ProductFieldName.dimensions: dimensions, // Already a map
       ProductFieldName.shippingRequired: shippingRequired,

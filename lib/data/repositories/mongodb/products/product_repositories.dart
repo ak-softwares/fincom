@@ -49,8 +49,33 @@ class MongoProductRepo extends GetxController {
     }
   }
 
+  // Fetch All Products from MongoDB
+  Future<double> fetchTotalStockValue() async {
+    try {
+      // Fetch products from MongoDB with pagination
+      final double totalStockValue = await _mongoDatabase.fetchTotalStockValue(collectionName: collectionName);
+      return totalStockValue;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Fetch All Products from MongoDB
+  Future<List<Map<String, dynamic>>> fetchCogsDetailsByProductIds({required List<int> productIds}) async {
+    try {
+      // Fetch products from MongoDB with pagination
+      final List<Map<String, dynamic>> totalStockValue = await _mongoDatabase.fetchCogsDetailsByProductIds(
+        collectionName: collectionName,
+        productIds: productIds,
+      );
+      return totalStockValue;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // Fetch Product's IDs from MongoDB
-  Future<Set<int>> fetchProductsIds() async {
+  Future<Set<int>> fetchProductIds() async {
     try {
       // Fetch product IDs from MongoDB
       return await _mongoDatabase.fetchCollectionIds(collectionName);
@@ -65,8 +90,11 @@ class MongoProductRepo extends GetxController {
       if (productIds.isEmpty) return []; // Return empty list if no IDs provided
 
       // Fetch products from MongoDB where the ID matches any in the list
-      final List<Map<String, dynamic>> productData =
-            await _mongoDatabase.fetchDocumentsByIds(collectionName, productIds);
+      final List<Map<String, dynamic>> productData = await _mongoDatabase.fetchDocumentsByFieldName(
+          collectionName:  collectionName,
+          fieldName: ProductFieldName.productId,
+          documentIds: productIds
+      );
 
       // Convert data to a list of ProductModel
       final List<ProductModel> products = productData.map((data) => ProductModel.fromJson(data)).toList();
@@ -159,6 +187,19 @@ class MongoProductRepo extends GetxController {
           await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: productMap);
     } catch (e) {
       throw 'Failed to update Product: $e';
+    }
+  }
+
+// Update multiple products
+  Future<void> updateMultipleProducts({required List<ProductModel> products}) async {
+    try {
+      List<Map<String, dynamic>> productMaps = products.map((product) => product.toMap(isUpdate: true)).toList();
+      await _mongoDatabase.updateManyDocuments(
+          collectionName: collectionName,
+          updates: productMaps
+      );
+    } catch (e) {
+      throw 'Failed to update products: $e';
     }
   }
 

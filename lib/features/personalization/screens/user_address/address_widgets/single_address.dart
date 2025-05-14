@@ -27,7 +27,7 @@ class TSingleAddress extends StatelessWidget {
       child: Container(
         width: double.infinity,
         color: Theme.of(context).colorScheme.surface,
-        padding: TSpacingStyle.defaultPagePadding,
+        padding: AppSpacingStyle.defaultPagePadding,
         child: Stack(
           children: [
             !hideEdit

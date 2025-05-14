@@ -25,9 +25,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget{
     this.seeSettingButton = false,
     this.sharePageLink = "",
     this.searchType,
-    this.widgetInActions, // If null, search icon won't be shown
-    this.bottom, // If null, search icon won't be shown
-    this.toolbarHeight, // If null, search icon won't be shown
+    this.widgetInActions,
+    this.bottom,
+    this.toolbarHeight,
   });
 
   final String title;

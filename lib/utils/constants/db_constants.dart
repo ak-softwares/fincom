@@ -10,7 +10,7 @@ class DbCollections{
   static const String purchaseList = 'purchase_list';
   static const String customers = 'customers';
   static const String vendors = 'vendors';
-  static const String payments = 'payments';
+  static const String accounts = 'accounts';
   static const String transactions = 'transactions';
   static const String expenses = 'expenses';
 }
@@ -185,6 +185,7 @@ class OrderFieldName {
   static const String total = 'total';
   static const String totalTax = 'total_tax';
   static const String userId = 'user_id';
+  static const String user = 'user';
   static const String customerId = 'customer_id';
   static const String billing = 'billing';
   static const String shipping = 'shipping';
@@ -196,6 +197,7 @@ class OrderFieldName {
   static const String customerNote = 'customer_note';
   static const String dateCompleted = 'date_completed';
   static const String datePaid = 'date_paid';
+  static const String dateReturned = 'date_returned';
   static const String number = 'number';
   static const String metaData = 'meta_data';
   static const String lineItems = 'line_items';
@@ -215,6 +217,15 @@ class OrderMetaDataName {
   static const String metaData = 'meta_data';
 }
 
+class OrderMetaKeyName {
+  static const String source      = '_wc_order_attribution_utm_source'; // google, facebook, androidApp
+  static const String sourceType  = '_wc_order_attribution_source_type'; // organic, referral, utm, Web Admin, typein (Direct)
+  static const String medium      = '_wc_order_attribution_utm_medium';  // organic, referral, utm, Web Admin, typein (Direct)
+  static const String campaign    = '_wc_order_attribution_utm_campaign'; // campaign name
+  static const String referrer    = '_wc_order_attribution_referrer';   // here we should use a link of referred
+  static const String date        = 'date';   // Expiry time
+}
+
 class OrderStatusName {
   static const String cancelled = 'cancelled';
   static const String processing = 'processing';
@@ -225,6 +236,7 @@ class OrderStatusName {
   static const String completed = 'completed';
   static const String returnInTransit = 'returnintransit';
   static const String returnPending = 'returnpending';
+  static const String returned = 'returned';
   static const String unknown = 'unknown';
 }
 
@@ -238,6 +250,17 @@ class OrderStatusPritiName {
   static const String completed = 'Delivered';
   static const String returnInTransit = 'Return In-Transit';
   static const String returnPending = 'Return Pending';
+  static const String returned = 'Returned';
+}
+
+class ExpenseTypeName {
+  static const String shipping = 'Shipping';
+  static const String facebookAds = 'Facebook Ads';
+  static const String googleAds = 'Google Ads';
+  static const String rent = 'Rent';
+  static const String salary = 'Salary';
+  static const String transport = 'Transport';
+  static const String others = 'Others';
 }
 
 class CartFieldName {
@@ -272,6 +295,7 @@ class CouponFieldName{
   static const String id = 'id';
   static const String code = 'code';
   static const String amount = 'amount';
+  static const String discount = 'discount';
   static const String dateCreated = 'date_created';
   static const String discountType = 'discount_type';
   static const String description = 'description';
@@ -319,25 +343,25 @@ class PurchaseHistoryFieldName {
   static const String purchaseDate = 'purchase_date';
 }
 
-class PaymentMethodFieldName {
+class AccountFieldName {
   static const String id = '_id';
-  static const String paymentId = 'payment_id';
+  static const String accountId = 'account_id';
   static const String openingBalance = 'opening_balance';
   static const String balance = 'balance';
-  static const String paymentMethodName = 'payment_method_name'; // corrected
+  static const String accountName = 'account_name'; // corrected
   static const String dateCreated = 'date_created'; // corrected
 }
 
 class ExpenseFieldName {
   static const String id = '_id';
   static const String expenseId = 'expense_id';
-  static const String title = 'title';
   static const String amount = 'amount';
   static const String description = 'description';
-  static const String category = 'category';
-  static const String paymentMethod = 'payment_method';
+  static const String expenseType = 'expense_type';
+  static const String account = 'account';
   static const String date = 'date';
   static const String dateCreated = 'date_created';
+  static const String transaction = 'transaction';
 }
 
 class TransactionFieldName {

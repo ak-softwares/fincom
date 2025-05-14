@@ -31,7 +31,7 @@ class EnterOTPScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: TSpacingStyle.paddingWidthAppbarHeight,
+          padding: AppSpacingStyle.paddingWidthAppbarHeight,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 100,),
             child: Column(

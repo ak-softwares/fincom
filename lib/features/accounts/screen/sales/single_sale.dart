@@ -67,7 +67,7 @@ class _SingleSaleScreenState extends State<SingleSaleScreen> {
               // final currentOrder = orderController.currentOrder.value;
               final currentOrder = widget.sale;
               return ListView(
-                padding: TSpacingStyle.defaultPageVertical,
+                padding: AppSpacingStyle.defaultPageVertical,
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   Column(
@@ -91,7 +91,7 @@ class _SingleSaleScreenState extends State<SingleSaleScreen> {
 
                       // Order Detail Section
                       Padding(
-                        padding: TSpacingStyle.defaultPageHorizontal,
+                        padding: AppSpacingStyle.defaultPageHorizontal,
                         child: Column(
                           children: [
                             Heading(
@@ -119,11 +119,36 @@ class _SingleSaleScreenState extends State<SingleSaleScreen> {
                                 Text(currentOrder.status?.prettyName ?? ''),
                               ],
                             ),
-                            Row(
+                            if(currentOrder.dateCreated != null)
+                              Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Date'),
+                                Text('Order Date'),
                                 Text(AppFormatter.formatDate(currentOrder.dateCreated)),
+                              ],
+                            ),
+                            if(currentOrder.dateCompleted != null)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Ship Date'),
+                                  Text(AppFormatter.formatDate(currentOrder.dateCompleted)),
+                                ],
+                              ),
+                            if(currentOrder.datePaid != null)
+                              Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Payment Date'),
+                                Text(AppFormatter.formatDate(currentOrder.datePaid)),
+                              ],
+                            ),
+                            if(currentOrder.dateReturned != null)
+                              Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Return Date'),
+                                Text(AppFormatter.formatDate(currentOrder.dateReturned)),
                               ],
                             ),
                           ],
@@ -145,7 +170,7 @@ class _SingleSaleScreenState extends State<SingleSaleScreen> {
                           ),
                           SizedBox(height: AppSizes.sm),
                           Padding(
-                            padding: TSpacingStyle.defaultPageHorizontal,
+                            padding: AppSpacingStyle.defaultPageHorizontal,
                             child: Column(
                               children: [
                                 Row(

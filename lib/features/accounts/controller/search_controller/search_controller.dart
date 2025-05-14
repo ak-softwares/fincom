@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
+import '../../../../data/repositories/mongodb/accounts/mongo_account_repo.dart';
 import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
-import '../../../../data/repositories/mongodb/payment/mongo_payment_methods_repo.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../utils/constants/enums.dart';
@@ -29,8 +29,8 @@ class SearchVoucherController extends GetxController {
   RxList<UserModel> customers = <UserModel>[].obs;
   Rx<UserModel> selectedCustomer = UserModel().obs;
 
-  RxList<PaymentMethodModel> payments = <PaymentMethodModel>[].obs;
-  Rx<PaymentMethodModel> selectedPayment = PaymentMethodModel().obs;
+  RxList<AccountModel> payments = <AccountModel>[].obs;
+  Rx<AccountModel> selectedPayment = AccountModel().obs;
 
   RxList<OrderModel> orders = <OrderModel>[].obs;
 
@@ -40,7 +40,7 @@ class SearchVoucherController extends GetxController {
   final mongoUserRepository = Get.put(MongoUserRepository());
   final mongoOrdersRepo = Get.put(MongoOrderRepo());
   final vendorController = Get.put(VendorController());
-  final mongoPaymentMethodsRepo = Get.put(MongoPaymentMethodsRepo());
+  final mongoPaymentMethodsRepo = Get.put(MongoAccountsRepo());
 
   // Get all products with optional search query
   void confirmSelection({required BuildContext context, required SearchType searchType}) {
@@ -61,14 +61,14 @@ class SearchVoucherController extends GetxController {
         break;
       case SearchType.paymentMethod:
         Navigator.of(context).pop(selectedPayment.value);
-        selectedPayment.value = PaymentMethodModel();
+        selectedPayment.value = AccountModel();
         break;
     }
   }
 
-  void togglePaymentSelection(PaymentMethodModel paymentMethod) {
-    if (paymentMethod.paymentMethodName == selectedPayment.value.paymentMethodName) {
-      selectedPayment.value = PaymentMethodModel();
+  void togglePaymentSelection(AccountModel paymentMethod) {
+    if (paymentMethod.accountName == selectedPayment.value.accountName) {
+      selectedPayment.value = AccountModel();
     } else {
       selectedPayment.value = paymentMethod; // Select
     }
@@ -111,7 +111,7 @@ class SearchVoucherController extends GetxController {
         case SearchType.vendor:
           return selectedVendor.value.company != null ? 1 : 0;
         case SearchType.paymentMethod:
-          return selectedPayment.value.paymentMethodName != null ? 1 : 0;
+          return selectedPayment.value.accountName != null ? 1 : 0;
       }
   }
 
@@ -194,7 +194,7 @@ class SearchVoucherController extends GetxController {
   Future<void> getPaymentsBySearchQuery({required String query, required int page}) async {
     try {
       if(query.isNotEmpty){
-        final List<PaymentMethodModel> fetchedPayments = await mongoPaymentMethodsRepo.fetchPaymentsBySearchQuery(query: query, page: page);
+        final List<AccountModel> fetchedPayments = await mongoPaymentMethodsRepo.fetchAccountsBySearchQuery(query: query, page: page);
         payments.addAll(fetchedPayments);
       }
     } catch (e) {

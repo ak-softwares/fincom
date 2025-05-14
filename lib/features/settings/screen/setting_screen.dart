@@ -19,7 +19,7 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
         appBar: const AppAppBar(title: "Settings", showSearchIcon: true),
         body: Padding(
-          padding: TSpacingStyle.defaultPageVertical,
+          padding: AppSpacingStyle.defaultPageVertical,
           child: Column(
             children: [
               SwitchListTile(

@@ -61,7 +61,7 @@ class Purchase extends StatelessWidget {
           onRefresh: () async => purchaseController.refreshPurchases(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {

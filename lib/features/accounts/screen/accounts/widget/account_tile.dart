@@ -1,20 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-import '../../../../../common/styles/shadows.dart';
 import '../../../../../common/widgets/common/colored_amount.dart';
-import '../../../../../utils/constants/icons.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../models/payment_method.dart';
-import '../../vendor/single_vendor.dart';
-import '../single_payment.dart';
 
-class PaymentMethodTile extends StatelessWidget {
-  const PaymentMethodTile({super.key, required this.payment, this.onTap});
+class AccountTile extends StatelessWidget {
+  const AccountTile({super.key, required this.payment, this.onTap});
 
-  final PaymentMethodModel payment;
+  final AccountModel payment;
   final VoidCallback? onTap; // Function to handle tap events
 
   @override
@@ -39,15 +32,15 @@ class PaymentMethodTile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Payment Id'),
-                  Text('#${payment.paymentId.toString()}', style: TextStyle(fontSize: 14))
+                  Text('Account Id'),
+                  Text('#${payment.accountId.toString()}', style: TextStyle(fontSize: 14))
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Payment Method'),
-                  Text(payment.paymentMethodName ?? '', style: TextStyle(fontSize: 14))
+                  Text('Accounts Name'),
+                  Text(payment.accountName ?? '', style: TextStyle(fontSize: 14))
                 ],
               ),
               Row(

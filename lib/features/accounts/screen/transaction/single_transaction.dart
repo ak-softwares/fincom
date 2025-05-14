@@ -69,7 +69,7 @@ class _SingleTransactionState extends State<SingleTransaction> {
         color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshTransaction(), // Updated method
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Container(

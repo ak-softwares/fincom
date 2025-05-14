@@ -80,4 +80,13 @@ class VendorController extends GetxController {
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
+
+  Future<double> calculateAccountPayable() async {
+    try {
+      final double totalStockValue = await mongoUserRepository.calculateAccountPayable(userType: userType);
+      return totalStockValue;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

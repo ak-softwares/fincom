@@ -24,7 +24,7 @@ class ForgetPasswordScreen extends StatelessWidget {
       appBar: const AppAppBar(title: "Forget Password", showBackArrow: true),
       body: SingleChildScrollView(
         child: Padding(
-          padding: TSpacingStyle.paddingWidthAppbarHeight,
+          padding: AppSpacingStyle.paddingWidthAppbarHeight,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

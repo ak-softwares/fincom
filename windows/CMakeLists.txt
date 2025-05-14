@@ -1,3 +1,5 @@
+set(FIREBASE_CPP_SDK_DIR "C:/firebase_cpp_sdk")
+
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
 project(aramarket.in LANGUAGES CXX)

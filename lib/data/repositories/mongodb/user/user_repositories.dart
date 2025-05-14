@@ -161,4 +161,17 @@ class MongoUserRepository extends GetxController {
     }
   }
 
+  // Fetch All Products from MongoDB
+  Future<double> calculateAccountPayable({required UserType userType}) async {
+    try {
+      // Fetch products from MongoDB with pagination
+      final double totalAccountPayable = await _mongoDatabase.calculateAccountPayable(
+        collectionName: collectionName,
+        filter: {UserFieldConstants.userType: userType.name},
+      );
+      return totalAccountPayable;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

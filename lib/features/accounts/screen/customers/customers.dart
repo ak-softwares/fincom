@@ -82,7 +82,7 @@ class CustomersVoucher extends StatelessWidget {
           onRefresh: () async => controller.refreshCustomers(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {

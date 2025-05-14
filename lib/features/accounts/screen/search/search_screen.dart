@@ -65,7 +65,7 @@ class SearchScreen extends StatelessWidget {
         onRefresh: () async => searchVoucherController.refreshSearch(query: searchQuery, searchType: searchType),
         child: ListView(
           controller: scrollController,
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             TSectionHeading(title: title),

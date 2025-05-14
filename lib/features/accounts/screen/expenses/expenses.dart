@@ -1,3 +1,4 @@
+import 'package:fincom/features/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -66,7 +67,7 @@ class ExpensesScreen extends StatelessWidget {
           onRefresh: () async => expenseController.refreshExpenses(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               // Summary card at the top
@@ -85,7 +86,7 @@ class ExpensesScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Total Expenses:', style: Theme.of(context).textTheme.bodyLarge),
-                            Text('\$${expenseController.totalMonthlyExpense.toStringAsFixed(2)}',
+                            Text(AppSettings.currencySymbol + expenseController.totalMonthlyExpense.toStringAsFixed(2),
                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     color: AppColors.error,
                                     fontWeight: FontWeight.bold
@@ -97,8 +98,7 @@ class ExpensesScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Categories:', style: Theme.of(context).textTheme.bodyLarge),
-                            Text('${expenseController.categoryCount}',
-                                style: Theme.of(context).textTheme.bodyLarge),
+                            Text('${expenseController.categoryCount}', style: Theme.of(context).textTheme.bodyLarge),
                           ],
                         ),
                       ],

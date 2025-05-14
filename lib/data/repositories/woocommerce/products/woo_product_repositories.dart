@@ -54,7 +54,7 @@ class WooProductRepository extends GetxController {
     try{
       final Map<String, String> queryParams = {
         // 'orderby': 'date', //date, id, include, title, slug, price, popularity and rating. Default is date.
-        'per_page': APIConstant.itemsPerPage,
+        'per_page': APIConstant.itemsPerPageSync,
         'page': page,
       };
 

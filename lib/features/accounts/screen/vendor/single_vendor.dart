@@ -52,7 +52,7 @@ class _SingleVendorState extends State<SingleVendor> {
         color: AppColors.refreshIndicator,
         onRefresh: () async => _refreshVendor(),
         child: ListView(
-          padding: TSpacingStyle.defaultPagePadding,
+          padding: AppSpacingStyle.defaultPagePadding,
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Row(

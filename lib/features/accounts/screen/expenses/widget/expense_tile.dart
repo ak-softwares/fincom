@@ -5,9 +5,11 @@ import 'package:intl/intl.dart';
 import '../../../../../common/styles/shadows.dart';
 import '../../../../../common/widgets/custom_shape/containers/rounded_container.dart';
 import '../../../../../utils/constants/colors.dart';
+import '../../../../../utils/constants/enums.dart';
 import '../../../../../utils/constants/icons.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
+import '../../../../settings/app_settings.dart';
 import '../../../models/expense_model.dart';
 import '../single_expense.dart';
 
@@ -32,7 +34,7 @@ class ExpenseTile extends StatelessWidget {
     const double expenseImageHeight = AppSizes.expenseImageHeight;
     const double expenseImageWidth = AppSizes.expenseImageWidth;
 
-    final currencyFormat = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
+    final currencyFormat = NumberFormat.currency(symbol: AppSettings.currencySymbol, decimalDigits: 2);
 
     return GestureDetector(
       onTap: onTap ?? () => Get.to(() => SingleExpenseScreen(expense: expense)),
@@ -53,7 +55,7 @@ class ExpenseTile extends StatelessWidget {
                 // Title
                 Expanded(
                   child: Text(
-                    expense.title ?? 'No Title',
+                    expense.expenseType?.name ?? ExpenseType.other.name,
                     style: Theme.of(context).textTheme.titleMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -85,7 +87,7 @@ class ExpenseTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSizes.sm / 2),
                     Text(
-                      expense.category ?? 'Uncategorized',
+                      expense.expenseType?.name ?? ExpenseType.other.name,
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ],
@@ -93,8 +95,8 @@ class ExpenseTile extends StatelessWidget {
 
                 // Date
                 Text(
-                  expense.date != null
-                      ? DateFormat('MMM dd').format(expense.date!)
+                  expense.dateCreated != null
+                      ? DateFormat('MMM dd').format(expense.dateCreated!)
                       : 'No date',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
@@ -103,7 +105,7 @@ class ExpenseTile extends StatelessWidget {
             const SizedBox(height: AppSizes.spaceBtwItems / 2),
 
             // Third Row - Payment Method (if available)
-            if (expense.paymentMethod?.isNotEmpty ?? false)
+            if (expense.account != null)
               Row(
                 children: [
                   Icon(Icons.credit_card,
@@ -112,7 +114,7 @@ class ExpenseTile extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSizes.sm / 2),
                   Text(
-                    expense.paymentMethod!,
+                    expense.account?.accountName ?? 'Not specified',
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
                 ],

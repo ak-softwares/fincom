@@ -64,7 +64,7 @@ class Vendors extends StatelessWidget {
           onRefresh: () async => vendorController.refreshVendors(),
           child: ListView(
             controller: scrollController,
-            padding: TSpacingStyle.defaultPagePadding,
+            padding: AppSpacingStyle.defaultPagePadding,
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               Obx(() {

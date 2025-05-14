@@ -55,7 +55,6 @@ class AddPurchaseController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
-    dateController.text = DateTime.now().toString();
     updatePurchaseTotal();
   }
 
@@ -214,7 +213,7 @@ class AddPurchaseController extends GetxController {
     OrderModel purchase = OrderModel(
         invoiceNumber: invoiceId.value,
         dateCreated: DateTime.tryParse(dateController.text),
-        userId: selectedSupplier.value.userId,
+        user: selectedSupplier.value,
         lineItems: selectedProducts,
         total: purchaseTotal.value,
         purchaseInvoiceImages: purchaseInvoiceImages,
@@ -310,8 +309,14 @@ class AddPurchaseController extends GetxController {
   }
 
   void resetValue({required OrderModel purchase}) {
+    dateController.value = TextEditingValue(
+      text: purchase.dateCreated.toString(),
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: purchase.dateCreated.toString().length),
+      ),
+    );
     invoiceId.value = purchase.orderId ?? 0;
-    dateController.text = purchase.dateCreated.toString();
+    selectedSupplier.value = purchase.user ?? UserModel();
     selectedProducts.value = purchase.lineItems ?? [];
     purchaseInvoiceImages.value = purchase.purchaseInvoiceImages ?? [];
     updatePurchaseTotal();
@@ -325,7 +330,7 @@ class AddPurchaseController extends GetxController {
         id: previousPurchase.id,
         invoiceNumber: previousPurchase.invoiceNumber,
         dateCreated: DateTime.tryParse(dateController.text),
-        userId: selectedSupplier.value.userId,
+        user: selectedSupplier.value,
         lineItems: selectedProducts,
         total: purchaseTotal.value,
         orderType: orderType
