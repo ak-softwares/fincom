@@ -6,9 +6,16 @@ import '../../../../features/accounts/models/transaction_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoTransactionRepo extends GetxController {
-  final MongoDatabase _mongoDatabase = MongoDatabase();
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
   final String collectionName = DbCollections.transactions;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
 
@@ -17,7 +24,7 @@ class MongoTransactionRepo extends GetxController {
     try {
       // Fetch transactions from MongoDB with search and pagination
       final List<Map<String, dynamic>> transactionsData =
-      await _mongoDatabase.fetchDocumentsBySearchQuery(
+      await _mongoFetch.fetchDocumentsBySearchQuery(
           collectionName: collectionName,
           query: query,
           itemsPerPage: itemsPerPage,
@@ -32,11 +39,15 @@ class MongoTransactionRepo extends GetxController {
   }
 
   // Fetch All Transactions from MongoDB
-  Future<List<TransactionModel>> fetchAllTransactions({int page = 1}) async {
+  Future<List<TransactionModel>> fetchAllTransactions({int page = 1, required String userId}) async {
     try {
       // Fetch transactions from MongoDB with pagination
       final List<Map<String, dynamic>> transactionData =
-      await _mongoDatabase.fetchDocuments(collectionName: collectionName, page: page);
+      await _mongoFetch.fetchDocuments(
+          collectionName: collectionName,
+          filter: {TransactionFieldName.userId: userId},
+          page: page
+      );
       // Convert data to a list of TransactionModel
       final List<TransactionModel> transactions = transactionData.map((data) => TransactionModel.fromJson(data)).toList();
       return transactions;
@@ -49,7 +60,7 @@ class MongoTransactionRepo extends GetxController {
   Future<String> pushTransaction({required TransactionModel transaction}) async {
     try {
       Map<String, dynamic> transactionMap = transaction.toMap(); // Convert a single transaction to a map
-      final String transactionId = await _mongoDatabase.insertDocumentGetId(collectionName, transactionMap);
+      final String transactionId = await _mongoInsert.insertDocumentGetId(collectionName, transactionMap);
       return transactionId;
     } catch (e) {
       throw 'Failed to upload transaction: $e';
@@ -61,7 +72,7 @@ class MongoTransactionRepo extends GetxController {
     try {
       // Fetch a single document by ID
       final Map<String, dynamic>? transactionData =
-      await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+      await _mongoFetch.fetchDocumentById(collectionName: collectionName, id: id);
 
       // Check if the document exists
       if (transactionData == null) {
@@ -79,7 +90,7 @@ class MongoTransactionRepo extends GetxController {
   Future<void> updateTransaction({required String id, required TransactionModel transaction}) async {
     try {
       Map<String, dynamic> transactionMap = transaction.toJson();
-         await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: transactionMap);
+         await _mongoUpdate.updateDocumentById(id: id, collectionName: collectionName, updatedData: transactionMap);
     } catch (e) {
       throw 'Failed to update transaction: $e';
     }
@@ -88,7 +99,7 @@ class MongoTransactionRepo extends GetxController {
   // Delete a transaction
   Future<void> deleteTransaction({required String id}) async {
     try {
-      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+      await _mongoDelete.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
       throw 'Failed to delete transaction: $e';
     }
@@ -97,7 +108,7 @@ class MongoTransactionRepo extends GetxController {
   Future<void> deleteTransactionByPurchaseId({required int purchaseId}) async {
     try {
       // Fetch the transaction linked to the given purchase ID
-      final transaction = await _mongoDatabase.findOne(
+      final transaction = await _mongoFetch.findOne(
         collectionName: collectionName,
         query: {TransactionFieldName.purchaseId: purchaseId},
       );
@@ -110,7 +121,7 @@ class MongoTransactionRepo extends GetxController {
       final String transactionId = (transaction['_id'] as ObjectId).toHexString();
 
       // Delete the transaction
-      await _mongoDatabase.deleteDocumentById(
+      await _mongoDelete.deleteDocumentById(
         id: transactionId,
         collectionName: collectionName,
       );
@@ -122,7 +133,7 @@ class MongoTransactionRepo extends GetxController {
   Future<TransactionModel> findTransactionByPurchaseId({required int purchaseId}) async {
     try {
       // Fetch the transaction linked to the given purchase ID
-      final transactionData = await _mongoDatabase.findOne(
+      final transactionData = await _mongoFetch.findOne(
         collectionName: collectionName,
         query: {TransactionFieldName.purchaseId: purchaseId},
       );
@@ -142,9 +153,13 @@ class MongoTransactionRepo extends GetxController {
 
 
   // Get the next id
-  Future<int> fetchTransactionGetNextId() async {
+  Future<int> fetchTransactionGetNextId({required String userId}) async {
     try {
-      int nextID = await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: TransactionFieldName.transactionId);
+      int nextID = await _mongoFetch.fetchNextId(
+          collectionName: collectionName,
+          filter: {TransactionFieldName.userId: userId},
+          fieldName: TransactionFieldName.transactionId
+      );
       return nextID;
     } catch (e) {
       throw 'Failed to fetch transaction id: $e';
@@ -154,7 +169,7 @@ class MongoTransactionRepo extends GetxController {
   // Update Balance
   Future<void> updateBalanceById({required String collectionName, required String entityId, required double amount, required bool isAddition}) async {
     try {
-      await _mongoDatabase.updateBalance(
+      await _mongoUpdate.updateBalance(
           collectionName: collectionName,
           entityId: entityId,
           amount: amount,
@@ -165,12 +180,12 @@ class MongoTransactionRepo extends GetxController {
     }
   }
 
-  Future<List<TransactionModel>> fetchTransactionByEntity({required EntityType entityType, required int entityId, int page = 1,}) async {
+  Future<List<TransactionModel>> fetchTransactionByEntity({required EntityType entityType, required String entityId, int page = 1,}) async {
     try {
 
       // Fetch transactions matching the given entity type and ID
       final List<Map<String, dynamic>> transactionData =
-            await _mongoDatabase.fetchTransactionByEntity(
+            await _mongoFetch.fetchTransactionByEntity(
               collectionName: collectionName,
               entityType: entityType,
               entityId: entityId,

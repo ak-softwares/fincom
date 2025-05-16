@@ -5,24 +5,31 @@ import '../../../../features/personalization/models/user_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../../utils/constants/enums.dart';
-import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoUserRepository extends GetxController {
   static MongoUserRepository get instance => Get.find();
-  final MongoDatabase _mongoDatabase = MongoDatabase();
-  final String collectionName = 'users';
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
+  final String collectionName = DbCollections.users;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
 
   // Fetch products by search query & pagination
-  Future<List<UserModel>> fetchUsersBySearchQuery({required String query, required UserType userType, int page = 1}) async {
+  Future<List<UserModel>> fetchUsersBySearchQuery(
+      {required String query, required UserType userType, int page = 1, required String userId}) async {
     try {
       // Fetch products from MongoDB with search and pagination
-      final List<Map<String, dynamic>> customersData = await _mongoDatabase.fetchDocumentsBySearchQuery(
+      final List<Map<String, dynamic>> customersData = await _mongoFetch.fetchDocumentsBySearchQuery(
           collectionName: collectionName,
           query: query,
           itemsPerPage: itemsPerPage,
           page: page,
-          filter: {UserFieldConstants.userType: userType.name},
+          filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
       );
 
       // Convert data to a list of ProductModel
@@ -34,13 +41,13 @@ class MongoUserRepository extends GetxController {
   }
 
   // Fetch All Products from MongoDB
-  Future<List<UserModel>> fetchUsers({required UserType userType, int page = 1}) async {
+  Future<List<UserModel>> fetchUsers({required UserType userType, int page = 1, required String userId}) async {
     try {
       // Fetch products from MongoDB with pagination
       final List<Map<String, dynamic>> usersData =
-          await _mongoDatabase.fetchDocuments(
+          await _mongoFetch.fetchDocuments(
               collectionName:collectionName,
-              filter: {UserFieldConstants.userType: userType.name},
+              filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
               page: page
           );
 
@@ -53,19 +60,25 @@ class MongoUserRepository extends GetxController {
   }
 
   // Fetch Customer's IDs from MongoDB
-  Future<Set<int>> fetchUserIds() async {
+  Future<Set<int>> fetchUserIds({required String userId}) async {
     try {
       // Fetch product IDs from MongoDB
-      return await _mongoDatabase.fetchCollectionIds(collectionName);
+      return await _mongoFetch.fetchDocumentIds(
+          collectionName: collectionName,
+          userId: userId
+      );
     } catch (e) {
       throw 'Failed to fetch Customers IDs: $e';
     }
   }
 
   // Get the total count of customers in the collection
-  Future<int> fetchUserCount() async {
+  Future<int> fetchUserCount({required String userId}) async {
     try {
-      int count = await _mongoDatabase.fetchCollectionCount(collectionName);
+      int count = await _mongoFetch.fetchCollectionCount(
+        collectionName: collectionName,
+        filter: { UserFieldConstants.documentId: userId },
+      );
       return count;
     } catch (e) {
       throw 'Failed to fetch customer count: $e';
@@ -76,7 +89,7 @@ class MongoUserRepository extends GetxController {
   Future<void> updateUser({required UserModel user}) async {
     try {
       Map<String, dynamic> customerMap = user.toMap();
-      await _mongoDatabase.updateDocumentById(
+      await _mongoUpdate.updateDocumentById(
           id: user.id ?? '',
           collectionName: collectionName,
           updatedData: customerMap
@@ -89,7 +102,7 @@ class MongoUserRepository extends GetxController {
   // Update a customer
   Future<void> updateUserBalance({required int userID, required double balance, required bool isAddition}) async {
     try {
-      await _mongoDatabase.updateUserBalanceById(
+      await _mongoUpdate.updateUserBalanceById(
           collectionName: collectionName,
           id: userID,
           balance: balance,
@@ -104,7 +117,7 @@ class MongoUserRepository extends GetxController {
   Future<void> insertUsers({required List<UserModel> customers}) async {
     try {
       List<Map<String, dynamic>> customersMaps = customers.map((customer) => customer.toMap()).toList();
-      await _mongoDatabase.insertDocuments(collectionName, customersMaps); // Use batch insert function
+      await _mongoInsert.insertDocuments(collectionName, customersMaps); // Use batch insert function
     } catch (e) {
       throw 'Failed to upload customers: $e';
     }
@@ -114,7 +127,7 @@ class MongoUserRepository extends GetxController {
   Future<void> insertUser({required UserModel customer}) async {
     try {
       Map<String, dynamic> customerMap = customer.toMap(); // Convert customer model to map
-      await _mongoDatabase.insertDocument(collectionName, customerMap);
+      await _mongoInsert.insertDocument(collectionName, customerMap);
     } catch (e) {
       throw 'Failed to add customer: $e';
     }
@@ -124,7 +137,7 @@ class MongoUserRepository extends GetxController {
     try {
       // Fetch a single document by ID
       final Map<String, dynamic>? customerData =
-      await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+      await _mongoFetch.fetchDocumentById(collectionName: collectionName, id: id);
 
       // Check if the document exists
       if (customerData == null) {
@@ -141,19 +154,19 @@ class MongoUserRepository extends GetxController {
 
   Future<void> deleteUserById({required String id}) async {
     try {
-      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+      await _mongoDelete.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
       throw 'Failed to delete customer: $e';
     }
   }
 
   // Get the next customer ID
-  Future<int> fetchUserGetNextId({required UserType userType}) async {
+  Future<int> fetchUserGetNextId({required UserType userType, required String userId}) async {
     try {
-      int nextID = await _mongoDatabase.getNextId(
+      int nextID = await _mongoFetch.fetchNextId(
           collectionName: collectionName,
-          fieldName: UserFieldConstants.userId,
-          filter: {UserFieldConstants.userType: userType.name},
+          fieldName: UserFieldConstants.documentId,
+          filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.userId: userId},
       );
       return nextID;
     } catch (e) {
@@ -162,12 +175,12 @@ class MongoUserRepository extends GetxController {
   }
 
   // Fetch All Products from MongoDB
-  Future<double> calculateAccountPayable({required UserType userType}) async {
+  Future<double> calculateAccountPayable({required UserType userType, required String userId}) async {
     try {
       // Fetch products from MongoDB with pagination
-      final double totalAccountPayable = await _mongoDatabase.calculateAccountPayable(
+      final double totalAccountPayable = await _mongoFetch.calculateAccountPayable(
         collectionName: collectionName,
-        filter: {UserFieldConstants.userType: userType.name},
+        filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
       );
       return totalAccountPayable;
     } catch (e) {

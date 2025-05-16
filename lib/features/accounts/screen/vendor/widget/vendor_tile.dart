@@ -34,14 +34,14 @@ class VendorTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor ID'),
-                Text('#${vendor.userId}', style: TextStyle(fontSize: 14))
+                Text('#${vendor.documentId}', style: TextStyle(fontSize: 14))
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor'),
-                Text(vendor.company ?? '', style: TextStyle(fontSize: 14))
+                Text(vendor.companyName ?? '', style: TextStyle(fontSize: 14))
               ],
             ),
             Row(

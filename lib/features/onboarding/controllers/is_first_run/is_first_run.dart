@@ -25,7 +25,7 @@ class IsFirstRunController extends GetxController {
 
   static Future<void> activation(UserModel customer) async {
     try {
-      final userId = customer.userId.toString();
+      final userId = customer.documentId.toString();
 
       // set
       updateIsFirstRun();

@@ -3,10 +3,16 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../../../features/accounts/models/expense_model.dart';
 import '../../../../utils/constants/api_constants.dart';
-import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoExpenseRepo extends GetxController {
-  final MongoDatabase _mongoDatabase = MongoDatabase();
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
   final String collectionName = DbCollections.expenses;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
 
@@ -14,7 +20,7 @@ class MongoExpenseRepo extends GetxController {
   Future<List<ExpenseModel>> fetchExpensesBySearchQuery({required String query, int page = 1}) async {
     try {
       final List<Map<String, dynamic>> expensesData =
-      await _mongoDatabase.fetchDocumentsBySearchQuery(
+      await _mongoFetch.fetchDocumentsBySearchQuery(
           collectionName: collectionName,
           query: query,
           itemsPerPage: itemsPerPage,
@@ -27,10 +33,14 @@ class MongoExpenseRepo extends GetxController {
   }
 
   // Fetch all expenses from MongoDB
-  Future<List<ExpenseModel>> fetchAllExpenses({int page = 1}) async {
+  Future<List<ExpenseModel>> fetchAllExpenses({int page = 1, required String userId}) async {
     try {
       final List<Map<String, dynamic>> expensesData =
-      await _mongoDatabase.fetchDocuments(collectionName: collectionName, page: page);
+      await _mongoFetch.fetchDocuments(
+          collectionName: collectionName,
+          filter: {ExpenseFieldName.userId: userId},
+          page: page
+      );
       return expensesData.map((data) => ExpenseModel.fromJson(data)).toList();
     } catch (e) {
       throw 'Failed to fetch expenses: $e';
@@ -41,7 +51,7 @@ class MongoExpenseRepo extends GetxController {
   Future<void> pushExpense({required ExpenseModel expense}) async {
     try {
       Map<String, dynamic> expenseMap = expense.toMap();
-      await _mongoDatabase.insertDocument(collectionName, expenseMap);
+      await _mongoInsert.insertDocument(collectionName, expenseMap);
     } catch (e) {
       throw 'Failed to upload expense: $e';
     }
@@ -51,7 +61,7 @@ class MongoExpenseRepo extends GetxController {
   Future<ExpenseModel> fetchExpenseById({required String id}) async {
     try {
       final Map<String, dynamic>? expenseData =
-      await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+      await _mongoFetch.fetchDocumentById(collectionName: collectionName, id: id);
       if (expenseData == null) {
         throw Exception('Expense not found with ID: $id');
       }
@@ -65,7 +75,7 @@ class MongoExpenseRepo extends GetxController {
   Future<void> updateExpense({required String id, required ExpenseModel expense}) async {
     try {
       Map<String, dynamic> expenseMap = expense.toJson();
-      await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: expenseMap);
+      await _mongoUpdate.updateDocumentById(id: id, collectionName: collectionName, updatedData: expenseMap);
     } catch (e) {
       throw 'Failed to update expense: $e';
     }
@@ -74,25 +84,31 @@ class MongoExpenseRepo extends GetxController {
   // Delete an expense
   Future<void> deleteExpense({required String id}) async {
     try {
-      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+      await _mongoDelete.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
       throw 'Failed to delete expense: $e';
     }
   }
 
   // Get the next expense ID
-  Future<int> fetchExpenseNextId() async {
+  Future<int> fetchExpenseNextId({required String userId}) async {
     try {
-      return await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: ExpenseFieldName.expenseId);
+      return await _mongoFetch.fetchNextId(
+          collectionName: collectionName,
+          filter: {ExpenseFieldName.userId: userId},
+          fieldName: ExpenseFieldName.expenseId
+      );
     } catch (e) {
       throw 'Failed to fetch expense ID: $e';
     }
   }
 
-  Future<List<ExpenseModel>> fetchExpensesByDate({required DateTime startDate, required DateTime endDate,}) async {
+  Future<List<ExpenseModel>> fetchExpensesByDate({
+    required DateTime startDate, required DateTime endDate, required String userId,}) async {
     try {
-      final List<Map<String, dynamic>> expensesData = await _mongoDatabase.fetchDocumentsDate(
+      final List<Map<String, dynamic>> expensesData = await _mongoFetch.fetchDocumentsDate(
           collectionName: collectionName,
+          filter: {ExpenseFieldName.userId: userId},
           startDate: startDate,
           endDate: endDate
       );

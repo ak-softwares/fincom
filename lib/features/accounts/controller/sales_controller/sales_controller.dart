@@ -1,15 +1,12 @@
+import 'package:fincom/features/authentication/controllers/authentication_controller/authentication_controller.dart';
+import 'package:fincom/features/personalization/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../../common/dialog_box_massages/dialog_massage.dart';
-import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
-import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
-import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
 import '../product/product_controller.dart';
 
@@ -24,12 +21,14 @@ class SaleController extends GetxController {
   RxList<OrderModel> sales = <OrderModel>[].obs;
   final mongoOrderRepo = Get.put(MongoOrderRepo());
   final productController = Get.put(ProductController());
+  final authenticationController = Get.put(AuthenticationController());
 
 
   // Get All Sale
   Future<void> getSales() async {
     try {
-      final fetchedOrders = await mongoOrderRepo.fetchOrders(orderType: orderType, page: currentPage.value);
+      final fetchedOrders = await mongoOrderRepo
+          .fetchOrders(orderType: orderType, userId: authenticationController.admin.value.id!, page: currentPage.value);
       sales.addAll(fetchedOrders);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
@@ -61,8 +60,9 @@ class SaleController extends GetxController {
 
   Future<List<OrderModel>> getSalesByDate({required DateTime startDate, required DateTime endDate}) async {
     try {
+      if(!authenticationController.isAdminLogin.value) throw 'User Not Login';
       final fetchedOrders = await mongoOrderRepo
-          .fetchOrdersByDate(orderType: orderType, startDate: startDate, endDate: endDate);
+          .fetchOrdersByDate(orderType: orderType, userId: authenticationController.admin.value.id!, startDate: startDate, endDate: endDate);
       return fetchedOrders;
     } catch (e) {
       rethrow;

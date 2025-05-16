@@ -53,14 +53,13 @@ extension EntityTypeExtension on EntityType {
   String get dbName {
     switch (this) {
       case EntityType.vendor:
-        return DbCollections.vendors;
+        return DbCollections.users;
       case EntityType.account:
         return DbCollections.accounts;
       case EntityType.customer:
-        return DbCollections.customers;
+        return DbCollections.users;
       case EntityType.expense:
-        // TODO: Handle this case.
-        throw DbCollections.expenses;
+        return DbCollections.expenses;
     }
   }
 
@@ -71,7 +70,7 @@ extension EntityTypeExtension on EntityType {
       case EntityType.account:
         return AccountFieldName.accountId;
       case EntityType.customer:
-        return UserFieldConstants.userId;
+        return UserFieldConstants.documentId;
       case EntityType.expense:
         // TODO: Handle this case.
         throw UnimplementedError();

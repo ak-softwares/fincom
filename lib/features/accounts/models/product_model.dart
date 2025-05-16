@@ -10,8 +10,9 @@ import 'product_attribute_model.dart';
 
 class ProductModel {
   String? id;
+  String? userId;
   int? productId;
-  String? name;
+  String? title;
   String? mainImage;
   String? permalink;
   String? slug;
@@ -67,8 +68,9 @@ class ProductModel {
 
   ProductModel({
     this.id,
+    this.userId,
     this.productId,
-    this.name,
+    this.title,
     this.mainImage,
     this.permalink,
     this.slug,
@@ -171,12 +173,6 @@ class ProductModel {
 
     final String type = json[ProductFieldName.type] ?? '';
 
-    // Extracting purchase History data from the JSON
-    List<ProductPurchaseHistory>? purchaseHistory = [];
-    if (json.containsKey(ProductFieldName.purchaseHistory) && json[ProductFieldName.purchaseHistory] is List) {
-      purchaseHistory = (json[ProductFieldName.purchaseHistory] as List).map((history) => ProductPurchaseHistory.fromJson(history)).toList();
-    }
-
     // Extracting category data from the JSON
     List<CategoryModel>? categories = [CategoryModel.empty()];
     if (json.containsKey(ProductFieldName.categories) && json[ProductFieldName.categories] is List) {
@@ -207,8 +203,9 @@ class ProductModel {
       id: json[PurchaseFieldName.id] is ObjectId
           ? (json[PurchaseFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
           : json[PurchaseFieldName.id]?.toString(),
+      userId: json[ProductFieldName.userId],
       productId: json[ProductFieldName.productId] ?? 0,
-      name: json[ProductFieldName.name].replaceAll('&amp;', '&'),
+      title: json[ProductFieldName.name].replaceAll('&amp;', '&'),
       mainImage: json[ProductFieldName.images] != null && json[ProductFieldName.images].isNotEmpty
           ? json[ProductFieldName.images][0]['src'] : '',
       permalink: json[ProductFieldName.permalink] ?? '',
@@ -270,84 +267,183 @@ class ProductModel {
     );
   }
 
+  factory ProductModel.fromJsonWoo(Map<String, dynamic> json) {
+
+    final String type = json[ProductFieldName.type] ?? '';
+
+    // Extracting category data from the JSON
+    List<CategoryModel>? categories = [CategoryModel.empty()];
+    if (json.containsKey(ProductFieldName.categories) && json[ProductFieldName.categories] is List) {
+      categories = (json[ProductFieldName.categories] as List).map((category) => CategoryModel.fromJson(category)).toList();
+    }
+
+    // Extracting brands data from the JSON
+    List<BrandModel>? brands = [];
+    if (json.containsKey(ProductFieldName.brands) && json[ProductFieldName.brands] is List) {
+      brands = (json[ProductFieldName.brands] as List).map((brand) => BrandModel.fromJson(brand)).toList();
+    }
+
+    // Extracting Attribute data from the JSON
+    List<ProductAttributeModel>? attributes = [];
+    if (json.containsKey(ProductFieldName.attributes) && json[ProductFieldName.attributes] is List) {
+      attributes = (json[ProductFieldName.attributes] as List).map((attribute) =>
+          ProductAttributeModel.fromJson(attribute)).toList();
+    }
+
+    // Extracting Attribute data from the JSON
+    List<ProductAttributeModel>? defaultAttributes = [];
+    if (json.containsKey(ProductFieldName.defaultAttributes) && json[ProductFieldName.defaultAttributes] is List) {
+      defaultAttributes = (json[ProductFieldName.defaultAttributes] as List).map((attribute) =>
+          ProductAttributeModel.fromJson(attribute)).toList();
+    }
+
+    return ProductModel(
+      userId: json[ProductFieldName.userId],
+      productId: json[ProductFieldName.productId] ?? 0,
+      title: json[ProductFieldName.name].replaceAll('&amp;', '&'),
+      mainImage: json[ProductFieldName.images] != null && json[ProductFieldName.images].isNotEmpty
+          ? json[ProductFieldName.images][0]['src'] : '',
+      permalink: json[ProductFieldName.permalink] ?? '',
+      slug: json[ProductFieldName.slug] ?? '',
+      dateCreated: json[ProductFieldName.dateCreated] ?? '',
+      type: type,
+      status: json[ProductFieldName.status] ?? '',
+      featured: json[ProductFieldName.featured] ?? false,
+      catalogVisibility: json[ProductFieldName.catalogVisibility] ?? '',
+      description: json[ProductFieldName.description] ?? '',
+      shortDescription: json[ProductFieldName.shortDescription] ?? '',
+      sku: json[ProductFieldName.sku] ?? '',
+      price: double.tryParse(json[ProductFieldName.price] ?? '0.0'),
+      salePrice: double.tryParse(json[ProductFieldName.salePrice] ?? '0.0'),
+      regularPrice: double.tryParse(json[ProductFieldName.regularPrice] ?? '0.0'),
+      dateOnSaleFrom: json[ProductFieldName.dateOnSaleFrom] ?? '',
+      dateOnSaleTo: json[ProductFieldName.dateOnSaleTo] ?? '',
+      onSale: json[ProductFieldName.onSale] ?? false,
+      purchasable: json[ProductFieldName.purchasable] ?? false,
+      totalSales: int.tryParse(json[ProductFieldName.totalSales]?.toString() ?? '0') ?? 0,
+      virtual: json[ProductFieldName.virtual] ?? false,
+      downloadable: json[ProductFieldName.downloadable] ?? false,
+      taxStatus: json[ProductFieldName.taxStatus] ?? '',
+      taxClass: json[ProductFieldName.taxClass] ?? '',
+      manageStock: json[ProductFieldName.manageStock] ?? false,
+      stockQuantity: json[ProductFieldName.stockQuantity] ?? 0,
+      weight: json[ProductFieldName.weight] ?? '',
+      dimensions: json[ProductFieldName.dimensions] != null
+          ? Map<String, dynamic>.from(json[ProductFieldName.dimensions])
+          : null,
+      shippingRequired: json[ProductFieldName.shippingRequired] ?? false,
+      shippingTaxable: json[ProductFieldName.shippingTaxable] ?? false,
+      shippingClass: json[ProductFieldName.shippingClass] ?? '',
+      shippingClassId: json[ProductFieldName.shippingClassId] ?? 0,
+      reviewsAllowed: json[ProductFieldName.reviewsAllowed] ?? false,
+      averageRating: double.tryParse(json[ProductFieldName.averageRating] ?? '0.0'),
+      ratingCount: json[ProductFieldName.ratingCount] ?? 0,
+      upsellIds: List<int>.from(json[ProductFieldName.upsellIds] ?? []),
+      crossSellIds: List<int>.from(json[ProductFieldName.crossSellIds] ?? []),
+      parentId: json[ProductFieldName.parentId] ?? 0,
+      purchaseNote: json[ProductFieldName.purchaseNote] ?? '',
+      tags: List<Map<String, dynamic>>.from(json[ProductFieldName.tags] ?? []),
+      images: json[ProductFieldName.images] != null
+          ? List<Map<String, dynamic>>.from(json[ProductFieldName.images])
+          : [],
+      image: json[ProductFieldName.image] != null && json[ProductFieldName.image].isNotEmpty
+          ? json[ProductFieldName.image]['src'] : '',
+      categories: categories,
+      brands: brands,
+      attributes: attributes,
+      defaultAttributes: defaultAttributes,
+      variations: List<int>.from(json[ProductFieldName.variations] ?? []),
+      groupedProducts: List<int>.from(json[ProductFieldName.groupedProducts] ?? []),
+      menuOrder: json[ProductFieldName.menuOrder] ?? 0,
+      relatedIds: List<int>.from(json[ProductFieldName.relatedIds] ?? []),
+      stockStatus: json[ProductFieldName.stockStatus] ?? '',
+      purchasePrice: double.tryParse(
+        (json[ProductFieldName.metaData] as List?)?.firstWhere(
+              (meta) => meta['key'] == ProductFieldName.cogs,
+          orElse: () => {'value': '0'},
+        )['value'].toString() ?? '0',
+      ) ?? 0.0,
+      isCODBlocked: (json[ProductFieldName.metaData] as List?)?.any((meta) => meta['key'] == ProductFieldName.isCODBlocked && meta['value'] == "1") ?? false,
+    );
+  }
+
   // Method to extract only the 'src' values from the images list
   List<String> get imageUrlList {
     return images?.map<String>((image) => image['src']).toList() ?? [];
   }
 
-  // Use toMap for direct use of DataBase like mongoDB
   Map<String, dynamic> toMap({bool isUpdate = false}) {
-    return {
-      ProductFieldName.id: id,
-      ProductFieldName.productId: productId,
-      ProductFieldName.name: name,
-      ProductFieldName.mainImage: mainImage,
-      ProductFieldName.permalink: permalink,
-      ProductFieldName.slug: slug,
-      ProductFieldName.dateCreated: dateCreated,
-      ProductFieldName.type: type,
-      ProductFieldName.status: status,
-      ProductFieldName.featured: featured,
-      ProductFieldName.catalogVisibility: catalogVisibility,
-      ProductFieldName.description: description,
-      ProductFieldName.shortDescription: shortDescription,
-      ProductFieldName.sku: sku,
-      ProductFieldName.price: price.toString(),
-      ProductFieldName.regularPrice: regularPrice.toString(),
-      ProductFieldName.salePrice: salePrice.toString(),
-      if(!isUpdate) ProductFieldName.purchasePrice: purchasePrice,
-      ProductFieldName.dateOnSaleFrom: dateOnSaleFrom,
-      ProductFieldName.dateOnSaleTo: dateOnSaleTo,
-      ProductFieldName.onSale: onSale,
-      ProductFieldName.purchasable: purchasable,
-      ProductFieldName.totalSales: totalSales,
-      ProductFieldName.virtual: virtual,
-      ProductFieldName.downloadable: downloadable,
-      ProductFieldName.taxStatus: taxStatus,
-      ProductFieldName.taxClass: taxClass,
-      ProductFieldName.manageStock: manageStock,
-      if(!isUpdate) ProductFieldName.stockQuantity: stockQuantity,
-      ProductFieldName.weight: weight,
-      ProductFieldName.dimensions: dimensions, // Already a map
-      ProductFieldName.shippingRequired: shippingRequired,
-      ProductFieldName.shippingTaxable: shippingTaxable,
-      ProductFieldName.shippingClass: shippingClass,
-      ProductFieldName.shippingClassId: shippingClassId,
-      ProductFieldName.reviewsAllowed: reviewsAllowed,
-      ProductFieldName.averageRating: averageRating.toString(),
-      ProductFieldName.ratingCount: ratingCount,
-      ProductFieldName.upsellIds: upsellIds,
-      ProductFieldName.crossSellIds: crossSellIds,
-      ProductFieldName.parentId: parentId,
-      ProductFieldName.purchaseNote: purchaseNote,
+    final map = <String, dynamic>{};
 
-      // Handling nested objects (Ensure the respective models have `toMap()`)
-      ProductFieldName.brands: brands?.map((b) => b.toMap()).toList(),
-      ProductFieldName.categories: categories?.map((c) => c.toMap()).toList(),
-      ProductFieldName.tags: tags,
-      ProductFieldName.images: images,
-      ProductFieldName.image: image,
-      ProductFieldName.attributes: attributes?.map((a) => a.toMap()).toList(),
-      ProductFieldName.defaultAttributes: defaultAttributes?.map((a) => a.toMap()).toList(),
+    void add(String key, dynamic value) {
+      if (value != null) map[key] = value;
+    }
 
-      ProductFieldName.variations: variations,
-      ProductFieldName.groupedProducts: groupedProducts,
-      ProductFieldName.menuOrder: menuOrder,
-      ProductFieldName.relatedIds: relatedIds,
-      ProductFieldName.stockStatus: stockStatus,
-      ProductFieldName.isCODBlocked: isCODBlocked,
-    };
+    add(ProductFieldName.id, id);
+    add(ProductFieldName.userId, userId);
+    add(ProductFieldName.productId, productId);
+    add(ProductFieldName.name, title);
+    add(ProductFieldName.mainImage, mainImage);
+    add(ProductFieldName.permalink, permalink);
+    add(ProductFieldName.slug, slug);
+    add(ProductFieldName.dateCreated, dateCreated);
+    add(ProductFieldName.type, type);
+    add(ProductFieldName.status, status);
+    add(ProductFieldName.featured, featured);
+    add(ProductFieldName.catalogVisibility, catalogVisibility);
+    add(ProductFieldName.description, description);
+    add(ProductFieldName.shortDescription, shortDescription);
+    add(ProductFieldName.sku, sku);
+    add(ProductFieldName.price, price?.toString());
+    add(ProductFieldName.regularPrice, regularPrice?.toString());
+    add(ProductFieldName.salePrice, salePrice?.toString());
+    add(ProductFieldName.dateOnSaleFrom, dateOnSaleFrom);
+    add(ProductFieldName.dateOnSaleTo, dateOnSaleTo);
+    add(ProductFieldName.onSale, onSale);
+    add(ProductFieldName.purchasable, purchasable);
+    add(ProductFieldName.totalSales, totalSales);
+    add(ProductFieldName.virtual, virtual);
+    add(ProductFieldName.downloadable, downloadable);
+    add(ProductFieldName.taxStatus, taxStatus);
+    add(ProductFieldName.taxClass, taxClass);
+    add(ProductFieldName.manageStock, manageStock);
+    add(ProductFieldName.weight, weight);
+    add(ProductFieldName.dimensions, dimensions);
+    add(ProductFieldName.shippingRequired, shippingRequired);
+    add(ProductFieldName.shippingTaxable, shippingTaxable);
+    add(ProductFieldName.shippingClass, shippingClass);
+    add(ProductFieldName.shippingClassId, shippingClassId);
+    add(ProductFieldName.reviewsAllowed, reviewsAllowed);
+    add(ProductFieldName.averageRating, averageRating?.toString());
+    add(ProductFieldName.ratingCount, ratingCount);
+    add(ProductFieldName.upsellIds, upsellIds);
+    add(ProductFieldName.crossSellIds, crossSellIds);
+    add(ProductFieldName.parentId, parentId);
+    add(ProductFieldName.purchaseNote, purchaseNote);
+
+    add(ProductFieldName.brands, brands?.map((b) => b.toMap()).toList());
+    add(ProductFieldName.categories, categories?.map((c) => c.toMap()).toList());
+    add(ProductFieldName.tags, tags);
+    add(ProductFieldName.images, images);
+    add(ProductFieldName.image, image);
+    add(ProductFieldName.attributes, attributes?.map((a) => a.toMap()).toList());
+    add(ProductFieldName.defaultAttributes, defaultAttributes?.map((a) => a.toMap()).toList());
+
+    add(ProductFieldName.variations, variations);
+    add(ProductFieldName.groupedProducts, groupedProducts);
+    add(ProductFieldName.menuOrder, menuOrder);
+    add(ProductFieldName.relatedIds, relatedIds);
+    add(ProductFieldName.stockStatus, stockStatus);
+    add(ProductFieldName.isCODBlocked, isCODBlocked);
+
+    if (!isUpdate) {
+      add(ProductFieldName.purchasePrice, purchasePrice);
+      add(ProductFieldName.stockQuantity, stockQuantity);
+    }
+
+    return map;
   }
 
-
-  // Use toJson for direct use of API
-  toJson(){
-    return{
-      ProductFieldName.name: name,
-      ProductFieldName.purchasePrice: purchasePrice,
-      ProductFieldName.stockQuantity: stockQuantity,
-    };
-  }
 
   // Add the copyWith method
   ProductModel copyWith({
@@ -365,7 +461,7 @@ class ProductModel {
   }) {
     return ProductModel(
       productId: id ?? this.productId,
-      name: name ?? this.name,
+      title: name ?? this.title,
       mainImage: mainImage ?? this.mainImage,
       images: images ?? this.images,
       regularPrice: regularPrice ?? this.regularPrice,

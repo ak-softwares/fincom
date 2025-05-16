@@ -7,8 +7,9 @@ import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/formatters/formatters.dart';
 import '../../../personalization/models/user_model.dart';
+import '../../controller/transaction/add_trsnsaction_controller.dart';
 import '../../controller/transaction/transaction_controller.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../../models/transaction_model.dart';
 import '../accounts/widget/account_tile.dart';
 import '../purchase/purchase_entry/widget/search_products.dart';
@@ -21,7 +22,7 @@ class AddTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TransactionController controller = Get.put(TransactionController()); // Updated controller
+    final AddTransactionController controller = Get.put(AddTransactionController()); // Updated controller
 
     // If editing an existing transaction, reset the form values
     if (transaction != null) {
@@ -101,7 +102,7 @@ class AddTransaction extends StatelessWidget {
                               ),
                             );
                             // If products are selected, update the state
-                            if (getSelectedVendor.company != null) {
+                            if (getSelectedVendor.companyName != null) {
                               controller.addVendor(getSelectedVendor);
                             }
                           },
@@ -114,9 +115,9 @@ class AddTransaction extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Obx(() => controller.selectedVendor.value.company != '' && controller.selectedVendor.value.company != null
+                    Obx(() => controller.selectedVendor.value.companyName != '' && controller.selectedVendor.value.companyName != null
                         ? Dismissible(
-                        key: Key(controller.selectedVendor.value.company ?? ''), // Unique key for each item
+                        key: Key(controller.selectedVendor.value.companyName ?? ''), // Unique key for each item
                         direction: DismissDirection.endToStart, // Swipe left to remove
                         onDismissed: (direction) {
                           controller.selectedVendor.value = UserModel();

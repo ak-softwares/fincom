@@ -6,6 +6,7 @@ import '../../../../common/dialog_box_massages/dialog_massage.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../data/repositories/woocommerce/customers/woo_customer_repository.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/user_model.dart';
 
 class CustomerController extends GetxController{
@@ -27,6 +28,8 @@ class CustomerController extends GetxController{
   final mongoUserRepository = Get.put(MongoUserRepository());
   final wooCustomersRepository = Get.put(WooCustomersRepository());
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
 
   Future<void> syncCustomers() async {
     try {
@@ -38,7 +41,7 @@ class CustomerController extends GetxController{
       int batchSize = 500; // Adjust based on API limits and DB capacity
 
       // **Step 1: Fetch Existing Customer IDs Efficiently**
-      Set<int> uploadedCustomerIds = await mongoUserRepository.fetchUserIds(); // Consider paginating this
+      Set<int> uploadedCustomerIds = await mongoUserRepository.fetchUserIds(userId: userId); // Consider paginating this
 
       int currentPage = 1;
       while (!isStopped.value) {
@@ -51,7 +54,7 @@ class CustomerController extends GetxController{
 
         // **Step 3: Filter only new customers**
         List<UserModel> newCustomers = customers.where((customer) {
-          return !uploadedCustomerIds.contains(customer.userId);
+          return !uploadedCustomerIds.contains(customer.documentId);
         }).toList();
 
         // **Step 4: Bulk Insert**
@@ -92,7 +95,7 @@ class CustomerController extends GetxController{
   Future<void> getTotalCustomerCount() async {
     try {
       isGettingCount(true);
-      int fincomCustomersCounts = await mongoUserRepository.fetchUserCount();
+      int fincomCustomersCounts = await mongoUserRepository.fetchUserCount(userId: userId);
       fincomCustomersCount.value = fincomCustomersCounts;
       int wooCustomersCounts = await wooCustomersRepository.fetchCustomerCount();
       wooCustomersCount.value = wooCustomersCounts;
@@ -106,7 +109,7 @@ class CustomerController extends GetxController{
   // Get All Customer
   Future<List<UserModel>> getCustomersSearchQuery({required String query, required int page}) async {
     try {
-      final customers = await mongoUserRepository.fetchUsersBySearchQuery(query: query, userType: userType, page: currentPage.value);
+      final customers = await mongoUserRepository.fetchUsersBySearchQuery(query: query, userType: userType, page: currentPage.value, userId: userId);
       return customers;
     } catch (e) {
       rethrow; // Rethrow the exception to handle it in the caller
@@ -117,7 +120,7 @@ class CustomerController extends GetxController{
   // Get All products
   Future<void> getAllCustomers() async {
     try {
-      final fetchedCustomers = await mongoUserRepository.fetchUsers(userType: userType, page: currentPage.value);
+      final fetchedCustomers = await mongoUserRepository.fetchUsers(userType: userType, page: currentPage.value, userId: userId);
       customers.addAll(fetchedCustomers);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Products Fetching', message: e.toString());

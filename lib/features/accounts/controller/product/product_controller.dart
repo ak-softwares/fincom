@@ -8,6 +8,7 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../data/repositories/woocommerce/products/woo_product_repositories.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/product_model.dart';
 
@@ -20,17 +21,18 @@ class ProductController extends GetxController{
   RxBool isLoadingMore = false.obs;
 
   RxInt totalProducts = 0.obs;
-  RxInt totalStock = 0.obs;
   RxInt totalStockValue = 0.obs;
 
   RxList<ProductModel> products = <ProductModel>[].obs;
 
   final mongoProductRepo = Get.put(MongoProductRepo());
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
   // Get All products
   Future<void> getAllProducts() async {
     try {
-      final fetchedProducts = await mongoProductRepo.fetchProducts(page: currentPage.value);
+      final fetchedProducts = await mongoProductRepo.fetchProducts(userId: userId, page: currentPage.value);
       products.addAll(fetchedProducts);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Products Fetching', message: e.toString());
@@ -41,13 +43,25 @@ class ProductController extends GetxController{
     try {
       isLoading(true);
       currentPage.value = 1; // Reset page number
+      totalProducts.value = 0;
+      totalStockValue.value = 0;
       products.clear(); // Clear existing orders
       await getAllProducts();
-      // await getTotalProductsCount();
+      await getTotalProductsCount();
     } catch (error) {
       AppMassages.warningSnackBar(title: 'Errors', message: error.toString());
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> getTotalProductsCount() async {
+    try {
+      totalProducts.value = await mongoProductRepo.fetchProductsCount(userId: userId);
+      totalStockValue.value = (await mongoProductRepo.fetchTotalStockValue(userId: userId)).toInt();
+      update(); // Notify listeners that counts changed
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch product counts: ${e.toString()}');
     }
   }
 
@@ -64,7 +78,7 @@ class ProductController extends GetxController{
 
   Future<double> getTotalStockValue() async {
     try {
-      final double totalStockValue = await mongoProductRepo.fetchTotalStockValue();
+      final double totalStockValue = await mongoProductRepo.fetchTotalStockValue(userId: userId);
       return totalStockValue;
     } catch (e) {
       rethrow;
@@ -126,6 +140,7 @@ class ProductController extends GetxController{
         message: 'Are you sure you want to delete this product?',
         onSubmit: () async {
           await mongoProductRepo.deleteProduct(id: id);
+          await refreshProducts();
           Get.back();
         },
         toastMessage: 'Product deleted successfully!',
@@ -140,7 +155,7 @@ class ProductController extends GetxController{
     required ProductModel product, required int quantity, int variationId = 0, double? purchasePrice}) {
     return CartModel(
       id: 1,
-      name: product.name,
+      name: product.title,
       product_id: product.id,
       productId: product.productId ?? 0,
       variationId: variationId,
@@ -159,18 +174,4 @@ class ProductController extends GetxController{
     );
   }
 
-  // // Get total customer count
-  // Future<void> getTotalProductsCount() async {
-  //   try {
-  //     isGettingCount(true);
-  //     int fincomProductsCounts = await mongoProductRepo.fetchProductsCount();
-  //     fincomProductsCount.value = fincomProductsCounts; // Assuming totalCustomers is an observable or state variable
-  //     int wooProductsCounts = await wooProductRepository.fetchProductCount();
-  //     wooProductsCount.value = wooProductsCounts; // Assuming totalCustomers is an observable or state variable
-  //   } catch (e) {
-  //     AppMassages.errorSnackBar(title: 'Error in products Count Fetching', message: e.toString());
-  //   } finally {
-  //     isGettingCount(false);
-  //   }
-  // }
 }

@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\siaka\\.shorebird\\bin\\cache\\flutter\\7c1c25e48e6dd849c3264588346aa63652d5e426\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\siaka\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "F:\\Development\\SOFTWARE DEVELOPMENT\\FLUTTER\\fincom\\android\\app\\.cxx\\RelWithDebInfo\\6e1b226m\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\siaka\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "F:\\Development\\SOFTWARE DEVELOPMENT\\FLUTTER\\fincom\\android\\app\\.cxx\\RelWithDebInfo\\6e1b226m\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

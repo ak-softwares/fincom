@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../../common/dialog_box_massages/dialog_massage.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/user_model.dart';
 
 class VendorController extends GetxController {
@@ -18,10 +19,12 @@ class VendorController extends GetxController {
   RxList<UserModel> vendors = <UserModel>[].obs;
   final mongoUserRepository = Get.put(MongoUserRepository());
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
   // Get All vendors
   Future<List<UserModel>> getVendorsSearchQuery({required String query, required int page}) async {
     try {
-      final vendors = await mongoUserRepository.fetchUsersBySearchQuery(query: query, userType: userType, page: currentPage.value);
+      final vendors = await mongoUserRepository.fetchUsersBySearchQuery(userId: userId, query: query, userType: userType, page: currentPage.value);
       return vendors;
     } catch (e) {
       rethrow; // Rethrow the exception to handle it in the caller
@@ -31,7 +34,7 @@ class VendorController extends GetxController {
   // Get All vendors
   Future<void> getAllVendors() async {
     try {
-      final fetchedVendors = await mongoUserRepository.fetchUsers(userType: userType, page: currentPage.value);
+      final fetchedVendors = await mongoUserRepository.fetchUsers(userType: userType, userId: userId, page: currentPage.value);
       vendors.addAll(fetchedVendors);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Vendors Fetching', message: e.toString());
@@ -83,7 +86,7 @@ class VendorController extends GetxController {
 
   Future<double> calculateAccountPayable() async {
     try {
-      final double totalStockValue = await mongoUserRepository.calculateAccountPayable(userType: userType);
+      final double totalStockValue = await mongoUserRepository.calculateAccountPayable(userType: userType, userId: userId);
       return totalStockValue;
     } catch (e) {
       rethrow;

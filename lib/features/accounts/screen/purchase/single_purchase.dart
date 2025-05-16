@@ -13,7 +13,10 @@ import '../../../../utils/formatters/formatters.dart';
 import '../../../settings/app_settings.dart';
 import '../../controller/purchase/purchase_controller.dart';
 import '../../models/order_model.dart';
+import '../../models/transaction_model.dart';
 import '../products/widget/product_cart_tile.dart';
+import '../transaction/widget/transaction_tile.dart';
+import '../vendor/single_vendor.dart';
 import 'add_new_purchase.dart';
 
 
@@ -87,7 +90,10 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Vendor'),
-                        Text(purchase.userId.toString()),
+                        InkWell(
+                            onTap: () => purchase.user != null ? Get.to(() => SingleVendor(vendor: purchase.user!)) : {},
+                            child: Text(purchase.user?.companyName ?? '', style: TextStyle(color: Colors.blue),)
+                        ),
                       ],
                     ),
                     Row(
@@ -129,6 +135,9 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                   ],
                 ),
 
+                // Transaction
+                TransactionTile(transaction: purchase.transaction ?? TransactionModel()),
+
                 // Image of Invoice
                 Column(
                   spacing: AppSizes.spaceBtwItems,
@@ -156,6 +165,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                     )
                   ],
                 ),
+
                 Center(child: TextButton(
                     onPressed: () => purchaseController.deletePurchase(purchase: purchase, context: context),
                     child: Text('Delete', style: TextStyle(color: Colors.red),))

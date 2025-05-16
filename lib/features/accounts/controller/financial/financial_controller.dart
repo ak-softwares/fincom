@@ -62,7 +62,7 @@ class FinancialController extends GetxController {
   final saleController = Get.put(SaleController());
   final purchaseController = Get.put(PurchaseController());
   final productController = Get.put(ProductController());
-  final accountsController = Get.put(AccountsController());
+  final accountsController = Get.put(AccountController());
   final expenseController = Get.put(ExpenseController());
   final vendorController = Get.put(VendorController());
 
@@ -322,7 +322,7 @@ class FinancialController extends GetxController {
 
   Future<void> calculateCash() async {
     try {
-      final double totalStockValue = await accountsController.getTotalStockValue();
+      final double totalStockValue = await accountsController.getTotalBalance();
       cash.value = totalStockValue.toInt();
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());

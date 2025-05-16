@@ -8,6 +8,7 @@ import '../../settings/app_settings.dart';
 import 'cart_item_model.dart';
 import 'coupon_model.dart';
 import 'image_model.dart';
+import 'transaction_model.dart';
 
 class OrderModel {
   String? id;
@@ -28,7 +29,8 @@ class OrderModel {
   String? cartTax;
   double? total;
   String? totalTax;
-  int? userId;
+  int? customerId;
+  String? userId;
   UserModel? user;
   AddressModel? billing;
   AddressModel? shipping;
@@ -46,6 +48,7 @@ class OrderModel {
   String? currencySymbol;
   bool? setPaid;
   List<ImageModel>? purchaseInvoiceImages;
+  TransactionModel? transaction;
   OrderType? orderType;
 
   OrderModel({
@@ -67,6 +70,7 @@ class OrderModel {
     this.cartTax,
     this.total,
     this.totalTax,
+    this.customerId,
     this.userId,
     this.user,
     this.billing,
@@ -85,6 +89,7 @@ class OrderModel {
     this.currencySymbol,
     this.setPaid,
     this.purchaseInvoiceImages,
+    this.transaction,
     this.orderType,
   });
 
@@ -131,7 +136,11 @@ class OrderModel {
       cartTax: json[OrderFieldName.cartTax] ?? '',
       totalTax: json[OrderFieldName.totalTax] ?? '',
       total: json[OrderFieldName.total] ?? 0,
-      userId: json[OrderFieldName.userId] ?? 0,
+      customerId: json[OrderFieldName.customerId] ?? 0,
+      userId: json[OrderFieldName.userId] ?? '',
+      user: json[OrderFieldName.user] != null
+          ? UserModel.fromJson(json[OrderFieldName.user])
+          : UserModel(),
       billing: json[OrderFieldName.billing] != null
           ? AddressModel.fromJson(json[OrderFieldName.billing])
           : AddressModel(),
@@ -159,6 +168,9 @@ class OrderModel {
           : [],
       metaData: metaData,
       orderAttribute: OrderAttributeModel.fromMetaData(metaData),
+      transaction: json[OrderFieldName.transaction] != null
+          ? TransactionModel.fromJson(json[OrderFieldName.transaction])
+          : TransactionModel(),
       orderType: orderType,
     );
   }
@@ -192,7 +204,7 @@ class OrderModel {
       cartTax: json[OrderFieldName.cartTax] ?? '',
       totalTax: json[OrderFieldName.totalTax] ?? '',
       total: double.tryParse(json[OrderFieldName.total]?.toString() ?? '0') ?? 0.0,
-      userId: json[OrderFieldName.customerId] ?? 0,
+      customerId: json[OrderFieldName.customerId] ?? 0,
       billing: json[OrderFieldName.billing] != null
           ? AddressModel.fromJson(json[OrderFieldName.billing])
           : AddressModel(),
@@ -242,6 +254,7 @@ class OrderModel {
       if (cartTax != null) OrderFieldName.cartTax: cartTax,
       if (total != null) OrderFieldName.total: total,
       if (totalTax != null) OrderFieldName.totalTax: totalTax,
+      if (customerId != null) OrderFieldName.customerId: customerId,
       if (userId != null) OrderFieldName.userId: userId,
       if (user != null) OrderFieldName.user: user?.toMap(),
       if (billing != null) OrderFieldName.billing: billing?.toMap(),
@@ -262,13 +275,14 @@ class OrderModel {
       if (purchaseInvoiceImages != null)
         OrderFieldName.purchaseInvoiceImages: purchaseInvoiceImages?.map((img) => img.toJson()).toList(),
       if (metaData != null) OrderFieldName.metaData: metaData?.map((item) => item.toMap()).toList(),
+      if (transaction != null) OrderFieldName.transaction: transaction?.toMap(),
       if (orderType != null) OrderFieldName.orderType: orderType?.name,
     };
   }
 
   Map<String, dynamic> toJsonForWoo() {
     final Map<String, dynamic> json = {
-      OrderFieldName.userId: userId ?? 0,
+      OrderFieldName.userId: customerId ?? 0,
       OrderFieldName.status: status ?? '',
       OrderFieldName.paymentMethod: paymentMethod ?? '',
       OrderFieldName.paymentMethodTitle: paymentMethodTitle ?? '',
@@ -355,7 +369,7 @@ class OrderModel {
       cartTax: cartTax ?? this.cartTax,
       total: total ?? this.total,
       totalTax: totalTax ?? this.totalTax,
-      userId: userId ?? this.userId,
+      customerId: userId ?? this.customerId,
       user: user ?? this.user,
       billing: billing ?? this.billing,
       shipping: shipping ?? this.shipping,

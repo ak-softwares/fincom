@@ -58,10 +58,10 @@ class PurchaseTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor'),
-                // InkWell(
-                //   onTap: () => purchase.vendor != null ? Get.to(() => SingleVendor(vendor: purchase.vendor!)) : {},
-                //   child: Text(purchase.vendor?.company ?? '', style: TextStyle(color: Colors.blue),)
-                // ),
+                InkWell(
+                  onTap: () => purchase.user != null ? Get.to(() => SingleVendor(vendor: purchase.user!)) : {},
+                  child: Text(purchase.user?.companyName ?? '', style: TextStyle(color: Colors.blue),)
+                ),
               ],
             ),
             Row(

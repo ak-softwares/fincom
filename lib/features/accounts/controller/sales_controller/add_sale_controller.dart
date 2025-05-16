@@ -8,6 +8,7 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../models/cart_item_model.dart';
@@ -34,10 +35,12 @@ class AddSaleController extends GetxController {
   RxList<CartModel> selectedProducts = <CartModel>[].obs;
   Rx<UserModel> selectedCustomer = UserModel().obs;
 
+  String get userId => AuthenticationController.instance.admin.value.id ?? '';
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
     updateSaleTotal();
   }
 
@@ -98,7 +101,7 @@ class AddSaleController extends GetxController {
   CartModel convertProductToCart({required ProductModel product, required int quantity, int variationId = 0}) {
     return CartModel(
       id: 1,
-      name: product.name,
+      name: product.title,
       product_id: product.id,
       productId: product.productId ?? 0,
       variationId: variationId,
@@ -118,7 +121,7 @@ class AddSaleController extends GetxController {
   }
 
   Future<void> clearSale() async {
-    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
     dateController.text = DateTime.now().toString();
     selectedCustomer.value = UserModel();
     selectedProducts.value = [];
@@ -154,6 +157,7 @@ class AddSaleController extends GetxController {
       invoiceNumber: invoiceId.value,
       dateCreated: DateTime.tryParse(dateController.text),
       dateCompleted: DateTime.now(),
+      userId: AuthenticationController.instance.admin.value.id,
       user: selectedCustomer.value,
       lineItems: selectedProducts,
       total: saleTotal.value,
@@ -175,7 +179,7 @@ class AddSaleController extends GetxController {
         throw 'Internet Not connected';
       }
 
-      final fetchedInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+      final fetchedInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
       if (fetchedInvoiceId != invoiceId.value) {
         sale.invoiceNumber = fetchedInvoiceId;
       }
@@ -200,7 +204,7 @@ class AddSaleController extends GetxController {
       final hasMissingInvoice = sales.any((sale) => sale.invoiceNumber == null);
 
       if (hasMissingInvoice) {
-        int nextInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+        int nextInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
 
         for (var sale in sales) {
           if (sale.invoiceNumber == null) {

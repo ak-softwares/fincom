@@ -44,7 +44,7 @@ class AddVendorPage extends StatelessWidget {
                   children: [
                     Text('Vendor id'),
                     vendor != null
-                        ? Text('#${vendor!.userId}')
+                        ? Text('#${vendor!.documentId}')
                         : Obx(() => Text('#${controller.vendorId.value}')),
                   ],
                 ),
@@ -70,6 +70,14 @@ class AddVendorPage extends StatelessWidget {
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                ),
+                TextFormField(
+                  controller: controller.balanceController,
+                  decoration: InputDecoration(
+                    labelText: 'Balance',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: controller.phoneController,

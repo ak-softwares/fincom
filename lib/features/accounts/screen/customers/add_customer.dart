@@ -46,7 +46,7 @@ class AddCustomer extends StatelessWidget {
                   children: [
                     Text('Customer ID'),
                     user != null
-                        ? Text('#${user!.userId}')
+                        ? Text('#${user!.documentId}')
                         : Obx(() => Text('#${controller.customerId.value}')),
                   ],
                 ),

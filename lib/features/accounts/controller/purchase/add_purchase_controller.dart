@@ -14,13 +14,17 @@ import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
 import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/image_model.dart';
 import '../../models/order_model.dart';
 import '../../models/product_model.dart';
+import '../../models/transaction_model.dart';
 import '../product/product_controller.dart';
+import '../transaction/add_trsnsaction_controller.dart';
+import '../transaction/transaction_controller.dart';
 import 'purchase_controller.dart';
 
 class AddPurchaseController extends GetxController {
@@ -47,14 +51,17 @@ class AddPurchaseController extends GetxController {
   final mongoOrderRepo = Get.put(MongoOrderRepo());
   final productsVoucherController = Get.put(ProductController());
   final userController = Get.put(UserController());
+  final addTransactionController = Get.put(AddTransactionController());
 
   RxList<CartModel> selectedProducts = <CartModel>[].obs;
   Rx<UserModel> selectedSupplier = UserModel().obs;
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
     updatePurchaseTotal();
   }
 
@@ -156,7 +163,8 @@ class AddPurchaseController extends GetxController {
   CartModel convertProductToCart({required ProductModel product, required int quantity, int variationId = 0}) {
     return CartModel(
       id: 1,
-      name: product.name,
+      userId: userId,
+      name: product.title,
       product_id: product.id,
       productId: product.productId ?? 0,
       variationId: variationId,
@@ -176,7 +184,7 @@ class AddPurchaseController extends GetxController {
   }
 
   Future<void> clearPurchase() async {
-    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+    invoiceId.value = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
     dateController.text = DateTime.now().toString();
     selectedSupplier.value = UserModel();
     selectedProducts.value = [];
@@ -210,15 +218,28 @@ class AddPurchaseController extends GetxController {
       return;
     }
 
+    TransactionModel transaction = TransactionModel(
+      amount: purchaseTotal.value,
+      date: DateTime.tryParse(dateController.text),
+      fromEntityType: EntityType.vendor,
+      fromEntityId: selectedSupplier.value.id,
+      fromEntityName: selectedSupplier.value.companyName,
+      purchaseId: invoiceId.value,
+      transactionType: TransactionType.purchase,
+    );
+
     OrderModel purchase = OrderModel(
         invoiceNumber: invoiceId.value,
         dateCreated: DateTime.tryParse(dateController.text),
+        userId: userId,
         user: selectedSupplier.value,
         lineItems: selectedProducts,
         total: purchaseTotal.value,
         purchaseInvoiceImages: purchaseInvoiceImages,
+        transaction: transaction,
         orderType: orderType
     );
+
     await pushPurchase(purchase: purchase);
   }
 
@@ -231,49 +252,23 @@ class AddPurchaseController extends GetxController {
         throw 'Internet Not connected';
       }
 
-      final fetchedInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
+      final fetchedInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType, userId: userId);
       if (fetchedInvoiceId != invoiceId.value) {
         purchase.invoiceNumber = fetchedInvoiceId;
       }
-      await pushPurchases(purchases: [purchase]);
+      await productsVoucherController.updateProductQuantity(cartItems: purchase.lineItems ?? [], isAddition: true, isPurchase: true);
+      final String? transactionId =  await addTransactionController.processTransaction(transaction: purchase.transaction!);
+      purchase.transaction?.id = transactionId;
+      await mongoOrderRepo.pushOrders(orders: [purchase]);
 
       await clearPurchase();
+      await purchaseController.refreshPurchases();
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Purchase uploaded successfully!');
       Navigator.of(Get.context!).pop();
     } catch (e) {
       FullScreenLoader.stopLoading();
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());
-    }
-  }
-
-  Future<void> pushPurchases({required List<OrderModel> purchases}) async {
-    try {
-      final hasMissingInvoice = purchases.any((purchase) => purchase.invoiceNumber == null);
-
-      if (hasMissingInvoice) {
-        int nextInvoiceId = await mongoOrderRepo.fetchOrderGetNextId(orderType: orderType);
-
-        for (var purchase in purchases) {
-          if (purchase.invoiceNumber == null) {
-            purchase.invoiceNumber = nextInvoiceId;
-            nextInvoiceId++;
-          }
-        }
-      }
-
-      final List<CartModel> allLineItems = purchases.expand<CartModel>((purchase) => purchase.lineItems ?? []).toList();
-
-      Future<void> updateProductQuantities = productsVoucherController.updateProductQuantity(cartItems: allLineItems, isAddition: true, isPurchase: true);
-      Future<void> updateVendorBalance = userController.updateUserBalance(userID: selectedSupplier.value.userId ?? 0, balance: purchaseTotal.value, isAddition: false);
-      Future<void> uploadPurchases = mongoOrderRepo.pushOrders(orders: purchases);
-
-      await Future.wait([updateProductQuantities, updateVendorBalance, uploadPurchases]);
-
-      await purchaseController.refreshPurchases();
-
-    } catch(e) {
-      rethrow;
     }
   }
 
@@ -361,7 +356,7 @@ class AddPurchaseController extends GetxController {
       );
 
       Future<void> updateVendorBalance = userController.updateUserBalance(
-          userID: selectedSupplier.value.userId ?? 0,
+          userID: selectedSupplier.value.documentId ?? 0,
           balance: currentTotal,
           previousBalance: previousTotal,
           isUpdate: true,

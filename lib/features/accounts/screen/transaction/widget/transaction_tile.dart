@@ -27,7 +27,7 @@ class TransactionTile extends StatelessWidget {
     return InkWell(
       onTap: () => Get.to(() => SingleTransaction(transaction: transaction)), // Updated navigation
       child: Container(
-        width: transactionTileWidth,
+        // width: transactionTileWidth,
         padding: const EdgeInsets.all(AppSizes.defaultSpace),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(transactionTileRadius),

@@ -4,6 +4,7 @@ import '../../../utils/constants/enums.dart';
 
 class TransactionModel {
   String? id;
+  String? userId;
   int? transactionId;
   DateTime? date;
   double? amount;
@@ -18,6 +19,7 @@ class TransactionModel {
 
   TransactionModel({
     this.id,
+    this.userId,
     this.transactionId,
     this.date,
     this.amount,
@@ -51,6 +53,7 @@ class TransactionModel {
       id: json[TransactionFieldName.id] is ObjectId
           ? (json[TransactionFieldName.id] as ObjectId).toHexString()
           : json[TransactionFieldName.id]?.toString(),
+      userId: json[TransactionFieldName.userId],
       transactionId: json[TransactionFieldName.transactionId] as int?,
       date: json[TransactionFieldName.date],
       amount: (json[TransactionFieldName.amount] as num?)?.toDouble(),
@@ -75,6 +78,7 @@ class TransactionModel {
 
   Map<String, dynamic> toJson() {
     final json = {
+      TransactionFieldName.userId: userId,
       TransactionFieldName.transactionId: transactionId,
       TransactionFieldName.amount: amount,
       TransactionFieldName.date: date,

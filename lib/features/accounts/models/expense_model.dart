@@ -3,10 +3,11 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/constants/enums.dart';
-import 'payment_method.dart';
+import 'account_model.dart';
 
 class ExpenseModel {
   final String? id;
+  final String? userId;
   final int? expenseId;
   final ExpenseType? expenseType;
   final double? amount;
@@ -17,6 +18,7 @@ class ExpenseModel {
 
   ExpenseModel({
     this.id,
+    this.userId,
     this.expenseId,
     this.amount,
     this.description,
@@ -33,6 +35,7 @@ class ExpenseModel {
       id: json[ExpenseFieldName.id] is ObjectId
           ? (json[ExpenseFieldName.id] as ObjectId).toHexString()
           : json[ExpenseFieldName.id]?.toString(),
+      userId: json[ExpenseFieldName.userId] as String?,
       expenseId: json[ExpenseFieldName.expenseId] as int?,
       amount: json[ExpenseFieldName.amount] != null ? double.tryParse(json[ExpenseFieldName.amount].toString()) : null,
       description: json[ExpenseFieldName.description] as String?,
@@ -51,6 +54,7 @@ class ExpenseModel {
   Map<String, dynamic> toJson() {
     return {
       ExpenseFieldName.id: id,
+      ExpenseFieldName.userId: userId,
       ExpenseFieldName.expenseId: expenseId,
       ExpenseFieldName.amount: amount,
       ExpenseFieldName.description: description,

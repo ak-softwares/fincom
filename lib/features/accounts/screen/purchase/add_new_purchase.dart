@@ -107,7 +107,7 @@ class AddNewPurchase extends StatelessWidget {
                           ),
                         );
                         // If products are selected, update the state
-                        if (getSelectedVendor.company != null) {
+                        if (getSelectedVendor.companyName != null) {
                           addPurchaseController.addSupplier(getSelectedVendor);
                         }
                       },
@@ -120,9 +120,9 @@ class AddNewPurchase extends StatelessWidget {
                     ),
                   ],
                 ),
-                Obx(() => addPurchaseController.selectedSupplier.value.company != '' && addPurchaseController.selectedSupplier.value.company != null
+                Obx(() => addPurchaseController.selectedSupplier.value.companyName != '' && addPurchaseController.selectedSupplier.value.companyName != null
                     ? Dismissible(
-                          key: Key(addPurchaseController.selectedSupplier.value.company ?? ''), // Unique key for each item
+                          key: Key(addPurchaseController.selectedSupplier.value.companyName ?? ''), // Unique key for each item
                           direction: DismissDirection.endToStart, // Swipe left to remove
                           onDismissed: (direction) {
                             addPurchaseController.selectedSupplier.value = UserModel();

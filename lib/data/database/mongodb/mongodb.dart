@@ -5,11 +5,11 @@ import '../../../features/accounts/models/cart_item_model.dart';
 import '../../../utils/constants/db_constants.dart';
 import '../../../utils/constants/enums.dart';
 
-class MongoDatabase {
+class MongoDatabas {
   // Singleton implementation
-  static final MongoDatabase _instance = MongoDatabase._internal();
-  factory MongoDatabase() => _instance;
-  MongoDatabase._internal();
+  static final MongoDatabas _instance = MongoDatabas._internal();
+  factory MongoDatabas() => _instance;
+  MongoDatabas._internal();
 
   static Db? _db;
   static String? _host;
@@ -254,7 +254,7 @@ class MongoDatabase {
       final changeAmount = isAddition ? balance : -balance;
 
       await _db!.collection(collectionName).update(
-        where.eq(UserFieldConstants.userId, id),
+        where.eq(UserFieldConstants.documentId, id),
         {
           '\$inc': {'balance': changeAmount}
         },

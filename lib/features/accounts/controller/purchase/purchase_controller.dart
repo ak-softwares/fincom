@@ -1,31 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/dialog_box_massages/dialog_massage.dart';
-import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
-import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/image_kit/image_kit_repo.dart';
-import '../../../../data/repositories/mongodb/products/product_repositories.dart';
-import '../../../../data/repositories/mongodb/purchase/purchase_repositories.dart';
-import '../../../../data/repositories/mongodb/transaction/transaction_repo.dart';
-import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/controllers/user_controller.dart';
-import '../../../personalization/models/user_model.dart';
-import '../../models/cart_item_model.dart';
 import '../../models/image_model.dart';
-import '../../models/product_model.dart';
-import '../../models/purchase_model.dart';
 import '../product/product_controller.dart';
-import '../transaction/transaction_controller.dart';
-import '../vendor/vendor_controller.dart';
 
 import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
 import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../models/order_model.dart';
+import '../transaction/add_trsnsaction_controller.dart';
 
 class PurchaseController extends GetxController {
   static PurchaseController get instance => Get.find();
@@ -39,14 +27,19 @@ class PurchaseController extends GetxController {
   RxList<OrderModel> purchases = <OrderModel>[].obs;
   final ImageKitService imageKitService = ImageKitService();
 
+  final authenticationController = Get.put(AuthenticationController());
   final mongoOrderRepo = Get.put(MongoOrderRepo());
   final wooOrdersRepository = Get.put(WooOrdersRepository());
   final productController = Get.put(ProductController());
   final userController = Get.put(UserController());
+  final addTransactionController = Get.put(AddTransactionController());
+
+  String get userId => AuthenticationController.instance.admin.value.id!;
 
   Future<void> getPurchases() async {
     try {
-      final fetchedOrders = await mongoOrderRepo.fetchOrders(orderType: orderType, page: currentPage.value);
+      final fetchedOrders = await mongoOrderRepo
+          .fetchOrders(orderType: orderType, userId: userId, page: currentPage.value);
       purchases.addAll(fetchedOrders);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
@@ -86,11 +79,7 @@ class PurchaseController extends GetxController {
           await Future.wait([
             deleteImages(purchase.purchaseInvoiceImages ?? []),
             productController.updateProductQuantity(cartItems: purchase.lineItems ?? []),
-            userController.updateUserBalance(
-              userID: purchase.userId ?? 0,
-              balance: purchase.total ?? 0,
-              isAddition: true
-            ),
+            addTransactionController.processTransaction(transaction: purchase.transaction!, isDelete: true),
             mongoOrderRepo.deleteOrderById(id: purchase.id ?? ''),
             refreshPurchases(),
           ]);
@@ -125,7 +114,7 @@ class PurchaseController extends GetxController {
   Future<List<OrderModel>> getPurchasesByDate({required DateTime startDate, required DateTime endDate}) async {
     try {
       final fetchedOrders = await mongoOrderRepo
-          .fetchOrdersByDate(orderType: orderType, startDate: startDate, endDate: endDate);
+          .fetchOrdersByDate(orderType: orderType, userId: authenticationController.admin.value.id!, startDate: startDate, endDate: endDate);
       return fetchedOrders;
     } catch (e) {
       rethrow;

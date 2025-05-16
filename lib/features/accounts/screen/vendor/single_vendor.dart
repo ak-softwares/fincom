@@ -3,13 +3,16 @@ import 'package:get/get.dart';
 
 import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../common/styles/spacing_style.dart';
+import '../../../../common/text/section_heading.dart';
 import '../../../../common/widgets/common/colored_amount.dart';
 import '../../../../utils/constants/colors.dart';
+import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../../personalization/screens/user_address/address_widgets/single_address.dart';
 import '../../controller/vendor/vendor_controller.dart';
+import '../transaction/widget/transactions_by_entity.dart';
 import 'add_new_vendor.dart';
 
 class SingleVendor extends StatefulWidget {
@@ -42,7 +45,7 @@ class _SingleVendorState extends State<SingleVendor> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppAppBar(
-          title: vendor.company ?? 'Vendor',
+          title: vendor.companyName ?? 'Vendor',
           widgetInActions: TextButton(
               onPressed: () => Get.to(() => AddVendorPage(vendor: vendor)),
               child: Text('Edit', style: TextStyle(color: AppColors.linkColor),)
@@ -59,14 +62,14 @@ class _SingleVendorState extends State<SingleVendor> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor ID'),
-                Text('#${vendor.userId}', style: TextStyle(fontSize: 14))
+                Text('#${vendor.documentId}', style: TextStyle(fontSize: 14))
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Vendor'),
-                Text(vendor.company ?? '', style: TextStyle(fontSize: 14))
+                Text(vendor.companyName ?? '', style: TextStyle(fontSize: 14))
               ],
             ),
             Row(
@@ -97,13 +100,24 @@ class _SingleVendorState extends State<SingleVendor> {
               onTap: () {},
               hideEdit: true,
             ),
-
             // Delete
             // SizedBox(height: 50),
             Center(child: TextButton(
                 onPressed: () => vendorController.deleteVendor(context: context, id: vendor.id ?? ''),
                 child: Text('Delete', style: TextStyle(color: Colors.red),))
-            )
+            ),
+
+            // Related Transactions Section
+            const TSectionHeading(title: 'Related Transactions'),
+            const SizedBox(height: AppSizes.spaceBtwItems),
+            SizedBox(
+              height: 350,
+              child: TransactionsByEntity(
+                entityType: EntityType.vendor,
+                entityId: vendor.id ?? '0',
+              ),
+            ),
+            const SizedBox(height: AppSizes.spaceBtwSection),
           ],
         ),
       ),

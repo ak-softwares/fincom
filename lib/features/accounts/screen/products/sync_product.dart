@@ -18,50 +18,52 @@ class SyncProductScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppAppBar(title: 'Sync Products'),
-      body: GetBuilder<SyncProductController>(
-        builder: (controller) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildSyncOptionCard(
-                  context: context,
-                  icon: Icons.add,
-                  title: 'Add New Products',
-                  description: 'Add new products from local to WooCommerce',
-                  onTap: controller.startAddProducts,
-                  isActive: !controller.isSyncing,
-                ),
-                const SizedBox(height: 20),
-                _buildSyncOptionCard(
-                  context: context,
-                  icon: Icons.update,
-                  title: 'Update Existing Products',
-                  description: 'Note: Purchase price and stock data will not be updated',
-                  onTap: controller.startUpdateProducts,
-                  isActive: !controller.isSyncing,
-                ),
-                const SizedBox(height: 30),
-
-                // Enhanced progress section with status visibility
-                if (controller.isSyncing || controller.status == SyncStatus.completed)
-                  _buildProgressSection(controller),
-
-                // Error display
-                if (controller.hasError)
-                  RoundedContainer(
-                    padding: const EdgeInsets.all(16),
-                    backgroundColor: AppColors.error.withOpacity(0.1),
-                    child: Text(
-                      controller.errorMessage,
-                      style: TextStyle(color: AppColors.error),
-                    ),
+      body: SingleChildScrollView(
+        child: GetBuilder<SyncProductController>(
+          builder: (controller) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildSyncOptionCard(
+                    context: context,
+                    icon: Icons.add,
+                    title: 'Add New Products',
+                    description: 'Add new products from local to WooCommerce',
+                    onTap: controller.startAddProducts,
+                    isActive: !controller.isSyncing,
                   ),
-              ],
-            ),
-          );
-        },
+                  const SizedBox(height: 20),
+                  _buildSyncOptionCard(
+                    context: context,
+                    icon: Icons.update,
+                    title: 'Update Existing Products',
+                    description: 'Note: Purchase price and stock data will not be updated',
+                    onTap: controller.startUpdateProducts,
+                    isActive: !controller.isSyncing,
+                  ),
+                  const SizedBox(height: 30),
+        
+                  // Enhanced progress section with status visibility
+                  if (controller.isSyncing || controller.status == SyncStatus.completed)
+                    _buildProgressSection(controller),
+        
+                  // Error display
+                  if (controller.hasError)
+                    RoundedContainer(
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: AppColors.error.withOpacity(0.1),
+                      child: Text(
+                        controller.errorMessage,
+                        style: TextStyle(color: AppColors.error),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -240,7 +242,7 @@ class SyncProductScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: controller.cancelSync,
+                  onPressed: () => controller.cancelSync(),
                   child: const Text(
                     'CANCEL',
                     style: TextStyle(color: Colors.red),

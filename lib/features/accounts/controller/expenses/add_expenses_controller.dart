@@ -8,9 +8,11 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/expanses/expanses_repo.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/expense_model.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../../models/transaction_model.dart';
+import '../transaction/add_trsnsaction_controller.dart';
 import '../transaction/transaction_controller.dart';
 import 'expenses_controller.dart';
 
@@ -27,12 +29,14 @@ class AddExpenseController extends GetxController {
 
   final expenseController = Get.put(ExpenseController());
   final mongoExpenseRepo = Get.put(MongoExpenseRepo());
-  final transactionController = Get.put(TransactionController());
+  final addTransactionController = Get.put(AddTransactionController());
+
+  String get userId => AuthenticationController.instance.admin.value.id!;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    expenseId.value = await mongoExpenseRepo.fetchExpenseNextId();
+    expenseId.value = await mongoExpenseRepo.fetchExpenseNextId(userId: userId);
   }
 
   void selectDate(BuildContext context) async {
@@ -52,13 +56,6 @@ class AddExpenseController extends GetxController {
 
   // Create new expense
   void prepareExpense() {
-    ExpenseModel expense = ExpenseModel(
-      expenseId: expenseId.value,
-      amount: double.tryParse(amount.text) ?? 0.0,
-      expenseType: selectedExpenseType,
-      account: selectedAccountType.value,
-      dateCreated: DateFormat('yyyy-MM-dd').parse(date.text),
-    );
 
     TransactionModel transaction = TransactionModel(
       amount: double.tryParse(amount.text) ?? 0.0,
@@ -69,11 +66,21 @@ class AddExpenseController extends GetxController {
       transactionType: TransactionType.expense,
     );
 
-    addExpense(expense: expense, transaction: transaction);
+    ExpenseModel expense = ExpenseModel(
+      expenseId: expenseId.value,
+      userId: userId,
+      amount: double.tryParse(amount.text) ?? 0.0,
+      expenseType: selectedExpenseType,
+      account: selectedAccountType.value,
+      dateCreated: DateFormat('yyyy-MM-dd').parse(date.text),
+      transaction: transaction,
+    );
+
+    addExpense(expense: expense);
   }
 
   // Add expense to database
-  Future<void> addExpense({required ExpenseModel expense, required TransactionModel transaction}) async {
+  Future<void> addExpense({required ExpenseModel expense}) async {
     try {
       // Start Loading
       FullScreenLoader.openLoadingDialog('Saving your expense...', Images.docerAnimation);
@@ -91,14 +98,13 @@ class AddExpenseController extends GetxController {
         return;
       }
 
-      final fetchedExpenseId = await mongoExpenseRepo.fetchExpenseNextId();
+      final fetchedExpenseId = await mongoExpenseRepo.fetchExpenseNextId(userId: userId);
       if(fetchedExpenseId != expenseId.value) {
         throw 'Expense ID conflict detected';
       }
 
-      final String? transactionId =  await transactionController.processTransaction(transaction: transaction);
-      transaction.id = transactionId;
-      expense.transaction = transaction;
+      final String? transactionId =  await addTransactionController.processTransaction(transaction: expense.transaction!);
+      expense.transaction?.id = transactionId;
       await mongoExpenseRepo.pushExpense(expense: expense);
 
       clearExpenseForm();
@@ -166,7 +172,7 @@ class AddExpenseController extends GetxController {
         return;
       }
 
-      await transactionController.processUpdateTransaction(previousTransaction: expense.transaction ?? TransactionModel(), transaction: newTransaction);
+      await addTransactionController.processUpdateTransaction(previousTransaction: expense.transaction ?? TransactionModel(), transaction: newTransaction);
       await mongoExpenseRepo.updateExpense(id: expense.id ?? '', expense: expense);
 
       FullScreenLoader.stopLoading();
@@ -183,7 +189,7 @@ class AddExpenseController extends GetxController {
 
   // Clear form
   Future<void> clearExpenseForm() async {
-    expenseId.value = await mongoExpenseRepo.fetchExpenseNextId();
+    expenseId.value = await mongoExpenseRepo.fetchExpenseNextId(userId: userId);
     amount.clear();
     date.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
   }

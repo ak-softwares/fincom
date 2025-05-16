@@ -46,17 +46,6 @@ class UserMenuScreen extends StatelessWidget {
                       Heading(title: 'Menu', paddingLeft: AppSizes.defaultSpace),
                       const Menu(),
 
-                      // Not a Member? register
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Not a member?'),
-                            TextButton(
-                                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));},
-                                child: Text(AppTexts.createAccount, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: AppColors.linkColor )))
-                          ]
-                      ),
-
                       // Version
                       Center(
                         child: Column(

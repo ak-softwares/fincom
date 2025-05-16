@@ -10,7 +10,7 @@ import '../../../settings/app_settings.dart';
 import '../../controller/expenses/add_expenses_controller.dart';
 import '../../controller/expenses/expenses_controller.dart';
 import '../../models/expense_model.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../accounts/widget/account_tile.dart';
 import '../purchase/purchase_entry/widget/search_products.dart';
 

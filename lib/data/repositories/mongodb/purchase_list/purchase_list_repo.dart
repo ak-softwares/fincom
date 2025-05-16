@@ -4,11 +4,17 @@ import '../../../../features/accounts/models/order_model.dart';
 import '../../../../features/accounts/models/purchase_item_model.dart';
 import '../../../../utils/constants/api_constants.dart';
 import '../../../../utils/constants/db_constants.dart';
-import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoPurchaseListRepo extends GetxController {
   static MongoPurchaseListRepo get instance => Get.find();
-  final MongoDatabase _mongoDatabase = MongoDatabase();
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
   final String collectionName = DbCollections.purchaseList;
   final String collectionNameMetaData = DbCollections.meta;
   final String purchaseListMetaDataName = MetaDataName.purchaseList;
@@ -20,7 +26,7 @@ class MongoPurchaseListRepo extends GetxController {
 
       // Fetch orders from MongoDB with pagination
       final List<Map<String, dynamic>> ordersData =
-                  await _mongoDatabase.fetchDocuments(collectionName:collectionName, page: page, itemsPerPage: itemsPerPage);
+                  await _mongoFetch.fetchDocuments(collectionName:collectionName, page: page, itemsPerPage: itemsPerPage);
 
       // Convert data to a list of OrdersModel
       final List<OrderModel> orders = ordersData.map((data) => OrderModel.fromJson(data)).toList();
@@ -35,7 +41,7 @@ class MongoPurchaseListRepo extends GetxController {
   Future<void> pushOrders({required List<OrderModel> orders}) async {
     try {
       List<Map<String, dynamic>> ordersMaps = orders.map((order) => order.toMap()).toList();
-          await _mongoDatabase.insertDocuments(collectionName, ordersMaps); // Use batch insert function
+          await _mongoInsert.insertDocuments(collectionName, ordersMaps); // Use batch insert function
     } catch (e) {
       throw 'Failed to upload orders: $e';
     }
@@ -45,7 +51,7 @@ class MongoPurchaseListRepo extends GetxController {
   Future<void> deleteAllOrders() async {
     try {
       // Use an empty filter to match all documents in the collection
-      await _mongoDatabase.deleteDocuments(collectionName: collectionName, filter: {});
+      await _mongoDelete.deleteDocuments(collectionName: collectionName, filter: {});
     } catch (e) {
       throw 'Failed to delete all orders: $e';
     }
@@ -55,7 +61,7 @@ class MongoPurchaseListRepo extends GetxController {
   Future<PurchaseListMetaModel> fetchMetaData() async {
     try {
       // Fetch orders from MongoDB with pagination
-      final jsonData = await _mongoDatabase.fetchMetaDocuments(collectionName: collectionNameMetaData, metaDataName: purchaseListMetaDataName);
+      final jsonData = await _mongoFetch.fetchMetaDocuments(collectionName: collectionNameMetaData, metaDataName: purchaseListMetaDataName);
       return PurchaseListMetaModel.fromJson(jsonData!);
     } catch (e) {
       throw 'Failed to fetch Meta data: $e';
@@ -64,7 +70,7 @@ class MongoPurchaseListRepo extends GetxController {
 
   Future<void> pushMetaData({required Map<String, dynamic> value}) async {
     try {
-      await _mongoDatabase.updateDocument(
+      await _mongoUpdate.updateDocument(
           collectionName: collectionNameMetaData,
           filter: {MetaDataName.metaDocumentName: purchaseListMetaDataName},
           updatedData: value
@@ -76,7 +82,7 @@ class MongoPurchaseListRepo extends GetxController {
 
   Future<void> deleteMetaData() async {
     try {
-      await _mongoDatabase.deleteDocuments(
+      await _mongoDelete.deleteDocuments(
         collectionName: collectionNameMetaData,
         filter: {MetaDataName.metaDocumentName: purchaseListMetaDataName}
       );

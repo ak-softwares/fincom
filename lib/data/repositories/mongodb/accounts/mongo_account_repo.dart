@@ -1,12 +1,18 @@
 import 'package:fincom/utils/constants/db_constants.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
-import '../../../../features/accounts/models/payment_method.dart';
+import '../../../../features/accounts/models/account_model.dart';
 import '../../../../utils/constants/api_constants.dart';
-import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoAccountsRepo extends GetxController {
-  final MongoDatabase _mongoDatabase = MongoDatabase();
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
   final String collectionName = DbCollections.accounts;
   final int itemsPerPage = int.tryParse(APIConstant.itemsPerPage) ?? 10;
 
@@ -15,7 +21,7 @@ class MongoAccountsRepo extends GetxController {
     try {
       // Fetch products from MongoDB with search and pagination
       final List<Map<String, dynamic>> paymentsData =
-      await _mongoDatabase.fetchDocumentsBySearchQuery(
+      await _mongoFetch.fetchDocumentsBySearchQuery(
           collectionName: collectionName,
           query: query,
           itemsPerPage: itemsPerPage,
@@ -30,11 +36,15 @@ class MongoAccountsRepo extends GetxController {
   }
 
   // Fetch All Products from MongoDB
-  Future<List<AccountModel>> fetchAllAccountsMethod({int page = 1}) async {
+  Future<List<AccountModel>> fetchAllAccountsMethod({int page = 1, required String userId}) async {
     try {
       // Fetch products from MongoDB with pagination
       final List<Map<String, dynamic>> paymentMethodData =
-      await _mongoDatabase.fetchDocuments(collectionName:collectionName, page: page);
+      await _mongoFetch.fetchDocuments(
+          collectionName:collectionName,
+          filter: {AccountFieldName.userId: userId},
+          page: page
+      );
       // Convert data to a list of ProductModel
       final List<AccountModel> paymentMethod = paymentMethodData.map((data) => AccountModel.fromJson(data)).toList();
       return paymentMethod;
@@ -47,7 +57,7 @@ class MongoAccountsRepo extends GetxController {
   Future<void> pushAccountsMethod({required AccountModel paymentMethod}) async {
     try {
       Map<String, dynamic> paymentMap = paymentMethod.toMap(); // Convert a single vendor to a map
-      await _mongoDatabase.insertDocument(collectionName, paymentMap);
+      await _mongoInsert.insertDocument(collectionName, paymentMap);
     } catch (e) {
       throw 'Failed to upload payment: $e';
     }
@@ -58,7 +68,7 @@ class MongoAccountsRepo extends GetxController {
     try {
       // Fetch a single document by ID
       final Map<String, dynamic>? vendorData =
-                  await _mongoDatabase.fetchDocumentById(collectionName: collectionName, id: id);
+                  await _mongoFetch.fetchDocumentById(collectionName: collectionName, id: id);
 
       // Check if the document exists
       if (vendorData == null) {
@@ -76,7 +86,7 @@ class MongoAccountsRepo extends GetxController {
   Future<void> updateAccount({required String id, required AccountModel payment}) async {
     try {
       Map<String, dynamic> paymentMap = payment.toMap();
-                await _mongoDatabase.updateDocumentById(id: id, collectionName: collectionName, updatedData: paymentMap);
+                await _mongoUpdate.updateDocumentById(id: id, collectionName: collectionName, updatedData: paymentMap);
     } catch (e) {
       throw 'Failed to upload payment: $e';
     }
@@ -85,16 +95,20 @@ class MongoAccountsRepo extends GetxController {
   // Delete a payment
   Future<void> deleteAccount({required String id}) async {
     try {
-      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+      await _mongoDelete.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
       throw 'Failed to Delete Payment: $e';
     }
   }
 
   // Get the next id
-  Future<int> fetchAccountGetNextId() async {
+  Future<int> fetchAccountGetNextId({required String userId}) async {
     try {
-      int nextID = await _mongoDatabase.getNextId(collectionName: collectionName, fieldName: AccountFieldName.accountId);
+      int nextID = await _mongoFetch.fetchNextId(
+          collectionName: collectionName,
+          filter: {AccountFieldName.userId: userId},
+          fieldName: AccountFieldName.accountId
+      );
       return nextID;
     } catch (e) {
       throw 'Failed to fetch payment id: $e';
@@ -102,10 +116,13 @@ class MongoAccountsRepo extends GetxController {
   }
 
   // Fetch All Products from MongoDB
-  Future<double> fetchTotalBalance() async {
+  Future<double> fetchTotalBalance({required String userId}) async {
     try {
       // Fetch products from MongoDB with pagination
-      final double totalStockValue = await _mongoDatabase.fetchTotalAccountBalance(collectionName: collectionName);
+      final double totalStockValue = await _mongoFetch.fetchTotalAccountBalance(
+          collectionName: collectionName,
+          filter: {AccountFieldName.userId: userId},
+      );
       return totalStockValue;
     } catch (e) {
       rethrow;

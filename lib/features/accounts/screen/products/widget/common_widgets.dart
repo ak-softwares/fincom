@@ -59,7 +59,7 @@ class CommonWidgets extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ProductTitle(title: product.name ?? '', size: 13, maxLines: 2,),
+                      ProductTitle(title: product.title ?? '', size: 13, maxLines: 2,),
                       // Price and Stock
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

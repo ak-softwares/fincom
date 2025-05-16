@@ -74,8 +74,8 @@ class WooProductRepository extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> productsJson = json.decode(response.body);
-        final List<ProductModel> productsByCategory = productsJson.map((json) => ProductModel.fromJson(json)).toList();
-        return productsByCategory;
+        final List<ProductModel> allProducts = productsJson.map((json) => ProductModel.fromJsonWoo(json)).toList();
+        return allProducts;
       } else {
         final Map<String, dynamic> errorJson = json.decode(response.body);
         final errorMessage = errorJson['message'];

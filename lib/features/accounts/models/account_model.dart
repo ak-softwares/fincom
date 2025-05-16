@@ -4,6 +4,7 @@ import '../../../utils/constants/db_constants.dart';
 
 class AccountModel {
   String? id;
+  String? userId;
   int? accountId;
   double? openingBalance;
   double? balance;
@@ -12,6 +13,7 @@ class AccountModel {
 
   AccountModel({
     this.id,
+    this.userId,
     this.accountId,
     this.openingBalance,
     this.balance,
@@ -24,6 +26,7 @@ class AccountModel {
       id: json[AccountFieldName.id] is ObjectId
           ? (json[AccountFieldName.id] as ObjectId).toHexString() // Convert ObjectId to string
           : json[AccountFieldName.id]?.toString(), // Fallback to string if not ObjectId
+      userId: json[AccountFieldName.userId],
       accountId: json[AccountFieldName.accountId],
       openingBalance: (json[AccountFieldName.openingBalance] as num?)?.toDouble(),
       balance: (json[AccountFieldName.balance] as num?)?.toDouble(),
@@ -36,6 +39,7 @@ class AccountModel {
 
   Map<String, dynamic> toMap() {
     return {
+      AccountFieldName.userId: userId,
       AccountFieldName.accountId: accountId,
       AccountFieldName.openingBalance: openingBalance ?? 0,
       AccountFieldName.balance: balance ?? 0,

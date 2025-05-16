@@ -118,7 +118,7 @@ class _SingleExpenseScreenState extends State<SingleExpenseScreen> {
               height: 350,
               child: TransactionsByEntity(
                 entityType: EntityType.expense,
-                entityId: expense.expenseId ?? 0,
+                entityId: expense.id ?? '0',
               ),
             ),
             const SizedBox(height: AppSizes.spaceBtwSection),

@@ -23,7 +23,7 @@ class Accounts extends StatelessWidget {
     const double paymentTileHeight = AppSizes.paymentTileHeight;
 
     final ScrollController scrollController = ScrollController();
-    final paymentController = Get.put(AccountsController());
+    final paymentController = Get.put(AccountController());
 
     paymentController.refreshPaymentMethods();
 

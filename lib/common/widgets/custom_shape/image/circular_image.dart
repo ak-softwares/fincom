@@ -49,7 +49,7 @@ class RoundedImage extends StatelessWidget {
         padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
           border: border,
-          color: backgroundColor ?? Colors.white,
+          color: backgroundColor ?? Colors.transparent,
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: ClipRRect(

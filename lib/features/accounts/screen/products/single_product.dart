@@ -71,8 +71,9 @@ class _SingleProductState extends State<SingleProduct> {
                 color: Theme.of(context).colorScheme.surface,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.name ?? '', style: TextStyle(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(product.title ?? '', style: TextStyle(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -98,57 +99,6 @@ class _SingleProductState extends State<SingleProduct> {
               ),
             ),
 
-            SizedBox(height: AppSizes.spaceBtwSection),
-            Heading(title: 'Purchase History', paddingLeft: AppSizes.sm),
-            SizedBox(height: AppSizes.spaceBtwItems),
-            // if(product.purchaseHistory != null && product.purchaseHistory!.isNotEmpty)
-            //   GridLayout(
-            //     crossAxisCount: 1,
-            //     mainAxisExtent: 105,
-            //     itemCount: product.purchaseHistory!.length,
-            //     itemBuilder: (context, index) {
-            //       final purchase = product.purchaseHistory?[index];
-            //       return Container(
-            //         padding: const EdgeInsets.all(AppSizes.defaultSpace),
-            //         decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(AppSizes.productVoucherTileRadius),
-            //           color: Theme.of(context).colorScheme.surface,
-            //         ),
-            //         child: Column(
-            //           children: [
-            //             Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Text('Date:'),
-            //                 Text(AppFormatter.formatStringDate(purchase?.purchaseDate), style: TextStyle(fontSize: 14))
-            //               ],
-            //             ),
-            //             Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Text('Purchase ID:'),
-            //                 Text(purchase!.purchaseId.toString(), style: TextStyle(fontSize: 14))
-            //               ],
-            //             ),
-            //             Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Text('Price:'),
-            //                 Text(AppSettings.appCurrencySymbol + purchase!.price!.toStringAsFixed(2), style: TextStyle(fontSize: 14))
-            //               ]
-            //             ),
-            //             Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Text('Quantity:'),
-            //                 Text(purchase.quantity.toString(), style: TextStyle(fontSize: 14))
-            //               ]
-            //             ),
-            //           ]
-            //         )
-            //       );
-            //     }
-            //   ),
             SizedBox(height: AppSizes.spaceBtwSection),
             Center(
               child: TextButton(

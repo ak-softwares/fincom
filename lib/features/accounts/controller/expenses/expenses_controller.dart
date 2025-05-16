@@ -12,9 +12,11 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/expanses/expanses_repo.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/expense_model.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../../models/transaction_model.dart';
+import '../transaction/add_trsnsaction_controller.dart';
 import '../transaction/transaction_controller.dart';
 
 class ExpenseController extends GetxController {
@@ -28,7 +30,9 @@ class ExpenseController extends GetxController {
   RxList<ExpenseModel> expenses = <ExpenseModel>[].obs;
 
   final mongoExpenseRepo = Get.put(MongoExpenseRepo());
-  final transactionController = Get.put(TransactionController());
+  final addTransactionController = Get.put(AddTransactionController());
+
+  String get userId => AuthenticationController.instance.admin.value.id!;
 
   @override
   Future<void> onInit() async {
@@ -57,7 +61,7 @@ class ExpenseController extends GetxController {
   // Get all expenses
   Future<void> getAllExpenses() async {
     try {
-      final fetchedExpenses = await mongoExpenseRepo.fetchAllExpenses(page: currentPage.value);
+      final fetchedExpenses = await mongoExpenseRepo.fetchAllExpenses(userId: userId, page: currentPage.value);
       expenses.addAll(fetchedExpenses);
       await calculateMonthlySummary();
     } catch (e) {
@@ -68,7 +72,11 @@ class ExpenseController extends GetxController {
 
   Future<List<ExpenseModel>> getExpensesByDate({required DateTime startDate, required DateTime endDate}) async {
     try {
-      final fetchedOrders = await mongoExpenseRepo.fetchExpensesByDate(startDate: startDate, endDate: endDate);
+      final fetchedOrders = await mongoExpenseRepo.fetchExpensesByDate(
+          userId: userId,
+          startDate: startDate,
+          endDate: endDate
+      );
       return fetchedOrders;
     } catch (e) {
       rethrow;
@@ -112,7 +120,7 @@ class ExpenseController extends GetxController {
         onSubmit: () async {
 
           await Future.wait([
-            transactionController.processTransaction(transaction: expense.transaction ?? TransactionModel(), isDelete: true),
+            addTransactionController.processTransaction(transaction: expense.transaction ?? TransactionModel(), isDelete: true),
             mongoExpenseRepo.deleteExpense(id: expense.id ?? ''),
             refreshExpenses(),
           ]);

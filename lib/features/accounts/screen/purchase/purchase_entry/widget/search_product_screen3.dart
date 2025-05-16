@@ -172,7 +172,7 @@ class SearchScreen3 extends StatelessWidget {
                 if (searchVoucherController.isLoading.value) {
                   return CustomersTileShimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
-                  return searchVoucherController.selectedVendor.value.company != null
+                  return searchVoucherController.selectedVendor.value.companyName != null
                       ? Obx(() {
                           final customer = searchVoucherController.selectedCustomer.value;
                           return Stack(
@@ -242,7 +242,7 @@ class SearchScreen3 extends StatelessWidget {
                 if (searchVoucherController.isLoading.value) {
                   return VendorTileSimmer(itemCount: 2);
                 } else if(searchQuery.isEmpty) {
-                  return searchVoucherController.selectedVendor.value.company != null
+                  return searchVoucherController.selectedVendor.value.companyName != null
                       ? Obx(() {
                           final vendor = searchVoucherController.selectedVendor.value;
                           return Stack(

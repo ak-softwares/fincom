@@ -95,7 +95,7 @@ class ChangeProfileController extends GetxController {
       Map<String, dynamic> updateField = {
         UserFieldConstants.billing: {AddressFieldName.phone: updatePhone.text.trim()},
       };
-      final userId = userController.admin.value.userId.toString();
+      final userId = userController.admin.value.documentId.toString();
       final UserModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateField);
       userController.admin(customer);
       // UserController.instance.fetchUserRecord();

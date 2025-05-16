@@ -11,6 +11,8 @@ import '../../../../accounts/screen/purchase_list/purchase_list.dart';
 import '../../../../accounts/screen/sales/sales.dart';
 import '../../../../accounts/screen/transaction/transactions.dart';
 import '../../../../accounts/screen/vendor/vendors.dart';
+import '../../../../setup/screens/platform_selection_screen.dart';
+import '../../../../setup/screens/setup_screen.dart';
 
 
 class Menu extends StatelessWidget {
@@ -25,6 +27,13 @@ class Menu extends StatelessWidget {
 
     return Column(
       children: [
+        ListTile(
+          onTap: () => Get.to(() => PlatformSelectionScreen()),
+          leading: Icon(AppIcons.products, size: 25),
+          title: Text('SetupScreen'),
+          subtitle: Text('List of products'),
+          trailing: Icon(Icons.arrow_forward_ios, size: 20,),
+        ),
         ListTile(
           onTap: () => Get.to(() => Products()),
           leading: Icon(AppIcons.products, size: 25),

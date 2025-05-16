@@ -7,6 +7,7 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../../personalization/models/user_model.dart';
 import 'customer_controller.dart';
@@ -31,14 +32,16 @@ class AddCustomerController extends GetxController{
   final mongoCustomersRepo = Get.put(MongoUserRepository());
   final customerController = Get.put(CustomerController());
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    customerId.value = await mongoCustomersRepo.fetchUserGetNextId(userType: userType);
+    customerId.value = await mongoCustomersRepo.fetchUserGetNextId(userType: userType, userId: userId);
   }
 
   void resetValue(UserModel customer) {
-    customerId.value = customer.userId ?? 0;
+    customerId.value = customer.documentId ?? 0;
     nameController.text = customer.name ?? '';
     emailController.text = customer.email ?? '';
     phoneController.text = customer.phone ?? '';
@@ -64,7 +67,7 @@ class AddCustomerController extends GetxController{
     );
 
     UserModel customer = UserModel(
-      userId: customerId.value,
+      documentId: customerId.value,
       name: nameController.text,
       email: emailController.text,
       billing: address,
@@ -93,7 +96,7 @@ class AddCustomerController extends GetxController{
         return;
       }
 
-      final fetchedCustomerId = await mongoCustomersRepo.fetchUserGetNextId(userType: userType);
+      final fetchedCustomerId = await mongoCustomersRepo.fetchUserGetNextId(userType: userType, userId: userId);
       if (fetchedCustomerId != customerId.value) {
         throw 'Customer ID mismatch!';
       }
@@ -125,7 +128,7 @@ class AddCustomerController extends GetxController{
 
     UserModel customer = UserModel(
       id: previousCustomer.id,
-      userId: previousCustomer.userId,
+      documentId: previousCustomer.documentId,
       name: nameController.text,
       email: emailController.text,
       billing: address,

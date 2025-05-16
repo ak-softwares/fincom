@@ -1,11 +1,11 @@
 
 class DbCollections{
-  static const String orders      = 'Orders';
-  static const String products    = 'Products';
-  static const String users       = 'Users';
-  static const String categories  = 'Categories';
-  static const String banners     = 'Banners';
-  static const String addresses   = 'Addresses';
+  static const String orders      = 'orders';
+  static const String products    = 'products';
+  static const String users       = 'users';
+  static const String categories  = 'categories';
+  static const String banners     = 'banners';
+  static const String addresses   = 'addresses';
   static const String meta        = 'meta_data';
   static const String purchaseList = 'purchase_list';
   static const String customers = 'customers';
@@ -44,6 +44,7 @@ class PurchaseListConstants {
 
 class ProductFieldName {
   static const String id = '_id';
+  static const String userId = 'user_id';
   static const String productId = 'id';
   static const String name = 'name';
   static const String mainImage = 'main_image';
@@ -62,6 +63,7 @@ class ProductFieldName {
   static const String salePrice = 'sale_price';
   static const String regularPrice = 'regular_price';
   static const String purchasePrice = 'purchase_price';
+  static const String cogs = '_cogs';
   static const String brands = 'brands';
   static const String dateOnSaleFrom = 'date_on_sale_from';
   static const String dateOnSaleTo = 'date_on_sale_to';
@@ -207,6 +209,7 @@ class OrderFieldName {
   static const String currencySymbol = 'currency_symbol';
   static const String setPaid = 'set_paid';
   static const String purchaseInvoiceImages = 'purchase_invoice_images';
+  static const String transaction = 'transaction';
   static const String orderType = 'order_type';
 }
 
@@ -266,6 +269,7 @@ class ExpenseTypeName {
 class CartFieldName {
   static const String id = 'id';
   static const String name = 'name';
+  static const String userId = 'user_id';
   static const String product_id = 'productId';
   static const String productId = 'product_id';
   static const String variationId = 'variation_id';
@@ -345,6 +349,7 @@ class PurchaseHistoryFieldName {
 
 class AccountFieldName {
   static const String id = '_id';
+  static const String userId = 'user_id';
   static const String accountId = 'account_id';
   static const String openingBalance = 'opening_balance';
   static const String balance = 'balance';
@@ -354,6 +359,7 @@ class AccountFieldName {
 
 class ExpenseFieldName {
   static const String id = '_id';
+  static const String userId = 'user_id';
   static const String expenseId = 'expense_id';
   static const String amount = 'amount';
   static const String description = 'description';
@@ -366,6 +372,7 @@ class ExpenseFieldName {
 
 class TransactionFieldName {
   static const String id = '_id';
+  static const String userId = 'user_id';
   static const String transactionId = 'transaction_id';
   static const String date = 'date';
   static const String amount = 'amount';
@@ -396,7 +403,8 @@ class PaymentMethodTitle {
 class UserFieldConstants {
   // Common Fields
   static const String id = '_id';
-  static const String userId = 'userId';
+  static const String documentId = 'document_id';
+  static const String userId = 'user_id';
   static const String email = 'email';
   static const String password = 'password';
   static const String role = 'role';

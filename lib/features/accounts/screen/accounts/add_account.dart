@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import '../../../../common/navigation_bar/appbar.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controller/account/account_controller.dart';
-import '../../models/payment_method.dart';
+import '../../controller/account/add_account_controller.dart';
+import '../../models/account_model.dart';
 
 class AddAccount extends StatelessWidget {
   const AddAccount({super.key, this.payment});
@@ -13,7 +14,7 @@ class AddAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AccountsController controller = Get.put(AccountsController());
+    final AddAccountController controller = Get.put(AddAccountController());
 
     if( payment != null) {
       controller.resetValue(payment!);

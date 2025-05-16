@@ -6,10 +6,17 @@ import '../../../../utils/constants/db_constants.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/helpers/encryption_hepler.dart';
 import '../../../database/mongodb/mongodb.dart';
+import '../../../database/mongodb/mongo_delete.dart';
+import '../../../database/mongodb/mongo_fetch.dart';
+import '../../../database/mongodb/mongo_insert.dart';
+import '../../../database/mongodb/mongo_update.dart';
 
 class MongoAuthenticationRepository extends GetxController {
   static MongoAuthenticationRepository get instance => Get.find();
-  final MongoDatabase _mongoDatabase = MongoDatabase();
+  final MongoFetch _mongoFetch = MongoFetch();
+  final MongoInsert _mongoInsert = MongoInsert();
+  final MongoUpdate _mongoUpdate = MongoUpdate();
+  final MongoDelete _mongoDelete = MongoDelete();
   final String collectionName = 'users';
   final UserType userType = UserType.admin;
   // variable
@@ -18,7 +25,7 @@ class MongoAuthenticationRepository extends GetxController {
   Future<void> singUpWithEmailAndPass({required UserModel user}) async {
     try {
       // Check if a user with the same email or phone already exists
-      final existingUser = await _mongoDatabase.findOne(
+      final existingUser = await _mongoFetch.findOne(
         collectionName: collectionName,
          query : {
                     r'$or': [
@@ -32,7 +39,7 @@ class MongoAuthenticationRepository extends GetxController {
       }
       user.userType =  UserType.admin;
       Map<String, dynamic> userMap = user.toMap();
-      await _mongoDatabase.insertDocument(collectionName, userMap); // Use batch insert function
+      await _mongoInsert.insertDocument(collectionName, userMap); // Use batch insert function
     } catch (e) {
       throw 'Failed to create account: $e';
     }
@@ -42,7 +49,7 @@ class MongoAuthenticationRepository extends GetxController {
   Future<UserModel> loginWithEmailAndPass({required String email, required String password}) async {
     try {
       // Check if a user with the provided email exists
-      final existingUser = await _mongoDatabase.findOne(
+      final existingUser = await _mongoFetch.findOne(
         collectionName: collectionName,
         query: {
           UserFieldConstants.email: email,
@@ -73,7 +80,7 @@ class MongoAuthenticationRepository extends GetxController {
   Future<UserModel> fetchUserByPhone({required String phone}) async {
     try {
       // Check if a user with the provided email exists
-      final existingUser = await _mongoDatabase.findOne(
+      final existingUser = await _mongoFetch.findOne(
         collectionName: collectionName,
         query: {
           UserFieldConstants.phone: phone,
@@ -99,7 +106,7 @@ class MongoAuthenticationRepository extends GetxController {
   Future<UserModel> fetchUserByEmail({required String email}) async {
     try {
       // Check if a user with the provided email exists
-      final existingUser = await _mongoDatabase.findOne(
+      final existingUser = await _mongoFetch.findOne(
         collectionName: collectionName,
         query: {
           UserFieldConstants.email: email,
@@ -125,7 +132,7 @@ class MongoAuthenticationRepository extends GetxController {
   Future<void> updateUserByEmail({required String email, required UserModel user}) async {
     try {
       // Check if a user with the provided email exists
-      final existingUser = await _mongoDatabase.findOne(
+      final existingUser = await _mongoFetch.findOne(
           collectionName: collectionName,
           query: {UserFieldConstants.email: email});
 
@@ -135,7 +142,7 @@ class MongoAuthenticationRepository extends GetxController {
 
       user.userType =  UserType.admin;
       // Update user data in the database
-      await _mongoDatabase.updateDocument(
+      await _mongoUpdate.updateDocument(
         collectionName: collectionName,
         filter: {'email': email},
         updatedData: user.toMap()
@@ -148,7 +155,7 @@ class MongoAuthenticationRepository extends GetxController {
   // Delete a purchase
   Future<void> deleteUser({required String id}) async {
     try {
-      await _mongoDatabase.deleteDocumentById(id: id, collectionName: collectionName);
+      await _mongoDelete.deleteDocumentById(id: id, collectionName: collectionName);
     } catch (e) {
       throw 'Failed to Delete user: $e';
     }

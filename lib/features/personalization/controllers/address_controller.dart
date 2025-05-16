@@ -63,7 +63,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(AuthenticationController()).admin.value.userId.toString();
+        final userId = Get.put(AuthenticationController()).admin.value.documentId.toString();
         final UserModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateShippingField);
         userController.admin(customer);
       } else {
@@ -80,7 +80,7 @@ class AddressController extends GetxController{
             AddressFieldName.country: CountryData.getISOFromCountry(country.text.trim()),
           },
         };
-        final userId = Get.put(AuthenticationController()).admin.value.userId.toString();
+        final userId = Get.put(AuthenticationController()).admin.value.documentId.toString();
         final UserModel customer = await wooCustomersRepository.updateCustomerById(userID: userId, data: updateBillingField);
         userController.admin(customer);
       }

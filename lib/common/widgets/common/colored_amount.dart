@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../features/settings/app_settings.dart';
+
 class ColoredAmount extends StatelessWidget {
   const ColoredAmount({
     super.key,
@@ -21,7 +23,7 @@ class ColoredAmount extends StatelessWidget {
     }
 
     return Text(
-      amount.toString(),
+      AppSettings.currencySymbol + amount.toString(),
       style: TextStyle(
         fontSize: 14,
         color: textColor,

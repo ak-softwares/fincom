@@ -5,7 +5,10 @@ import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
+import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/product_model.dart';
+import 'product_controller.dart';
 
 class AddProductController extends GetxController {
   static AddProductController get instance => Get.find();
@@ -19,15 +22,18 @@ class AddProductController extends GetxController {
   final GlobalKey<FormState> productFormKey = GlobalKey<FormState>();
 
   final mongoProductRepo = Get.put(MongoProductRepo());
+  final productController = Get.put(ProductController());
+
+  String get userId => AuthenticationController.instance.admin.value.id ?? '';
 
   // Save Product
   void saveProduct() {
     ProductModel product = ProductModel(
-      id: '', // Will be set when adding to DB
-      name: productTitleController.text,
-      price: double.tryParse(purchasePriceController.text) ?? 0.0,
+      userId: userId,
+      title: productTitleController.text,
+      purchasePrice: double.tryParse(purchasePriceController.text) ?? 0.0,
+      stockQuantity: int.tryParse(stockController.text) ?? 0,
       dateCreated: DateTime.now().toIso8601String(),
-      productId: 123,
     );
 
     addProduct(product: product);
@@ -36,7 +42,7 @@ class AddProductController extends GetxController {
   // Add Product
   Future<void> addProduct({required ProductModel product}) async {
     try {
-      FullScreenLoader.openLoadingDialog('Adding new product...', '');
+      FullScreenLoader.openLoadingDialog('Adding new product...', Images.docerAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -44,13 +50,9 @@ class AddProductController extends GetxController {
         return;
       }
 
-      final fetchedProductId = await mongoProductRepo.fetchProductGetNextId();
-      if (fetchedProductId != product.productId) {
-        throw 'Product ID is not unique';
-      }
-
       await mongoProductRepo.pushProduct(product: product);
 
+      await productController.refreshProducts();
       clearProductFields();
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Product added successfully!');
@@ -65,11 +67,12 @@ class AddProductController extends GetxController {
   void clearProductFields() {
     productTitleController.text = '';
     purchasePriceController.text = '';
+    stockController.text = '';
   }
 
   // Reset Product Values
   void resetProductValues(ProductModel product) {
-    productTitleController.text = product.name ?? '';
+    productTitleController.text = product.title ?? '';
     purchasePriceController.text = product.purchasePrice.toString();
     stockController.text = product.stockQuantity.toString();
   }
@@ -78,7 +81,7 @@ class AddProductController extends GetxController {
   void saveUpdatedProduct({required ProductModel previousProduct}) {
     ProductModel product = ProductModel(
       id: previousProduct.id,
-      name: productTitleController.text,
+      title: productTitleController.text,
       purchasePrice: double.tryParse(purchasePriceController.text) ?? 0.0,
       stockQuantity: int.tryParse(stockController.text) ?? 0,
     );
@@ -89,7 +92,7 @@ class AddProductController extends GetxController {
   // Update Product
   Future<void> updateProduct({required ProductModel product}) async {
     try {
-      FullScreenLoader.openLoadingDialog('Updating product...', '');
+      FullScreenLoader.openLoadingDialog('Updating product...', Images.docerAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -99,9 +102,10 @@ class AddProductController extends GetxController {
 
       await mongoProductRepo.updateProduct(id: product.id ?? '', product: product);
 
+      await productController.refreshProducts();
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Product updated successfully!');
-      Navigator.of(Get.context!).pop();
+      Get.close(2); // Closes two routes/screens
     } catch (e) {
       FullScreenLoader.stopLoading();
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());

@@ -37,7 +37,7 @@ class CustomerTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Customer Id'),
-                    Text('#${customer.userId}'),
+                    Text('#${customer.documentId}'),
                   ],
                 ),
                 Row(

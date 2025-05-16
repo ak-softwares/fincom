@@ -103,14 +103,6 @@ class Products extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total Stock:', style: TextStyle(fontSize: 14)),
-                            Text('${controller.totalStock}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
                             Text('Total Stock Value:', style: TextStyle(fontSize: 14)),
                             ColoredAmount(amount: controller.totalStockValue.toDouble())
                           ],

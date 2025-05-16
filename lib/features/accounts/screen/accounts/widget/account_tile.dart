@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../common/widgets/common/colored_amount.dart';
 import '../../../../../utils/constants/sizes.dart';
-import '../../../models/payment_method.dart';
+import '../../../models/account_model.dart';
 
 class AccountTile extends StatelessWidget {
   const AccountTile({super.key, required this.payment, this.onTap});

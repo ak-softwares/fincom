@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/woocommerce/products/woo_product_repositories.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/product_model.dart';
 
 enum SyncType { add, update }
@@ -41,6 +42,8 @@ class SyncProductController extends GetxController {
   // New computed property
   int get newProductsCount => wooProductsCount.value - fincomProductsCount.value;
 
+  String get userId => AuthenticationController.instance.admin.value.id ?? '';
+
   @override
   void onInit() {
     getTotalProductsCount();
@@ -50,7 +53,7 @@ class SyncProductController extends GetxController {
   Future<void> getTotalProductsCount() async {
     try {
       isGettingCount(true);
-      fincomProductsCount.value = await mongoProductRepository.fetchProductsCount();
+      fincomProductsCount.value = await mongoProductRepository.fetchProductsCount(userId: userId);
       wooProductsCount.value = await wooProductRepository.fetchProductCount();
       update(); // Notify listeners that counts changed
     } catch (e) {
@@ -94,23 +97,22 @@ class SyncProductController extends GetxController {
 
   Future<void> _syncAndAddProducts() async {
     try {
-      // Initialize progress tracking
       _currentPage = 1;
       _hasMorePages = true;
       _totalItems = 0;
       _processedItems = 0;
       _progress = 0.0;
 
-      // 1. Get existing product IDs
       _status = SyncStatus.checking;
       _currentProductName = 'Preparing sync...';
       update();
 
-      final Set<int> existingProductIds = await mongoProductRepository.fetchProductIds();
+      final Set<int> existingProductIds = await mongoProductRepository.fetchProductIds(userId: userId);
       int totalFetchedProducts = 0;
 
-      while (_hasMorePages && _status != SyncStatus.idle) {
-        // 2. Fetch products from WooCommerce
+      while (_hasMorePages) {
+        if (_status == SyncStatus.idle) return; // <--- check before every page loop
+
         _status = SyncStatus.fetching;
         _currentProductName = 'Fetching page $_currentPage from WooCommerce...';
         update();
@@ -118,6 +120,8 @@ class SyncProductController extends GetxController {
         final products = await wooProductRepository.fetchAllProducts(
           page: _currentPage.toString(),
         );
+
+        if (_status == SyncStatus.idle) return; // <--- check again after fetch
 
         if (products.isEmpty) {
           _hasMorePages = false;
@@ -128,31 +132,31 @@ class SyncProductController extends GetxController {
         _currentProductName = 'Processing ${products.length} products from page $_currentPage...';
         update();
 
-        // 3. Filter only new products
         final productsToAdd = products.where((p) => !existingProductIds.contains(p.productId)).toList();
-
         _totalItems += productsToAdd.length;
         update();
+
+        if (_status == SyncStatus.idle) return; // <--- check before processing
 
         if (productsToAdd.isEmpty) {
           _currentPage++;
           continue;
         }
 
-        // 4. Add new products
         _status = SyncStatus.pushing;
         _currentProductName = 'Adding ${productsToAdd.length} new products...';
         update();
 
         await _addProductsToMongo(productsToAdd);
 
+        if (_status == SyncStatus.idle) return; // <--- final check after push
+
         _currentPage++;
       }
 
       if (_status != SyncStatus.idle) {
         _status = SyncStatus.completed;
-        _currentProductName = 'Sync completed! '
-            'Processed $_processedItems/$totalFetchedProducts products';
+        _currentProductName = 'Sync completed! Processed $_processedItems/$totalFetchedProducts products';
         update();
       }
     } catch (e) {
@@ -228,6 +232,11 @@ class SyncProductController extends GetxController {
           i,
           i + batchSize > products.length ? products.length : i + batchSize
       );
+
+      // ✅ Add userId to each product before pushing
+      for (var product in batch) {
+        product.userId = userId;
+      }
 
       _currentProductName = "Adding products ${i+1}-${i+batch.length}...";
       update();

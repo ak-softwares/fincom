@@ -7,9 +7,10 @@ import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
 import '../../../../data/repositories/mongodb/products/product_repositories.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../utils/constants/enums.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../models/order_model.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../../models/product_model.dart';
 import '../vendor/vendor_controller.dart';
 
@@ -34,13 +35,14 @@ class SearchVoucherController extends GetxController {
 
   RxList<OrderModel> orders = <OrderModel>[].obs;
 
-
-
   final mongoProductRepo = Get.put(MongoProductRepo());
   final mongoUserRepository = Get.put(MongoUserRepository());
   final mongoOrdersRepo = Get.put(MongoOrderRepo());
   final vendorController = Get.put(VendorController());
   final mongoPaymentMethodsRepo = Get.put(MongoAccountsRepo());
+
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
 
   // Get all products with optional search query
   void confirmSelection({required BuildContext context, required SearchType searchType}) {
@@ -75,7 +77,7 @@ class SearchVoucherController extends GetxController {
   }
 
   void toggleVendorSelection(UserModel vendor) {
-    if (vendor.company == selectedVendor.value.company) {
+    if (vendor.companyName == selectedVendor.value.companyName) {
       selectedVendor.value = UserModel();
     } else {
       selectedVendor.value = vendor; // Select
@@ -83,7 +85,7 @@ class SearchVoucherController extends GetxController {
   }
 
   void toggleCustomerSelection(UserModel customer) {
-    if (customer.userId == selectedCustomer.value.userId) {
+    if (customer.documentId == selectedCustomer.value.documentId) {
       selectedCustomer.value = UserModel();
     } else {
       selectedCustomer.value = customer; // Select
@@ -105,11 +107,11 @@ class SearchVoucherController extends GetxController {
         case SearchType.products:
           return selectedProducts.length;
         case SearchType.customers:
-          return selectedCustomer.value.company != null ? 1 : 0;
+          return selectedCustomer.value.companyName != null ? 1 : 0;
         case SearchType.orders:
           return selectedProducts.length;
         case SearchType.vendor:
-          return selectedVendor.value.company != null ? 1 : 0;
+          return selectedVendor.value.companyName != null ? 1 : 0;
         case SearchType.paymentMethod:
           return selectedPayment.value.accountName != null ? 1 : 0;
       }
@@ -158,7 +160,7 @@ class SearchVoucherController extends GetxController {
   Future<void> getCustomersBySearchQuery({required String query, required int page}) async {
     try {
       if(query.isNotEmpty){
-        final List<UserModel> fetchedCustomers = await mongoUserRepository.fetchUsersBySearchQuery(query: query, userType: UserType.customer, page: page);
+        final List<UserModel> fetchedCustomers = await mongoUserRepository.fetchUsersBySearchQuery(query: query, userType: UserType.customer, page: page, userId: userId);
         customers.addAll(fetchedCustomers);
       }
     } catch (e) {

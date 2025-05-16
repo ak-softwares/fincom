@@ -3,6 +3,7 @@ import '../../../utils/constants/db_constants.dart';
 class CartModel {
   int? id;
   String? name;
+  String? userId;
   String? product_id;
   int productId;
   int? variationId;
@@ -25,6 +26,7 @@ class CartModel {
     this.id,
     this.name,
     this.product_id,
+    this.userId,
     required this.productId,
     this.variationId,
     required this.quantity,
@@ -50,6 +52,7 @@ class CartModel {
     return {
       CartFieldName.id: id,
       CartFieldName.name: name,
+      CartFieldName.userId: userId,
       CartFieldName.product_id: product_id,
       CartFieldName.productId: productId,
       CartFieldName.variationId: variationId,
@@ -84,6 +87,7 @@ class CartModel {
   factory CartModel.fromJson(Map<String, dynamic> json) {
     return CartModel(
       id: json[CartFieldName.id] ?? 0,
+      userId: json[CartFieldName.userId] ?? '',
       name: json[CartFieldName.name] ?? '',
       product_id: json[CartFieldName.product_id] ?? '',
       productId: int.tryParse(json[CartFieldName.productId]?.toString() ?? '') ?? 0,
@@ -110,6 +114,7 @@ class CartModel {
     return CartModel(
       id: json[CartFieldName.id] ?? 0,
       name: json[CartFieldName.name] ?? '',
+      userId: json[CartFieldName.userId] ?? '',
       product_id: json[CartFieldName.product_id] ?? '',
       productId: json[CartFieldName.productId] ?? 0, // Changed to product_id
       variationId: json[CartFieldName.variationId] ?? 0, // Changed to variation_id
@@ -136,6 +141,7 @@ class CartModel {
     return {
       CartFieldName.id: id,
       CartFieldName.name: name,
+      CartFieldName.userId: userId,
       CartFieldName.product_id: product_id,
       CartFieldName.productId: productId,
       CartFieldName.variationId: variationId,
@@ -157,6 +163,7 @@ class CartModel {
   CartModel copyWith({
     int? id,
     String? name,
+    String? userId,
     String? product_id,
     int? productId,
     int? variationId,
@@ -177,6 +184,7 @@ class CartModel {
     return CartModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      userId: userId ?? this.userId,
       product_id: product_id ?? this.product_id,
       productId: productId ?? this.productId,
       variationId: variationId ?? this.variationId,

@@ -61,7 +61,7 @@ class _SingleCustomerState extends State<SingleCustomer> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Customer ID'),
-                Text('#${user.userId}', style: TextStyle(fontSize: 14))
+                Text('#${user.documentId}', style: TextStyle(fontSize: 14))
               ],
             ),
             Row(

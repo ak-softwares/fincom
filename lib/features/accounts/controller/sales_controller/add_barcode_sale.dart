@@ -8,6 +8,7 @@ import '../../../../common/dialog_box_massages/full_screen_loader.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/order_model.dart';
 import 'add_sale_controller.dart';
 import 'sales_controller.dart';
@@ -24,6 +25,7 @@ class AddBarcodeSaleController extends GetxController {
 
   final addOrderTextEditingController = TextEditingController();
 
+  final authenticationController = Get.put(AuthenticationController);
   final saleController = Get.put(SaleController());
   final addSaleController = Get.put(AddSaleController());
   final wooOrdersRepository = Get.put(WooOrdersRepository());
@@ -58,6 +60,7 @@ class AddBarcodeSaleController extends GetxController {
         if(checkIsSaleExist.id != null) {
           throw 'Sale already exist';
         }
+        sale.userId = AuthenticationController.instance.admin.value.id;
         newSales.add(sale);
       }
     } catch(e){
@@ -67,7 +70,6 @@ class AddBarcodeSaleController extends GetxController {
       isScanning(false);
     }
   }
-
 
   Future<void> handleDetection(BarcodeCapture capture) async {
     if (isScanning.value) return;
@@ -86,6 +88,7 @@ class AddBarcodeSaleController extends GetxController {
           if(checkIsSaleExist.id != null) {
             throw 'Sale already exist';
           }
+          sale.userId = AuthenticationController.instance.admin.value.id;
           newSales.add(sale);
         }
       }
@@ -117,7 +120,6 @@ class AddBarcodeSaleController extends GetxController {
       AppMassages.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
     }
   }
-
 
   Future<void> getWooAllNewSales() async {
     try {
@@ -154,6 +156,7 @@ class AddBarcodeSaleController extends GetxController {
         // Step 5: Add only new unique orders and avoid adding duplicates
         for (final order in newUniqueOrders) {
           if (!newSales.any((o) => o.orderId == order.orderId)) {
+            order.userId = AuthenticationController.instance.admin.value.id;
             newSales.add(order);
           }
         }
@@ -162,7 +165,6 @@ class AddBarcodeSaleController extends GetxController {
         rethrow;
     }
   }
-
 
   Future<void> addBarcodeSale() async {
     try {

@@ -7,6 +7,7 @@ import '../../../../common/widgets/network_manager/network_manager.dart';
 import '../../../../data/repositories/mongodb/user/user_repositories.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../../personalization/models/user_model.dart';
 import 'vendor_controller.dart';
@@ -25,6 +26,7 @@ class AddVendorController extends GetxController {
   // Company Information Controllers
   final companyController = TextEditingController();
   final gstNumberController = TextEditingController();
+  final balanceController = TextEditingController();
 
   // Address Controllers
   final address1Controller = TextEditingController();
@@ -39,20 +41,22 @@ class AddVendorController extends GetxController {
   final mongoUserRepository = Get.put(MongoUserRepository());
   final vendorController = Get.put(VendorController());
 
+  String get userId => AuthenticationController.instance.admin.value.id!;
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    vendorId.value = await mongoUserRepository.fetchUserGetNextId(userType: userType);
+    vendorId.value = await mongoUserRepository.fetchUserGetNextId(userType: userType, userId: userId);
   }
 
   void resetValue(UserModel vendor) {
-    vendorId.value = vendor.userId ?? 0;
+    vendorId.value = vendor.documentId ?? 0;
     nameController.text = vendor.name ?? '';
     emailController.text = vendor.email ?? '';
     phoneController.text = vendor.phone ?? '';
-    companyController.text = vendor.company ?? '';
+    companyController.text = vendor.companyName ?? '';
     gstNumberController.text = vendor.gstNumber ?? '';
-
+    balanceController.text = vendor.balance.toString();
     address1Controller.text = vendor.billing?.address1 ?? '';
     address2Controller.text = vendor.billing?.address2 ?? '';
     cityController.text = vendor.billing?.city ?? '';
@@ -74,12 +78,14 @@ class AddVendorController extends GetxController {
     );
 
     UserModel vendor = UserModel(
-      userId: vendorId.value,
+      userId: userId,
+      documentId: vendorId.value,
       name: nameController.text,
       email: emailController.text,
       phone: phoneController.text,
-      company: companyController.text,
+      companyName: companyController.text,
       gstNumber: gstNumberController.text,
+      balance: double.parse(balanceController.text),
       billing: address,
       userType: userType,
       dateCreated: DateTime.now().toString(),
@@ -106,7 +112,7 @@ class AddVendorController extends GetxController {
         return;
       }
 
-      final fetchedVendorId = await mongoUserRepository.fetchUserGetNextId(userType: userType);
+      final fetchedVendorId = await mongoUserRepository.fetchUserGetNextId(userType: userType, userId: userId);
       if (fetchedVendorId != vendorId.value) {
         throw 'Vendor ID mismatch!';
       }
@@ -138,12 +144,13 @@ class AddVendorController extends GetxController {
 
     UserModel vendor = UserModel(
       id: previousVendor.id,
-      userId: previousVendor.userId,
+      documentId: previousVendor.documentId,
       name: nameController.text,
       email: emailController.text,
       phone: phoneController.text,
-      company: companyController.text,
+      companyName: companyController.text,
       gstNumber: gstNumberController.text,
+      balance: double.parse(balanceController.text),
       billing: address,
       userType: userType,
       dateCreated: previousVendor.dateCreated,
@@ -179,7 +186,7 @@ class AddVendorController extends GetxController {
       vendorController.refreshVendors();
       FullScreenLoader.stopLoading();
       AppMassages.showToastMessage(message: 'Vendor updated successfully!');
-      Navigator.of(Get.context!).pop();
+      Get.close(2);
     } catch (e) {
       FullScreenLoader.stopLoading();
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());

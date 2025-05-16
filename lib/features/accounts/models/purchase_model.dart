@@ -4,7 +4,7 @@ import '../../../utils/constants/db_constants.dart';
 import '../../personalization/models/user_model.dart';
 import 'cart_item_model.dart';
 import 'image_model.dart';
-import 'payment_method.dart';
+import 'account_model.dart';
 
 
 class PurchaseModel {

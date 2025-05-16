@@ -6,7 +6,8 @@ import 'address_model.dart';
 
 class UserModel {
   String? id;
-  int? userId;
+  String? userId;
+  int? documentId;
   String? email;
   String? password;
   String? firstName;
@@ -15,7 +16,7 @@ class UserModel {
   String? role;
   String? username;
   String? phone;
-  String? company;
+  String? companyName;
   String? gstNumber;
   AddressModel? billing;
   AddressModel? shipping;
@@ -38,6 +39,7 @@ class UserModel {
   UserModel({
     this.id,
     this.userId,
+    this.documentId,
     this.email,
     this.password,
     this.firstName,
@@ -46,7 +48,7 @@ class UserModel {
     this.role,
     this.username,
     this.phone,
-    this.company,
+    this.companyName,
     this.gstNumber,
     this.billing,
     this.shipping,
@@ -88,14 +90,17 @@ class UserModel {
       id: json[UserFieldConstants.id] is ObjectId
           ? (json[UserFieldConstants.id] as ObjectId).toHexString() // Convert ObjectId to string
           : json[UserFieldConstants.id]?.toString(), // Fallback to string if not ObjectId
-      userId: json[UserFieldConstants.userId] ?? 0,
+      userId: json[UserFieldConstants.userId] ?? '',
+      firstName: json[UserFieldConstants.firstName] ?? '',
+      lastName: json[UserFieldConstants.lastName] ?? '',
+      documentId: json[UserFieldConstants.documentId] ?? 0,
       email: json[UserFieldConstants.email] ?? '',
       password: json[UserFieldConstants.password] ?? '',
       name: json[UserFieldConstants.name] ?? '',
       role: json[UserFieldConstants.role] ?? '',
       username: json[UserFieldConstants.username] ?? '',
       phone: json[UserFieldConstants.phone] ?? (json[UserFieldConstants.billing]?[UserFieldConstants.phone] ?? ''),
-      company: json[UserFieldConstants.company] ?? '',
+      companyName: json[UserFieldConstants.company] ?? '',
       gstNumber: json[UserFieldConstants.gstNumber] ?? '',
       billing: AddressModel.fromJson(json[UserFieldConstants.billing] ?? {}),
       shipping: AddressModel.fromJson(json[UserFieldConstants.shipping] ?? {}),
@@ -129,6 +134,7 @@ class UserModel {
     void addIfNotNull(String key, dynamic value) {
       if (value != null) map[key] = value;
     }
+    addIfNotNull(UserFieldConstants.documentId, documentId);
     addIfNotNull(UserFieldConstants.userId, userId);
     addIfNotNull(UserFieldConstants.email, email);
     addIfNotNull(UserFieldConstants.name, name);
@@ -136,7 +142,7 @@ class UserModel {
     addIfNotNull(UserFieldConstants.username, username);
     addIfNotNull(UserFieldConstants.password, password);
     addIfNotNull(UserFieldConstants.phone, phone);
-    addIfNotNull(UserFieldConstants.company, company);
+    addIfNotNull(UserFieldConstants.company, companyName);
     addIfNotNull(UserFieldConstants.gstNumber, gstNumber);
     addIfNotNull(UserFieldConstants.billing, billing?.toMap());
     addIfNotNull(UserFieldConstants.shipping, shipping?.toMap());

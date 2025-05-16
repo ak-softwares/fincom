@@ -9,7 +9,7 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controller/account/account_controller.dart';
-import '../../models/payment_method.dart';
+import '../../models/account_model.dart';
 import '../transaction/widget/transactions_by_entity.dart';
 import 'add_account.dart';
 
@@ -24,7 +24,7 @@ class SingleAccount extends StatefulWidget {
 
 class _SingleAccountState extends State<SingleAccount> {
   late AccountModel payment;
-  final paymentController = Get.put(AccountsController());
+  final paymentController = Get.put(AccountController());
 
   @override
   void initState() {
@@ -109,7 +109,7 @@ class _SingleAccountState extends State<SingleAccount> {
             SizedBox(height: AppSizes.spaceBtwItems),
             SizedBox(
                 height: 350,
-                child: TransactionsByEntity(entityType: EntityType.account, entityId: payment.accountId ?? 0)
+                child: TransactionsByEntity(entityType: EntityType.account, entityId: payment.id ?? '')
             ),
 
             // Delete

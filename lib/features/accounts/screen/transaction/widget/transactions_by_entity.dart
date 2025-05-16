@@ -15,7 +15,7 @@ class TransactionsByEntity extends StatelessWidget {
   const TransactionsByEntity({super.key, required this.entityType, required this.entityId});
 
   final EntityType entityType;
-  final int entityId;
+  final String entityId;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class TransactionsByEntity extends StatelessWidget {
     final transactionController = Get.put(TransactionController());
     final ScrollController scrollController = ScrollController();
 
-    transactionController.refreshTransactionByEntity(entityType: entityType, entityId: entityId);
+    transactionController.refreshTransactionByEntityId(entityType: entityType, entityId: entityId);
 
     scrollController.addListener(() async {
       if (scrollController.position.extentAfter < 0.2 * scrollController.position.maxScrollExtent) {
