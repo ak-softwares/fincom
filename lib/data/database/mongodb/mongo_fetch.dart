@@ -49,10 +49,7 @@ class MongoFetch extends MongoDatabase {
   }
 
   // Fetch document by ID
-  Future<Map<String, dynamic>> fetchDocumentById({
-    required String collectionName,
-    required String id,
-  }) async {
+  Future<Map<String, dynamic>> fetchDocumentById({required String collectionName, required String id}) async {
     await _ensureConnected();
     try {
       final objectId = ObjectId.fromHexString(id);

@@ -41,21 +41,32 @@ class AuthenticationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadAdmin(); // Call async loader
     checkIsAdminLogin();
-  }
-
-  Future<void> _loadAdmin() async {
-    final String userId = await fetchLocalAuthToken();
-    if (userId.isNotEmpty) {
-      admin.value = UserModel(id: userId);
-    }
   }
 
   // Check if the user is logged in
   Future<void> checkIsAdminLogin() async {
     final String localAuthUserToken = await fetchLocalAuthToken();
-    isAdminLogin.value = localAuthUserToken.isNotEmpty;
+    if (localAuthUserToken.isNotEmpty) {
+      isAdminLogin.value = true;
+      admin.value = UserModel(id: localAuthUserToken);
+    }
+  }
+
+  Future<String> getUserId() async {
+    final String localAuthUserToken = await fetchLocalAuthToken();
+    if (localAuthUserToken.isNotEmpty) {
+      return localAuthUserToken;
+    } else{
+      throw 'User not found';
+    }
+  }
+
+  String get userId {
+    if (!isAdminLogin.value || admin.value.id == null || admin.value.id!.isEmpty) {
+      throw Exception("User not authenticated. Call `checkIsAdminLogin()` first.");
+    }
+    return admin.value.id!;
   }
 
   Future<String> fetchLocalAuthToken() async {
@@ -97,7 +108,7 @@ class AuthenticationController extends GetxController {
     try {
       final String localAuthUserToken = await fetchLocalAuthToken();
       if (localAuthUserToken.isNotEmpty) { // Check if token is valid
-        final userData = await mongoAuthenticationRepository.fetchUserByEmail(email: localAuthUserToken);
+        final userData = await mongoAuthenticationRepository.fetchUserById(userId: localAuthUserToken);
         admin(userData);
       } else{
         throw 'User not found';
@@ -148,7 +159,7 @@ class AuthenticationController extends GetxController {
   Future<void> login({required UserModel user}) async {
     admin.value = user; //update user value
     isAdminLogin.value = true; //make user login
-    saveLocalAuthToken(user.email.toString());
+    saveLocalAuthToken(user.id!);
     AppMassages.showToastMessage(message: 'Login successfully!'); //show massage for successful login
     await Future.delayed(Duration(milliseconds: 300)); // Add delay
     NavigationHelper.navigateToBottomNavigation(); //navigate to other screen

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../common/dialog_box_massages/snack_bar_massages.dart';
 import '../../../../utils/constants/db_constants.dart';
 import '../../../../utils/constants/enums.dart';
+import '../../../authentication/controllers/authentication_controller/authentication_controller.dart';
 import '../../models/expense_model.dart';
 import '../../models/order_model.dart';
 import '../account/account_controller.dart';
@@ -72,6 +73,7 @@ class FinancialController extends GetxController {
     ever(selectedOption, (_) => selectDate());
     initFunctions();
   }
+
 
   Future<void> initFunctions() async {
     await selectDate();
@@ -343,7 +345,7 @@ class FinancialController extends GetxController {
   Future<void> calculateAccountsPayable() async {
     try {
       final double totalAccountsPayable = await vendorController.calculateAccountPayable();
-      accountsPayable.value = totalAccountsPayable.toInt();
+      accountsPayable.value = (totalAccountsPayable.toInt()).abs();
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());
     }
@@ -362,6 +364,7 @@ class FinancialController extends GetxController {
 //----------------------------------------------------------------------------------------------//
 
   // General Matrix
+
   // Total number of orders with coupons
   int get couponUsed => sales.where((order) {
     final couponLines = order.couponLines as List?;
@@ -382,15 +385,15 @@ class FinancialController extends GetxController {
 //----------------------------------------------------------------------------------------------//
 
   // Unit Matrix
-  double get averageOrderValue => revenueCompleted / orderCompleted;
+  double get averageOrderValue => orderCompleted == 0 ? 0 : revenueCompleted / orderCompleted;
 
-  double get unitCogs => expensesCogs.value / orderCompleted;
+  double get unitCogs => orderCompleted == 0 ? 0 : expensesCogs.value / orderCompleted;
   int get unitCogsPercent => averageOrderValue == 0 ? 0 : ((unitCogs / averageOrderValue) * 100).round();
 
-  double get unitShipping => unitShippingExpenseTotal / orderCompleted;
+  double get unitShipping => orderCompleted == 0 ? 0 : unitShippingExpenseTotal / orderCompleted;
   int get unitShippingPercent => averageOrderValue == 0 ? 0 : ((unitShipping / averageOrderValue) * 100).round();
 
-  double get unitAds => totalAdsExpense / orderCompleted;
+  double get unitAds => orderCompleted == 0 ? 0 : totalAdsExpense / orderCompleted;
   int get unitAdsPercent => averageOrderValue == 0 ? 0 : ((unitAds / averageOrderValue) * 100).round();
 
   double get unitProfit => averageOrderValue - unitCogs - unitShipping - unitAds;
@@ -415,6 +418,9 @@ class FinancialController extends GetxController {
         summary.name == ExpenseType.googleAds.name)
         .fold(0.0, (sum, summary) => sum + summary.total.toDouble());
   }
+
+
+//----------------------------------------------------------------------------------------------//
 
   // Attributes
 

@@ -139,7 +139,8 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                 TransactionTile(transaction: purchase.transaction ?? TransactionModel()),
 
                 // Image of Invoice
-                Column(
+                if(purchase.purchaseInvoiceImages != null && purchase.purchaseInvoiceImages!.isNotEmpty)
+                  Column(
                   spacing: AppSizes.spaceBtwItems,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -167,7 +168,7 @@ class _SinglePurchaseState extends State<SinglePurchase> {
                 ),
 
                 Center(child: TextButton(
-                    onPressed: () => purchaseController.deletePurchase(purchase: purchase, context: context),
+                    onPressed: () => purchaseController.confirmDeletePurchaseDialog(purchase: purchase, context: context),
                     child: Text('Delete', style: TextStyle(color: Colors.red),))
                 )
               ],

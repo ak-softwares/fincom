@@ -21,14 +21,15 @@ class SaleController extends GetxController {
   RxList<OrderModel> sales = <OrderModel>[].obs;
   final mongoOrderRepo = Get.put(MongoOrderRepo());
   final productController = Get.put(ProductController());
-  final authenticationController = Get.put(AuthenticationController());
+  final auth = Get.put(AuthenticationController());
 
 
   // Get All Sale
   Future<void> getSales() async {
     try {
-      final fetchedOrders = await mongoOrderRepo
-          .fetchOrders(orderType: orderType, userId: authenticationController.admin.value.id!, page: currentPage.value);
+      final String uid = await auth.getUserId();
+      final fetchedOrders = await mongoOrderRepo.fetchOrders(
+          orderType: orderType, userId: uid, page: currentPage.value);
       sales.addAll(fetchedOrders);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
@@ -60,9 +61,9 @@ class SaleController extends GetxController {
 
   Future<List<OrderModel>> getSalesByDate({required DateTime startDate, required DateTime endDate}) async {
     try {
-      if(!authenticationController.isAdminLogin.value) throw 'User Not Login';
+      final String uid = await auth.getUserId();
       final fetchedOrders = await mongoOrderRepo
-          .fetchOrdersByDate(orderType: orderType, userId: authenticationController.admin.value.id!, startDate: startDate, endDate: endDate);
+          .fetchOrdersByDate(orderType: orderType, userId: uid, startDate: startDate, endDate: endDate);
       return fetchedOrders;
     } catch (e) {
       rethrow;

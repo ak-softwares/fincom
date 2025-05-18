@@ -26,13 +26,13 @@ class ProductController extends GetxController{
   RxList<ProductModel> products = <ProductModel>[].obs;
 
   final mongoProductRepo = Get.put(MongoProductRepo());
-
-  String get userId => AuthenticationController.instance.admin.value.id!;
+  final auth = Get.put(AuthenticationController());
 
   // Get All products
   Future<void> getAllProducts() async {
     try {
-      final fetchedProducts = await mongoProductRepo.fetchProducts(userId: userId, page: currentPage.value);
+      final String uid = await auth.getUserId();
+      final fetchedProducts = await mongoProductRepo.fetchProducts(userId: uid, page: currentPage.value);
       products.addAll(fetchedProducts);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Products Fetching', message: e.toString());
@@ -57,11 +57,12 @@ class ProductController extends GetxController{
 
   Future<void> getTotalProductsCount() async {
     try {
-      totalProducts.value = await mongoProductRepo.fetchProductsCount(userId: userId);
-      totalStockValue.value = (await mongoProductRepo.fetchTotalStockValue(userId: userId)).toInt();
+      final String uid = await auth.getUserId();
+      totalProducts.value = await mongoProductRepo.fetchProductsCount(userId: uid);
+      totalStockValue.value = (await mongoProductRepo.fetchTotalStockValue(userId: uid)).toInt();
       update(); // Notify listeners that counts changed
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch product counts: ${e.toString()}');
+      AppMassages.warningSnackBar(title: 'Errors', message: 'Failed to fetch product counts: ${e.toString()}');
     }
   }
 
@@ -78,7 +79,8 @@ class ProductController extends GetxController{
 
   Future<double> getTotalStockValue() async {
     try {
-      final double totalStockValue = await mongoProductRepo.fetchTotalStockValue(userId: userId);
+      final String uid = await auth.getUserId();
+      final double totalStockValue = await mongoProductRepo.fetchTotalStockValue(userId: uid);
       return totalStockValue;
     } catch (e) {
       rethrow;

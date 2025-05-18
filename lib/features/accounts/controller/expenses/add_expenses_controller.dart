@@ -12,7 +12,7 @@ import '../../../authentication/controllers/authentication_controller/authentica
 import '../../models/expense_model.dart';
 import '../../models/account_model.dart';
 import '../../models/transaction_model.dart';
-import '../transaction/add_trsnsaction_controller.dart';
+import '../transaction/add_transaction_controller.dart';
 import '../transaction/transaction_controller.dart';
 import 'expenses_controller.dart';
 

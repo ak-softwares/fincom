@@ -379,7 +379,6 @@ class ProductModel {
       if (value != null) map[key] = value;
     }
 
-    add(ProductFieldName.id, id);
     add(ProductFieldName.userId, userId);
     add(ProductFieldName.productId, productId);
     add(ProductFieldName.name, title);

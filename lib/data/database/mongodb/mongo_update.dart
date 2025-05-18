@@ -23,14 +23,19 @@ class MongoUpdate extends MongoDatabase {
     try {
       final objectId = ObjectId.fromHexString(id);
 
+      // Remove _id from updatedData (if it exists)
+      final filteredData = Map<String, dynamic>.from(updatedData)
+        ..remove('_id');
+
       final result = await db!.collection(collectionName).updateOne(
         {'_id': objectId},
         {
           '\$set': updatedData,
         },
+        upsert: true,
       );
 
-      if (result.isSuccess && result.nModified == 0) {
+      if (!result.isSuccess && result.nModified == 0) {
         throw Exception('No document was updated. Possibly invalid ID or no data changes.');
       }
     } catch (e) {

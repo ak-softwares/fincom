@@ -7,7 +7,7 @@ import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/formatters/formatters.dart';
 import '../../../personalization/models/user_model.dart';
-import '../../controller/transaction/add_trsnsaction_controller.dart';
+import '../../controller/transaction/add_transaction_controller.dart';
 import '../../controller/transaction/transaction_controller.dart';
 import '../../models/account_model.dart';
 import '../../models/transaction_model.dart';

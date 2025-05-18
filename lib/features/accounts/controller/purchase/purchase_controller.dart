@@ -13,7 +13,7 @@ import '../../../../data/repositories/mongodb/orders/orders_repositories.dart';
 import '../../../../data/repositories/woocommerce/orders/woo_orders_repository.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../models/order_model.dart';
-import '../transaction/add_trsnsaction_controller.dart';
+import '../transaction/add_transaction_controller.dart';
 
 class PurchaseController extends GetxController {
   static PurchaseController get instance => Get.find();
@@ -27,19 +27,18 @@ class PurchaseController extends GetxController {
   RxList<OrderModel> purchases = <OrderModel>[].obs;
   final ImageKitService imageKitService = ImageKitService();
 
-  final authenticationController = Get.put(AuthenticationController());
+  final auth = Get.put(AuthenticationController());
   final mongoOrderRepo = Get.put(MongoOrderRepo());
   final wooOrdersRepository = Get.put(WooOrdersRepository());
   final productController = Get.put(ProductController());
   final userController = Get.put(UserController());
   final addTransactionController = Get.put(AddTransactionController());
 
-  String get userId => AuthenticationController.instance.admin.value.id!;
-
   Future<void> getPurchases() async {
     try {
+      final String uid = await auth.getUserId();
       final fetchedOrders = await mongoOrderRepo
-          .fetchOrders(orderType: orderType, userId: userId, page: currentPage.value);
+          .fetchOrders(orderType: orderType, userId: uid, page: currentPage.value);
       purchases.addAll(fetchedOrders);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error in Orders Fetching', message: e.toString());
@@ -67,25 +66,32 @@ class PurchaseController extends GetxController {
     }
   }
 
-  Future<void> deletePurchase({required OrderModel purchase, required BuildContext context}) async {
+  Future<void> confirmDeletePurchaseDialog({
+    required OrderModel purchase,
+    required BuildContext context,
+  }) async {
+    DialogHelper.showDialog(
+      context: context,
+      title: 'Delete Purchase',
+      message: 'Are you sure to delete this purchase?',
+      actionButtonText: 'Delete',
+      toastMessage: 'Purchase deleted successfully!',
+      onSubmit: () async {
+        await performDeletePurchase(purchase: purchase);
+        Get.back(); // Close dialog
+      },
+    );
+  }
+
+  Future<void> performDeletePurchase({required OrderModel purchase}) async {
     try {
-      DialogHelper.showDialog(
-        context: context,
-        title: 'Delete Purchase',
-        message: 'Are you sure to delete this purchase?',
-        actionButtonText: 'Delete',
-        toastMessage: 'Purchase deleted successfully!',
-        onSubmit: () async {
-          await Future.wait([
-            deleteImages(purchase.purchaseInvoiceImages ?? []),
-            productController.updateProductQuantity(cartItems: purchase.lineItems ?? []),
-            addTransactionController.processTransaction(transaction: purchase.transaction!, isDelete: true),
-            mongoOrderRepo.deleteOrderById(id: purchase.id ?? ''),
-            refreshPurchases(),
-          ]);
-          Get.back();
-        },
-      );
+      await Future.wait([
+        deleteImages(purchase.purchaseInvoiceImages ?? []),
+        productController.updateProductQuantity(cartItems: purchase.lineItems ?? []),
+        addTransactionController.processTransaction(transaction: purchase.transaction!, isDelete: true),
+        mongoOrderRepo.deleteOrderById(id: purchase.id ?? ''),
+        refreshPurchases(),
+      ]);
     } catch (e) {
       AppMassages.errorSnackBar(title: 'Error', message: e.toString());
     }
@@ -113,8 +119,9 @@ class PurchaseController extends GetxController {
 
   Future<List<OrderModel>> getPurchasesByDate({required DateTime startDate, required DateTime endDate}) async {
     try {
+      final String uid = await auth.getUserId();
       final fetchedOrders = await mongoOrderRepo
-          .fetchOrdersByDate(orderType: orderType, userId: authenticationController.admin.value.id!, startDate: startDate, endDate: endDate);
+          .fetchOrdersByDate(orderType: orderType, userId: uid, startDate: startDate, endDate: endDate);
       return fetchedOrders;
     } catch (e) {
       rethrow;

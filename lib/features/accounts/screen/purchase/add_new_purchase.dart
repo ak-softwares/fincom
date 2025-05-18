@@ -47,7 +47,7 @@ class AddNewPurchase extends StatelessWidget {
         padding: const EdgeInsets.all(AppSizes.defaultSpace),
         child: ElevatedButton(
           onPressed: () => previousPurchase != null
-              ? addPurchaseController.saveUpdatedPurchase(previousPurchase: previousPurchase!)
+              ? addPurchaseController.saveUpdatedPurchase(oldPurchase: previousPurchase!)
               : addPurchaseController.savePurchase(),
           child: Text(previousPurchase != null ? 'Update Purchase' : 'Add Purchase', style: TextStyle(fontSize: 16)),
         ),

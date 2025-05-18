@@ -128,6 +128,25 @@ class MongoAuthenticationRepository extends GetxController {
     }
   }
 
+  // Upload multiple products
+  Future<UserModel> fetchUserById({required String userId}) async {
+    try {
+      // Check if a user with the provided email exists
+      final fetchedUser = await _mongoFetch.fetchDocumentById(
+        collectionName: collectionName,
+        id: userId,
+      );
+
+      // Convert data to a UserModel
+      final UserModel user = UserModel.fromJson(fetchedUser);
+      return user; // Return the user object
+
+      // User authenticated successfully (proceed with login session)
+    } catch (e) {
+      throw 'user not found: $e';
+    }
+  }
+
   // Update a user document in a collection
   Future<void> updateUserByEmail({required String email, required UserModel user}) async {
     try {

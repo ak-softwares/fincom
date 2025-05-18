@@ -29,7 +29,7 @@ class MongoUserRepository extends GetxController {
           query: query,
           itemsPerPage: itemsPerPage,
           page: page,
-          filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
+          filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.userId: userId},
       );
 
       // Convert data to a list of ProductModel
@@ -47,7 +47,7 @@ class MongoUserRepository extends GetxController {
       final List<Map<String, dynamic>> usersData =
           await _mongoFetch.fetchDocuments(
               collectionName:collectionName,
-              filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
+              filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.userId: userId},
               page: page
           );
 
@@ -77,7 +77,7 @@ class MongoUserRepository extends GetxController {
     try {
       int count = await _mongoFetch.fetchCollectionCount(
         collectionName: collectionName,
-        filter: { UserFieldConstants.documentId: userId },
+        filter: { UserFieldConstants.userId: userId },
       );
       return count;
     } catch (e) {
@@ -180,7 +180,7 @@ class MongoUserRepository extends GetxController {
       // Fetch products from MongoDB with pagination
       final double totalAccountPayable = await _mongoFetch.calculateAccountPayable(
         collectionName: collectionName,
-        filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.documentId: userId},
+        filter: {UserFieldConstants.userType: userType.name, UserFieldConstants.userId: userId},
       );
       return totalAccountPayable;
     } catch (e) {
